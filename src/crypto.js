@@ -6,6 +6,7 @@ import Uuidv1 from 'uuid/v1';
 import Moment from 'moment';
 import Settings from './setting';
 
+
 var settings = new Settings();
 
 var getHashBytes = function (alg, data) {
@@ -24,25 +25,27 @@ exports.Sum = function sum(a, b) {
  * @return
  */
 exports.Sign = function (alg, prvKey, data) {
-    let sign = crypto.createSign(alg);
-    sign.update(getHashBytes('sha256', data));
-    let signature = sign.sign({key: prvKey});
-    return signature;
+    var sig = new KJUR.crypto.Signature({'alg':alg});
+    sig.init(prvKey);
+    sig.updateString(data);
+    var sigValueHex = sig.sign();
+    return sigValueHex;
 }
 
 /**
  * 鉴定签名是否正确
  * @param alg 算法
  * @param pubKey 公钥
- * @param signature 签名后的数据
+ * @param sigValueHex 签名后的数据
  * @param data 签名的数据
  * @return result true or false
  */
-exports.verifySign = function (alg, pubKey, signature, data) {
-    let verify = crypto.createVerify(alg);
-    verify.update(getHashBytes('sha256', data));
-    let result = verify.verify({key: pubKey}, signature);
-    return result;
+exports.verifySign = function (alg, pubKey, sigValueHex, data) {
+    var sig = new KJUR.crypto.Signature({'alg':alg});
+    sig.init(pubKey);
+    sig.updateString(data);
+    var isValid = sig.verify(sigValueHex);
+    return isValid;
 }
 
 const savePrvKeyFile = function (file_name, prv_key_hex) {
@@ -69,13 +72,9 @@ const VerifyPrvKeyWithPass = function (prv_key_pem, password) {
 
 //Create key pair with ECCDSA (secp256r1)
 //Meanwhile save encrypted PSK#8 PEM private key in a local binary file 
-const CreateKeyPair = function (password, identity) {
-    let key_pair = KEYUTIL.generateKeypair('EC', 'secp256k1');
-    let prv_key_obj = key_pair.prvKeyObj;
-    let prv_key_pem = KEYUTIL.getPEM(prv_key_obj, 'PKCS8PRV', password);
-
-    let prv_key_hex = Jsrsasign.pemtohex(prv_key_pem);
-    return prv_key_pem;
+const CreateKeyPair = function (alg, keylenOrCurve) {
+    let key_pair = KEYUTIL.generateKeypair(alg, keylenOrCurve);
+    return key_pair;
 }
 
 const CreatePrvKeyByImport = function (prv_key_pem2hex, identity) {
