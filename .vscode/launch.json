@@ -4,6 +4,13 @@
       {
         "type": "node",
         "request": "launch",
+        "name": "启动程序",
+        "program": "${workspaceFolder}/src/index.js"
+    },
+
+      {
+        "type": "node",
+        "request": "launch",
         "name": "Run tests",
         "program": "${workspaceRoot}/node_modules/.bin/jest"
       },
