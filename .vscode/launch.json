@@ -4,37 +4,26 @@
       {
         "type": "node",
         "request": "launch",
-        "name": "启动程序",
-        "program": "${workspaceFolder}/src/index.js"
+        "name": "Launch Program",
+        "program": "${workspaceRoot}/build/index.js",
+        "sourceMaps": true,
+        "trace": true,
+        "outFiles": [
+            "${workspaceRoot}/build/*"
+        ]
     },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach",
+      "port": 5858
+  },
 
       {
         "type": "node",
         "request": "launch",
         "name": "Run tests",
         "program": "${workspaceRoot}/node_modules/.bin/jest"
-      },
-      {
-        "name": "Launch",
-        "type": "node",
-        "request": "launch",
-        "program": "${workspaceRoot}/bin/www",
-        "stopOnEntry": false,
-        "args": [],
-        "cwd": "${workspaceRoot}",
-        "preLaunchTask": null,
-        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/babel-node",
-        "runtimeArgs": [
-          "--nolazy"
-        ],
-        "env": {
-          "NODE_ENV": "development",
-          "ASSET_HOST": "http://localhost:8081",
-          "NO_WEBPACK_MIDDLEWARE": "true"
-        },
-        "console": "internalConsole",
-        "sourceMaps": true,
-        "outFiles": []
       }
     ]
   }

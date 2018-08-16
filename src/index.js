@@ -1,39 +1,15 @@
-var protobuf = require("protobufjs");
+const protobuf = require("protobufjs");
+const EventTube = require('./events');
 
-console.log(process.cwd())
-protobuf.load("src/awesome.proto", function(err, root) {
-    if (err)
-        throw err;
+var root = protobuf.loadSync("protos/peer.proto");
+var Message = root.lookupType("rep.protos.Event");
+var Block = root.lookupType("rep.protos.Block");
 
-    // Obtain a message type
-    var AwesomeMessage = root.lookupType("awesomepackage.AwesomeMessage");
 
-    // Exemplary payload
-    var payload = { awesomeField: "AwesomeString" };
+var et = new EventTube('ws://localhost:8081/event',function(evt){
+    //console.log(m);
+    var ed = new Uint8Array(evt.data);
+    var msg = Message.decode(ed);
+    console.log(msg)
+})            
 
-    // Verify the payload if necessary (i.e. when possibly incomplete or invalid)
-    var errMsg = AwesomeMessage.verify(payload);
-    if (errMsg)
-        throw Error(errMsg);
-
-    // Create a new message
-    var message = AwesomeMessage.create(payload); // or use .fromObject if conversion is necessary
-
-    // Encode a message to an Uint8Array (browser) or Buffer (node)
-    var buffer = AwesomeMessage.encode(message).finish();
-    // ... do something with buffer
-
-    // Decode an Uint8Array (browser) or Buffer (node) to a message
-    var message = AwesomeMessage.decode(buffer);
-    // ... do something with message
-
-    // If the application uses length-delimited buffers, there is also encodeDelimited and decodeDelimited.
-
-    // Maybe convert the message back to a plain object
-    var object = AwesomeMessage.toObject(message, {
-        longs: String,
-        enums: String,
-        bytes: String,
-        // see ConversionOptions
-    });
-});

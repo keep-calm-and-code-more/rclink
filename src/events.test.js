@@ -4,7 +4,7 @@ import EventTube from './events';
 
 describe('事件订阅与数据获取', () => {
     var Message,Block;
-    beforeEach(function(done) {
+    beforeAll(function(done) {
      protobuf.load("protos/peer.proto", function(err, root) {
             if (err){
                 throw err;
