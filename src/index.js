@@ -1,5 +1,5 @@
 const protobuf = require("protobufjs");
-const EventTube = require('./events');
+import EventTube from './events';
 
 var root = protobuf.loadSync("protos/peer.proto");
 var Message = root.lookupType("rep.protos.Event");

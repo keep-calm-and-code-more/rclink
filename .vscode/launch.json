@@ -4,10 +4,11 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
+      "name": "Launch main",
       "program": "${workspaceRoot}/build/index.js",
       "sourceMaps": true,
       "trace": true,
+      "preLaunchTask": "npm: build",
       "outFiles": [
         "${workspaceRoot}/build/*"
       ]

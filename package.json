@@ -5,6 +5,9 @@
   "repository": "https://gitee.com/BTAJL/RCNode.git",
   "author": "c4w <“chen4w@sina.com”>",
   "license": "MIT",
+  "jest": {
+    "testEnvironment": "node"
+  },
   "devDependencies": {
     "@babel/cli": "7.0.0-beta.54",
     "@babel/core": "7.0.0-beta.54",
