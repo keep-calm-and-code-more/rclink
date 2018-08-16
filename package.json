@@ -12,9 +12,9 @@
     "@babel/cli": "7.0.0-beta.54",
     "@babel/core": "7.0.0-beta.54",
     "@babel/preset-env": "7.0.0-beta.54",
+    "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.4.2",
     "babel-loader": "^8.0.0-beta.0",
-    "babel-core": "^7.0.0-bridge.0",
     "jest": "^23.5.0",
     "regenerator-runtime": "^0.12.1"
   },
@@ -23,6 +23,8 @@
     "jsrsasign-util": "^1.0.0",
     "moment": "^2.22.2",
     "protobufjs": "^6.8.8",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2",
     "uuid": "^3.3.2",
     "ws": "^6.0.0"
   },
