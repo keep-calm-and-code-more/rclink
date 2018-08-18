@@ -32,6 +32,16 @@ class RestAPI {
             "json": true
         })
     }
+
+    blockStream(height){
+        var url = this._address+'blockstream/'+height;
+        return rp({
+            "method":"GET", 
+            "uri": url,
+            encoding: null
+        })
+    }
+
 /**
  * 发送签名交易，流式提交
  * @param {*} tx 待发送的交易

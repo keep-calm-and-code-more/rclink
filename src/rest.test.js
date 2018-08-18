@@ -1,11 +1,20 @@
 import RestAPI from './rest';
-
+const protobuf = require("protobufjs");
 
 describe('Restful API验证', () => {
     var ra;
-    beforeAll(function() {
+    var Message,Block;
+    beforeAll(function(done) {
        ra = new RestAPI('http://localhost:8081/')            
+       protobuf.load("protos/peer.proto", function(err, root) {
+        if (err){
+            throw err;
+        }
+        Message = root.lookupType("rep.protos.Event");
+        Block = root.lookupType("rep.protos.Block");
+        done();
     });
+});
 
     test('GET chaininfo 区块高度和交易总数应该大于0', (done) => {
         ra.chaininfo().then(ci=>{
@@ -21,14 +30,18 @@ describe('Restful API验证', () => {
         });
         
     });
-    test('先获取区块高度,再获取区块内容的异步调度测试', (done) => {
+    test('json方式获得的区块内容与字节流反序列化获得区块内容一致', (done) => {
         async function awaitDemo() {
             var h;
-            var tlen;
+            var blk1,blk2;
             await ra.chaininfo().then(ci=>{h = parseInt(ci.result.height)});
-            await ra.block(h).then(blk=>{tlen = blk.result.transactions.length});
-            console.log('h:'+h +'  txLen:'+tlen);
-            expect(tlen).toBeGreaterThan(0);
+            await ra.block(h).then(blk=>{blk1 = blk.result});
+            await ra.blockStream(h).then(res=>{
+                const buf = res;
+                blk2 = Block.decode(buf);
+            });
+            expect(blk1.previousBlockHash).toBe(blk2.previousBlockHash.toString('base64'));
+            expect(blk1.transactions.length).toBe(blk2.transactions.length)
             done();
        }  
        awaitDemo();      
