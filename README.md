@@ -9,8 +9,8 @@ RepChain Client library for Node.js，本项目是采用Node.js实现的DApp与[
 
 #### 软件架构
 软件架构说明
-![数据同步](https://gitee.com/BTAJL/RCNode/blob/master/doc/sync.png)
-![提交交易](https://gitee.com/BTAJL/RCNode/blob/master/doc/commit.png)
+![数据同步](https://gitee.com/BTAJL/RCNode/raw/master/doc/sync.png)
+![提交交易](https://gitee.com/BTAJL/RCNode/raw/master/doc/commit.png)
 
 
 #### 安装教程
