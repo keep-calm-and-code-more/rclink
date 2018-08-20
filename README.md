@@ -7,13 +7,18 @@ RepChain Client library for Node.js，本项目是采用Node.js实现的DApp与[
 - 与RepChain的数据同步：以Event订阅监听和同步新出块，以RestfulAPI主动发起缺失块同步
 - 构造和提交签名交易：提供对符合RepChain的交易内容构造和签名提交
 
+#### 使用说明（TODO)
+
+1. `yarn add rclink` 或 `npm i --save rclink`
+2. 事件订阅：const {EventTube} = require('rclink')
+
 #### 软件架构
 软件架构说明
 ![数据同步](https://gitee.com/BTAJL/RCNode/raw/master/doc/sync.png)
 ![提交交易](https://gitee.com/BTAJL/RCNode/raw/master/doc/commit.png)
 
 
-#### 安装教程
+#### 开发教程
 
 1. 安装node.js和yarn
 2. yarn install
