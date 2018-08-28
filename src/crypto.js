@@ -6,53 +6,68 @@ import Uuidv1 from 'uuid/v1';
 import Moment from 'moment';
 import Settings from './setting';
 
+let settings = new Settings();
 
-var settings = new Settings();
-
-var getHashBytes = function (alg, data) {
+/**
+ * To apply some specific cryptography hash algorithm on given data
+ * @param alg the specific cryptography hash algorithm
+ * @param data the given data
+ * @return the cryptography hash value in Bytes/Buffer format
+ */
+exports.GetHashBytes = function (alg, data) {
     let hash = crypto.createHash(alg);
     hash.update(data);
     return hash.digest();
 }
+
 exports.Sum = function sum(a, b) {
     return a + b;
-  }
+}
+
 /**
- * Sign data with private key
+ * To sign the given data with specific signature algorithm and private key
  * @param alg 算法
  * @param prvKey 私钥
- * @param data 签名的数据
- * @return
+ * @param data 待签名的数据
+ * @return the signature result in hex string format
  */
 exports.Sign = function (alg, prvKey, data) {
-    var sig = new KJUR.crypto.Signature({'alg':alg});
+    let sig = new KJUR.crypto.Signature({'alg':alg});
     sig.init(prvKey);
     sig.updateString(data);
-    var sigValueHex = sig.sign();
-    return sigValueHex;
+    let sigHexValue = sig.sign();
+    return sigHexValue;
+}
+
+// For test
+exports.SignBytes = function (alg, prvKeyPem, bytesData){
+    let sig = crypto.createSign(alg)
+    sig.update(bytesData)
+    let sigBytesValue = sig.sign({key: prvKeyPem})
+    return sigBytesValue
 }
 
 /**
  * 鉴定签名是否正确
- * @param alg 算法
+ * @param alg 签名算法
  * @param pubKey 公钥
- * @param sigValueHex 签名后的数据
- * @param data 签名的数据
+ * @param sigValue 签名后的数据
+ * @param data 被签名的原数据
  * @return result true or false
  */
-exports.verifySign = function (alg, pubKey, sigValueHex, data) {
-    var sig = new KJUR.crypto.Signature({'alg':alg});
+exports.VerifySign = function (alg, pubKey, sigValue, data) {
+    let sig = new KJUR.crypto.Signature({'alg':alg});
     sig.init(pubKey);
     sig.updateString(data);
-    var isValid = sig.verify(sigValueHex);
+    let isValid = sig.verify(sigValue);
     return isValid;
 }
 
-const savePrvKeyFile = function (file_name, prv_key_hex) {
+const SavePrvKeyFile = function (file_name, prv_key_hex) {
     JsrsasignUtil.saveFileBinByHex(file_name, prv_key_hex);
 }
 
-const saveCertFile = function (file_name, cert_pem) {
+const SaveCertFile = function (file_name, cert_pem) {
     JsrsasignUtil.saveFile(file_name, cert_pem);
 }
 
