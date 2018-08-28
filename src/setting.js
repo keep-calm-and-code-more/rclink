@@ -8,6 +8,10 @@ export default class setting{
         this.websocket_host = 'localhost';
         this.websocket_port = '8081';
 
+        // Rest API endpoint
+        this.rest_host = 'localhost';
+        this.rest_port = '8081';
+
         // Protobuf files location
         this.protobuf_files_root_location = baseDir+'imports'+path.sep+'protobuf';
 
