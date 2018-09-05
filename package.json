@@ -21,11 +21,11 @@
   "dependencies": {
     "jsrsasign": "^8.0.12",
     "jsrsasign-util": "^1.0.0",
+    "long": "^4.0.0",
     "moment": "^2.22.2",
     "protobufjs": "^6.8.8",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
-    "uuid": "^3.3.2",
     "ws": "^6.0.0"
   },
   "scripts": {
