@@ -14,40 +14,31 @@ describe('密码学哈希值生成测试', () => {
     const str2bch2 = "hashed crypto be to"
     const bytes2bch2 = Buffer.from(str2bch2) 
 
-    test('对给定数据计算哈希值，指定哈希值的编码格式，获得字符串类型哈希值', () => {
-        let h1 = GetHashVal(str2bch1, 'hex')
-        let h2 = GetHashVal(bytes2bch2, 'base64')
-        
-        let r1 = /[0-9a-f]+$/.test(h1)
-        let r2 = /[0-9a-zA-Z+=\/]+$/.test(h2)
-        expect(r1).toBeTruthy()
-        expect(r2).toBeTruthy()
-    })
-    test('对给定数据计算哈希值，默认获得字节流类型哈希值', () => {
+    test('对给定数据计算哈希值，应获得字节流类型的哈希值', () => {
         let h1 = GetHashVal(str2bch1)
         let h2 = GetHashVal(bytes2bch2)
         expect(h1).toBeInstanceOf(Buffer)
         expect(h2).toBeInstanceOf(Buffer)
     })
     test('对相同数据使用相同哈希算法进行哈希值计算，获得的结果应相同', () => {
-        let h1 = GetHashVal(str2bch1, 'utf-8', 'sha1')
-        let h2 = GetHashVal(str2bch1, 'utf-8', 'sha1')
-        expect(h1).toBe(h2)
+        let h1 = GetHashVal(str2bch1, 'sha1')
+        let h2 = GetHashVal(str2bch1, 'sha1')
+        expect(h1).toEqual(h2)
     })
     test('对相同数据使用不同哈希算法进行哈希值计算，获得的结果应不同', () => {
-        let h1 = GetHashVal(str2bch1, 'utf-8', 'MD5')
-        let h2 = GetHashVal(str2bch1, 'utf-8', 'RIPEMD160')
-        expect(h1).not.toBe(h2)
+        let h1 = GetHashVal(str2bch1, 'MD5')
+        let h2 = GetHashVal(str2bch1, 'RIPEMD160')
+        expect(h1).not.toEqual(h2)
     })
     test('对不同数据使用相同哈希算法进行哈希值计算，获得的结果应不同', () => {
-        let h1 = GetHashVal(str2bch1, 'utf-8')
-        let h2 = GetHashVal(str2bch2, 'utf-8')
-        expect(h1).not.toBe(h2)
+        let h1 = GetHashVal(str2bch1, 'sha256')
+        let h2 = GetHashVal(str2bch2, 'sha256')
+        expect(h1).not.toEqual(h2)
     })
     test('对不同数据使用不同哈希算法进行哈希值计算，获得的结果应不同', () => {
-        let h1 = GetHashVal(str2bch1, 'utf-8', 'sha256')
-        let h2 = GetHashVal(str2bch2, 'utf-8', 'MD4')
-        expect(h1).not.toBe(h2)
+        let h1 = GetHashVal(str2bch1, 'sha256')
+        let h2 = GetHashVal(str2bch2, 'MD4')
+        expect(h1).not.toEqual(h2)
     })
     test('对相同数据的字符串和字节流使用相同哈希算法进行哈希值计算，获得的结果应相同', () => {
         let h1 = GetHashVal(str2bch1)
@@ -72,7 +63,7 @@ describe('非对称密钥对生成与导出及导入测试', () => {
     let kp2PubKey
 
     beforeAll(() => {
-        kp1 = CreateKeypair("EC", "secp256k1") 
+        kp1 = CreateKeypair("EC", "secp256r1") 
         kp2 = CreateKeypair("RSA", 1024)
         kp3 = CreateKeypair()
         kp1PrvKeyPEM = GetKeyPEM(kp1.prvKeyObj)
@@ -110,28 +101,28 @@ describe('签名及签名验证测试', () => {
     const ct2bytes = Buffer.from(ct2)
     const ct3 = "hello"
     const ct3bytes = Buffer.from(ct3)
-    let alg = 'SHA1withECDSA'
+    let alg = 'SHA1'
 
     //使用PEM格式密钥信息
     const prvk3pem = "-----BEGIN PRIVATE KEY-----\nMIGNAgEAMBAGByqGSM49AgEGBSuBBAAKBHYwdAIBAQQgOUm2PF8apyaK1bXjKH5j\njCld/I6ExpefemRGsS0C4+WgBwYFK4EEAAqhRANCAAT6VLE/eF9+sK1ROn8n6x7h\nKsBxehW42qf1IB8quBn5OrQD3x2H4yZVDwPgcEUCjH8PcFgswdtbo8JL/7f66yEC\n-----END PRIVATE KEY-----"
     const pubk3pem = "-----BEGIN PUBLIC KEY-----\nMFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+lSxP3hffrCtUTp/J+se4SrAcXoVuNqn\n9SAfKrgZ+Tq0A98dh+MmVQ8D4HBFAox/D3BYLMHbW6PCS/+3+ushAg==\n-----END PUBLIC KEY-----"
 
     //Sign
-    test('对字符串进行签名，获得hex格式签名结果', () => {
+    test('对数据进行签名，应获得字节流格式的签名结果', () => {
         let s1 = Sign(kp1.prvKeyObj, ct1, alg)
         let s2 = Sign(kp2.prvKeyObj, ct2, alg)
-        let s3 = Sign(prvk3pem, ct3, alg)
-        expect(typeof s1).toBe('string')
-        expect(typeof s2).toBe('string')
-        expect(typeof s3).toBe('string')
-    });
-    test('对字节流进行签名，获得字节流格式的签名结果', () => {
-        let s1 = Sign(kp1.prvKeyObj, ct1bytes, alg)
-        let s2 = Sign(kp2.prvKeyObj, ct2bytes, alg)
         let s3 = Sign(prvk3pem, ct3bytes, alg)
         expect(s1).toBeInstanceOf(Buffer)
         expect(s2).toBeInstanceOf(Buffer)
         expect(s3).toBeInstanceOf(Buffer)
+        // For debug
+        let msg = "aaaaa12345678ufg"
+        let msgBuf = GetHashVal(Buffer.from(msg))
+        console.log("msgBufHex\n", msgBuf.toString("hex"))
+        let sig = Sign(prvk3pem, msgBuf, alg)
+        console.log("sig hex: \n", sig.toString("hex"))
+        let verify = VerifySign(pubk3pem, sig, msgBuf)
+        console.log("verify: \n", verify)
     });
     
     //Sign and VerifySign
@@ -166,25 +157,23 @@ describe('签名及签名验证测试', () => {
         let r2 = Sign(kp1.prvKeyObj, ct1)
         expect(r1 === r2).toBeFalsy()
     });
-    test('对字符串进行签名得到的hex字符串形式签名结果,转为字节流应能被原字符串的字节流验证通过', () => {
-        let sHex = Sign(prvk3pem, ct3)
-        let sBytes = Buffer.from(sHex, 'hex')
-        let r = VerifySign(pubk3pem, sBytes, ct3bytes)
+    test('对字符串进行签名得到的签名结果,应能被原字符串的字节流验证通过', () => {
+        let s = Sign(prvk3pem, ct3)
+        let r = VerifySign(pubk3pem, s, ct3bytes)
         expect(r).toBeTruthy();
     });
-    test('对字符串的字节流进行签名得到的字节流签名结果,转为hex字符串应能被原字符串验证通过', () => {
-        let sBytes = Sign(prvk3pem, ct3bytes)
-        let sHex = sBytes.toString('hex')
-        let r = VerifySign(pubk3pem, sHex, ct3)
+    test('对字符串的字节流进行签名得到的签名结果,应能被原字符串验证通过', () => {
+        let s = Sign(prvk3pem, ct3bytes)
+        let r = VerifySign(pubk3pem, s, ct3)
         expect(r).toBeTruthy();
     })
     test('使用特定哈希方法的签名算法的签名结果，不应被使用不同哈希方法的签名算法验证通过', () => {
-        let s1 = Sign(prvk3pem, ct3, 'SHA256withECDSA')
-        let r1_1 = VerifySign(pubk3pem, s1, ct3, 'SHA1withECDSA')
-        let r1_2 = VerifySign(pubk3pem, s1, ct3, 'MD5withECDSA')
-        let s2 = Sign(prvk3pem, ct3, 'RIPEMD160withECDSA')
-        let r2_1 = VerifySign(pubk3pem, s2, ct3, 'SHA1withECDSA')
-        let r2_2 = VerifySign(pubk3pem, s2, ct3, 'MD5withECDSA')
+        let s1 = Sign(prvk3pem, ct3, 'SHA256')
+        let r1_1 = VerifySign(pubk3pem, s1, ct3, 'SHA1')
+        let r1_2 = VerifySign(pubk3pem, s1, ct3, 'MD5')
+        let s2 = Sign(prvk3pem, ct3, 'SHA1')
+        let r2_1 = VerifySign(pubk3pem, s2, ct3, 'SHA256')
+        let r2_2 = VerifySign(pubk3pem, s2, ct3, 'MD4')
         expect(r1_1).toBeFalsy();
         expect(r1_2).toBeFalsy();
         expect(r2_1).toBeFalsy();
@@ -222,6 +211,7 @@ describe('X509证书生成测试', () => {
         let isvalid2 = VerifyCertificateSignature(certSelfSigned, subjectKp.pubKeyObj)
         expect(isValid1).toBeTruthy()
         expect(isvalid2).toBeTruthy()
+
     })
 
 

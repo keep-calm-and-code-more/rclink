@@ -35,7 +35,6 @@ class Transaction{
             nonce: this._txNonce,
             toValidators: this._txToValidators,
             cert: this._txAccountAdr,
-            signature: this._txSignature,
         }
         let root = await protobuf.load("protos/peer.proto")
         let err = root.lookupType("rep.protos.Transaction").verify(transactionJsonObj)
@@ -43,12 +42,15 @@ class Transaction{
             throw err
         let transactionMsg = root.lookupType("rep.protos.Transaction")
         let msg = transactionMsg.create(transactionJsonObj) 
-        // Compute txid
+        // 计算txid
         let txBuffer = transactionMsg.encode(msg).finish()
-        msg.txid = Crypto.GetHashVal(txBuffer, 'hex', 'sha256') 
+        msg.txid = Crypto.GetHashVal(txBuffer, 'sha256').toString('hex')
+        // 签名 
         txBuffer = transactionMsg.encode(msg).finish()
-        let signature = Crypto.Sign(prvKey, Crypto.GetHashVal(txBuffer), alg)
+        let txBufferHash = Crypto.GetHashVal(txBuffer)
+        let signature = Crypto.Sign(prvKey, txBufferHash, alg)
         msg.signature = signature
+
         txBuffer = transactionMsg.encode(msg).finish()
         return txBuffer
     }

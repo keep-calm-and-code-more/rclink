@@ -7,31 +7,41 @@ const X509 = jsrsasign.X509
 /**
  * 根据指定的密码学哈希算法为给定数据计算哈希值
  * @param {Buffer | String} data 待对其计算哈希值的原数据 
- * @param {String} he 哈希值的编码格式, 默认无指定，即为null
  * @param {String} alg 密码学哈希算法，默认使用sha256
- * @returns {String | Buffer} digest 指定编码方式的哈希值信息，若无指定编码格式，则默认以字节流返回
+ * @returns {Buffer} 结果哈希值
  */
-const GetHashVal = (data, he = null, alg = 'sha256') => {
+const GetHashVal = (data, alg = 'sha256') => {
+    /*
+    let hash = new KJUR.crypto.MessageDigest({alg: alg, prov: "cryptojs"})
+    let dataTBH = data
+    const bFlag = Buffer.isBuffer(data)
+    if(bFlag)
+        dataTBH = data.toString()
+    hash.updateString(dataTBH)
+    let digestHex = hash.digest()
+    let digest = Buffer.from(digestHex, 'hex')
+    return digest
+    */
+
+    // 使用Node自带crypto包计算哈希值
+    // 支持的哈希算法更多
     let hash = crypto.createHash(alg);
     hash.update(data);
-    let digest;
-    if (he)
-        digest = hash.digest(he);
-    else
-        digest = hash.digest();
+    let digest = hash.digest();
     return digest;
 }
 
 /**
- * 根据指定签名算法，使用私钥对给定数据进行签名
+ * 根据指定签名算法和私钥，对给定数据进行签名
  * @param {Object | String} prvKey 私钥信息，支持使用jsrsasign提供的私钥对象，
  * 或直接使用符合PKCS#5的未加密pem格式DSA/RSA私钥，符合PKCS#8的未加密pem格式RSA/ECDSA私钥
  * @param {String | Buffer} data 待被签名的数据
- * @param {String} alg 签名算法，默认使用SHA1withECDSA
- * @returns {String | Buffer} signature 签名信息，若data为字符串则返回hex格式的签名信息，否则以字节流形式返回签名信息
+ * @param {String} alg 签名算法，默认使用SHA1-with-<xxx>，只需指定使用的哈希算法，相应加密算法会自动从私钥中提取
+ * @returns {Buffer} signature 签名结果值
  */
-const Sign = (prvKey, data, alg = 'SHA1withECDSA') => {
-    let sig = new KJUR.crypto.Signature({ 'alg': alg });
+const Sign = (prvKey, data, alg = 'SHA1') => {
+/*
+    let sig = new KJUR.crypto.Signature({ 'alg': alg}); // alg = <hash>wth<crypto> like: SHA1withECDSA
     sig.init(prvKey);
     let dataTBS = data;
     const bFlag = Buffer.isBuffer(data)
@@ -39,22 +49,34 @@ const Sign = (prvKey, data, alg = 'SHA1withECDSA') => {
         dataTBS = data.toString();
     sig.updateString(dataTBS);
     let sigHexValue = sig.sign();
-    let signature = sigHexValue;
-    if (bFlag)
-        signature = Buffer.from(sigHexValue, 'hex')
+    let signature = Buffer.from(sigHexValue, 'hex')
     return signature;
+*/    
+    // 使用Node自带的crypto包进行签名
+    // ps: 发现jsrsasign提供的签名工具包有bug:
+    // 对普通数据签名时，在本地和RepChain端验签都ok,
+    // 但是，当对一个哈希值进行签名时，在本地验签成功，但在RepChain端验签失败
+    let sig = crypto.createSign(alg)
+    sig.update(data)
+    let prvK = prvKey
+    if(typeof prvKey == 'object')
+        prvK = GetKeyPEM(prvKey)
+    let signature = sig.sign(prvK)
+    return signature
+
 }
 
 /**
  * 验证签名
  * @param {Object | String} pubKey 公钥信息，支持使用jsrsasign提供的公钥对象，
  * 或直接使用符合PKCS#8的pem格式DSA/RSA/ECDSA公钥，符合X.509的PEM格式包含公钥信息的证书
- * @param {String | Buffer} sigValue 签名结果，hex格式字符串或字节流
- * @param {String | Buffer} data 被签名的原数据，签名结果的类型需与被签名数据的类型一致
- * @param {String} alg 签名算法，默认使用SHA1withECDSA
+ * @param {Buffer} sigValue 签名结果
+ * @param {String | Buffer} data 被签名的原数据
+ * @param {String} alg 签名算法，默认使用SHA1-with-<xxx>，只需指定哈希算法，加密算法会自动从公钥中提取
  * @returns {Boolean} isValid 签名真实性鉴定结果
  */
-const VerifySign = (pubKey, sigValue, data, alg = 'SHA1withECDSA') => {
+const VerifySign = (pubKey, sigValue, data, /*alg = 'SHA1withECDSA'*/ alg = 'SHA1') => {
+    /*
     let sig = new KJUR.crypto.Signature({ 'alg': alg });
     sig.init(pubKey);
     let dataTVS = data;
@@ -62,11 +84,17 @@ const VerifySign = (pubKey, sigValue, data, alg = 'SHA1withECDSA') => {
     if (bFlag)
         dataTVS = data.toString();
     sig.updateString(dataTVS);
-    let sigValueTBV = sigValue;
-    if (bFlag)
-        sigValueTBV = sigValue.toString('hex')
-    let isValid = sig.verify(sigValueTBV);
+    let sigValHex = sigValue.toString('hex')
+    let isValid = sig.verify(sigValHex);
     return isValid;
+    */
+    let verify = crypto.createVerify(alg)
+    verify.update(data)
+    let pubK = pubKey
+    if(typeof pubKey == 'object')
+        pubK = GetKeyPEM(pubKey)
+    let isValid = verify.verify(pubK, sigValue)
+    return isValid
 }
 
 /**

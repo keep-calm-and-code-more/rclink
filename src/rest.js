@@ -43,29 +43,22 @@ class RestAPI {
     }
 
 /**
- * 发送签名交易，流式提交
- * @param {*} tx 待发送的交易
+ * 发送签名交易给RepChain节点
+ * @param {Buffer | String} tx 待发送的交易，支持使用交易字节流数据或对其hex格式编码后的字符串
+ * @returns {Promise} rp 接收交易后RepChain节点的返回信息
  */
     sendTX(tx){
-        var url = this._address+'/postTran';
+        let url = this._address + 'transaction/postTranByString'
+        if (Buffer.isBuffer(tx))
+           url = this._address + 'transaction/postTranByStream' 
         return rp({
             method: 'POST',
             uri: url,
-            formData: {
-                // Like <input type="text" name="name">
-                name: 'Jenn',
-                // Like <input type="file" name="file">
-                file: {
-                    value: fs.createReadStream('test/test.jpg'),
-                    options: {
-                        filename: 'test.jpg',
-                        contentType: 'image/jpg'
-                    }
-                }
-            },
+            body: tx,
             headers: {
-                /* 'content-type': 'multipart/form-data' */ // Is set automatically
-            }
+                'content-type': 'application/json', 
+            },
+            json: true,
         });
     }
  }
