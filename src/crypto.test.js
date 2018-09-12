@@ -115,14 +115,6 @@ describe('签名及签名验证测试', () => {
         expect(s1).toBeInstanceOf(Buffer)
         expect(s2).toBeInstanceOf(Buffer)
         expect(s3).toBeInstanceOf(Buffer)
-        // For debug
-        let msg = "aaaaa12345678ufg"
-        let msgBuf = GetHashVal(Buffer.from(msg))
-        console.log("msgBufHex\n", msgBuf.toString("hex"))
-        let sig = Sign(prvk3pem, msgBuf, alg)
-        console.log("sig hex: \n", sig.toString("hex"))
-        let verify = VerifySign(pubk3pem, sig, msgBuf)
-        console.log("verify: \n", verify)
     });
     
     //Sign and VerifySign

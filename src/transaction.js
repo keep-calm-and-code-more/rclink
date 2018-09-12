@@ -2,67 +2,97 @@ const protobuf = require('protobufjs')
 const Long = require('long')
 const Crypto = require('./crypto')
 
+// Implement private properties
+let txMsg = new WeakMap()
+let txMsgType
+
 class Transaction{
     constructor(consArgsObj){
-        this._txType = consArgsObj.type
-        this._txChaincodeID = {path: consArgsObj.path || "path", name: consArgsObj.name}
-        this._txChaincodeInput = {function: consArgsObj.function, args: consArgsObj.args}
-        this._txChaincodeSpec = {chaincodeID: this._txChaincodeID, ctorMsg: this._txChaincodeInput,
-            timeout: consArgsObj.timeout || 1000, secureContext: consArgsObj.secureContext || "secureContext",
-            code_package: consArgsObj.codePackage || Buffer.from("string"), ctype: consArgsObj.codeType || 2}
-        this._txMetaData = consArgsObj.metaData 
-        this._txid = null
-        this._txTimestamp = this.getTimestamp(consArgsObj.timestampMillis)
-        this._txConfidentialityLevel = consArgsObj.confidentialityLevel || 1
-        this._txConfidentialityProtocolVersion = consArgsObj.confidentialityProtocolVersion || "confidentialityProtocolVersion-1.0"
-        this._txNonce = this.getNonce(consArgsObj.nonce)
-        this._txToValidators = this.getValidators(consArgsObj.toValidators)
-        this._txAccountAdr = this.getAccountAddr(consArgsObj.accountAddr)
-        this._txSignature = null 
-    }
+        if(!txMsgType)// 调用构造函数之前必须先完成setTxMsgType方法
+            throw new Error("Can not be called before setTxMsgType function completed")
 
-    async createSignedTransaction(prvKey, alg){
-        let chaincodeIDStr = "path: \"" + this._txChaincodeID.path + "\"\n" + "name: \"" + this._txChaincodeID.name + "\"\n";
-        let transactionJsonObj = {
-            type: this._txType,
+        let txType = consArgsObj.type
+        let txChaincodeID = {path: consArgsObj.path, name: consArgsObj.name}
+        let txChaincodeInput = {function: consArgsObj.function, args: consArgsObj.args}
+        let txChaincodeSpec = {chaincodeID: txChaincodeID, ctorMsg: txChaincodeInput,
+            timeout: consArgsObj.timeout || 1000, secureContext: consArgsObj.secureContext,
+            code_package: consArgsObj.codePackage, ctype: consArgsObj.codeType || 2}
+        let txMetaData = consArgsObj.metaData 
+        let txid = ""
+        let txTimestamp = this.getTimestamp(consArgsObj.timestampMillis)
+        let txConfidentialityLevel = consArgsObj.confidentialityLevel || 1
+        let txConfidentialityProtocolVersion = consArgsObj.confidentialityProtocolVersion
+        let txNonce = this.getNonce(consArgsObj.nonce)
+        let txToValidators = this.getValidators(consArgsObj.toValidators)
+        let txAccountAdr = this.getAccountAddr(consArgsObj.accountAddr)
+        let txSignature = null 
+
+        let chaincodeIDStr = "path: \"" + txChaincodeID.path + "\"\n" + "name: \"" + txChaincodeID.name + "\"\n";
+        let txJsonObj = {
+            type: txType,
             chaincodeID: Buffer.from(chaincodeIDStr),
-            payload: this._txChaincodeSpec,
-            metadata: this._txMetaData,
-            txid: this._txid,
-            timestamp: this._txTimestamp,
-            confidentialityLevel: this._txConfidentialityLevel,
-            confidentialityProtocolVersion: this._txConfidentialityProtocolVersion,
-            nonce: this._txNonce,
-            toValidators: this._txToValidators,
-            cert: this._txAccountAdr,
+            payload: txChaincodeSpec,
+            metadata: txMetaData,
+            txid: txid,
+            timestamp: txTimestamp,
+            confidentialityLevel: txConfidentialityLevel,
+            confidentialityProtocolVersion: txConfidentialityProtocolVersion,
+            nonce: txNonce,
+            toValidators: txToValidators,
+            cert: txAccountAdr,
+            signature: txSignature,
         }
-        let root = await protobuf.load("protos/peer.proto")
-        let err = root.lookupType("rep.protos.Transaction").verify(transactionJsonObj)
+        
+        let err = txMsgType.verify(txJsonObj)
         if(err)
             throw err
-        let transactionMsg = root.lookupType("rep.protos.Transaction")
-        let msg = transactionMsg.create(transactionJsonObj) 
         // 计算txid
-        let txBuffer = transactionMsg.encode(msg).finish()
+        let msg = txMsgType.create(txJsonObj)
+        let txBuffer = txMsgType.encode(msg).finish()
         msg.txid = Crypto.GetHashVal(txBuffer, 'sha256').toString('hex')
+        txMsg.set(this, msg) 
+    }
+    
+    // 必须先调用此异步方法，才能构造Transaction实例
+    static async setTxMsgType(){
+        if(txMsgType)
+            return 
+        let root = await protobuf.load("protos/peer.proto")
+        txMsgType = root.lookupType("rep.protos.Transaction")
+    }
+
+    getTxMsgType(){
+        return txMsgType
+    }
+
+    getTxMsg(){
+        return txMsg.get(this)
+    }
+
+    createSignedTransaction(prvKey, alg){
+        let msg = txMsg.get(this)
+        if(msg.signature.toString() !== '')
+            throw new Error("The transaction has been signed already")
+        
         // 签名 
-        txBuffer = transactionMsg.encode(msg).finish()
+        let txBuffer = txMsgType.encode(msg).finish()
         let txBufferHash = Crypto.GetHashVal(txBuffer)
         let signature = Crypto.Sign(prvKey, txBufferHash, alg)
         msg.signature = signature
-
-        txBuffer = transactionMsg.encode(msg).finish()
+        //txMsg.set(this, msg)
+        txBuffer = txMsgType.encode(msg).finish()
         return txBuffer
     }
 
-    async verifySignedTransaction(txBuffer, pubKey, alg){
-        let root = await protobuf.load("protos/peer.proto")
-        let transactionMsg = root.lookupType("rep.protos.Transaction")
-        let msg = transactionMsg.decode(txBuffer)
+    verifySignedTransaction(pubKey, alg){
+        // 深拷贝
+        let msg = Object.assign({}, txMsg.get(this))
         msg.metadata = null
         let signature = msg.signature
+        if(signature.toString() === '')
+            throw new Error("The transaction has not been signed yet")
         msg.signature = null
-        let msgBuffer = transactionMsg.encode(msg).finish()
+        let msgBuffer = txMsgType.encode(msg).finish()
         let isValid = Crypto.VerifySign(pubKey, signature, Crypto.GetHashVal(msgBuffer), alg)
         return isValid
     }

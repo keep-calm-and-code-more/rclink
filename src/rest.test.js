@@ -6,7 +6,11 @@ const CreateKeypair = require("./crypto").CreateKeypair
 describe('Restful API验证', () => {
     var ra;
     var Message,Block;
-    beforeAll(function(done) {
+    let tx
+    let prvKeyPEM, pubKeyPEM
+    let txSignedBuffer 
+
+    beforeAll(async (done) => {
        ra = new RestAPI('http://localhost:8081/')            
        protobuf.load("protos/peer.proto", function(err, root) {
         if (err){
@@ -15,7 +19,20 @@ describe('Restful API验证', () => {
         Message = root.lookupType("rep.protos.Event");
         Block = root.lookupType("rep.protos.Block");
         done();
-    });
+        });
+
+        await Transaction.setTxMsgType()
+        tx = new Transaction({
+            type: 2,
+            name: "0bfbe2faf858dd495e712fb0f897dd66082f06b879fa21a80fcc2acbc199b8d7",
+            function: "put_proof",
+            args: ["{\"testKey1\":\"testVal\"}"],
+            accountAddr: "1Luv5vq4v1CRkTN98YMhqQV1F18nGv11gX", 
+        })
+        prvKeyPEM = "-----BEGIN PRIVATE KEY-----\nMIGNAgEAMBAGByqGSM49AgEGBSuBBAAKBHYwdAIBAQQgOUm2PF8apyaK1bXjKH5j\njCld/I6ExpefemRGsS0C4+WgBwYFK4EEAAqhRANCAAT6VLE/eF9+sK1ROn8n6x7h\nKsBxehW42qf1IB8quBn5OrQD3x2H4yZVDwPgcEUCjH8PcFgswdtbo8JL/7f66yEC\n-----END PRIVATE KEY-----"
+        //pubKeyPEM = "-----BEGIN PUBLIC KEY-----\nMFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+lSxP3hffrCtUTp/J+se4SrAcXoVuNqn\n9SAfKrgZ+Tq0A98dh+MmVQ8D4HBFAox/D3BYLMHbW6PCS/+3+ushAg==\n-----END PUBLIC KEY-----"
+        txSignedBuffer = tx.createSignedTransaction(prvKeyPEM, "ecdsa-with-SHA1")
+        done()
 });
 
     test('GET chaininfo 区块高度和交易总数应该大于0', (done) => {
@@ -47,22 +64,15 @@ describe('Restful API验证', () => {
        }  
        awaitDemo();      
     });
-    test('以hex格式字符串形式向RepChain节点提交交易数据，应能返回接收信息验签通过', async (done) => {
-        let tx = new Transaction({
-            type: 2,
-            name: "hhhhhh",
-            function: "ffffff",
-            args: ["as", "sd"],
-            accountAddr: "1MH9xedPTkWThJUgT8ZYehiGCM7bEZTVGN", 
-        })
-        const prvKeyPEM = "-----BEGIN PRIVATE KEY-----\nMIGNAgEAMBAGByqGSM49AgEGBSuBBAAKBHYwdAIBAQQgOUm2PF8apyaK1bXjKH5j\njCld/I6ExpefemRGsS0C4+WgBwYFK4EEAAqhRANCAAT6VLE/eF9+sK1ROn8n6x7h\nKsBxehW42qf1IB8quBn5OrQD3x2H4yZVDwPgcEUCjH8PcFgswdtbo8JL/7f66yEC\n-----END PRIVATE KEY-----"
-        const pubKeyPEM = "-----BEGIN PUBLIC KEY-----\nMFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+lSxP3hffrCtUTp/J+se4SrAcXoVuNqn\n9SAfKrgZ+Tq0A98dh+MmVQ8D4HBFAox/D3BYLMHbW6PCS/+3+ushAg==\n-----END PUBLIC KEY-----"
-        let txSignedBuffer = await tx.createSignedTransaction(prvKeyPEM, "SHA1")
-        let isValid = await tx.verifySignedTransaction(txSignedBuffer, pubKeyPEM, "SHA1")
-        expect(isValid).toBeTruthy()
+    test('以hex格式字符串向RepChain节点提交交易数据，应能返回接收信息并验签通过', async () => {
         let result = await ra.sendTX(txSignedBuffer.toString('hex'))
-        console.log(result)
-        expect(result).toBeDefined()
-        done()
+        //console.log(result)
+        expect(result.txid).toBe(tx.getTxMsg().txid)
+        expect(/^验证签名出错/.test(result.err)).toBeFalsy()
+    })
+    test('以字节流格式向RepChain节点提交交易数据，应能返回接收信息并验证通过', async () => {
+        let result = await ra.sendTX(txSignedBuffer)
+        expect(result.txid).toBe(tx.getTxMsg().txid)
+        expect(/^验证签名出错/.test(result.err)).toBeFalsy()
     })
   });

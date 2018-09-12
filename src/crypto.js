@@ -36,10 +36,10 @@ const GetHashVal = (data, alg = 'sha256') => {
  * @param {Object | String} prvKey 私钥信息，支持使用jsrsasign提供的私钥对象，
  * 或直接使用符合PKCS#5的未加密pem格式DSA/RSA私钥，符合PKCS#8的未加密pem格式RSA/ECDSA私钥
  * @param {String | Buffer} data 待被签名的数据
- * @param {String} alg 签名算法，默认使用SHA1-with-<xxx>，只需指定使用的哈希算法，相应加密算法会自动从私钥中提取
+ * @param {String} alg 签名算法，默认使用ecdsa-with-SHA1
  * @returns {Buffer} signature 签名结果值
  */
-const Sign = (prvKey, data, alg = 'SHA1') => {
+const Sign = (prvKey, data, alg = 'ecdsa-with-SHA1') => {
 /*
     let sig = new KJUR.crypto.Signature({ 'alg': alg}); // alg = <hash>wth<crypto> like: SHA1withECDSA
     sig.init(prvKey);
@@ -72,12 +72,12 @@ const Sign = (prvKey, data, alg = 'SHA1') => {
  * 或直接使用符合PKCS#8的pem格式DSA/RSA/ECDSA公钥，符合X.509的PEM格式包含公钥信息的证书
  * @param {Buffer} sigValue 签名结果
  * @param {String | Buffer} data 被签名的原数据
- * @param {String} alg 签名算法，默认使用SHA1-with-<xxx>，只需指定哈希算法，加密算法会自动从公钥中提取
+ * @param {String} alg 签名算法，默认使用ecdsa-with-SHA1
  * @returns {Boolean} isValid 签名真实性鉴定结果
  */
-const VerifySign = (pubKey, sigValue, data, /*alg = 'SHA1withECDSA'*/ alg = 'SHA1') => {
+const VerifySign = (pubKey, sigValue, data, alg = 'ecdsa-with-SHA1') => {
     /*
-    let sig = new KJUR.crypto.Signature({ 'alg': alg });
+    let sig = new KJUR.crypto.Signature({ 'alg': alg }); // SHA1withECDSA
     sig.init(pubKey);
     let dataTVS = data;
     const bFlag = Buffer.isBuffer(data);

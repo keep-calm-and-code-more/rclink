@@ -34,7 +34,7 @@ class RestAPI {
     }
 
     blockStream(height){
-        var url = this._address+'blockstream/'+height;
+        var url = this._address+'block/stream/'+height;
         return rp({
             "method":"GET", 
             "uri": url,
@@ -49,17 +49,26 @@ class RestAPI {
  */
     sendTX(tx){
         let url = this._address + 'transaction/postTranByString'
-        if (Buffer.isBuffer(tx))
-           url = this._address + 'transaction/postTranByStream' 
-        return rp({
+        let contentType = 'application/json'
+        let jsonFlag = true
+        if (Buffer.isBuffer(tx)){
+           // Todo: 待完成提交字节流形式的交易数据
+           url = this._address + 'transaction/postTranStream' 
+           contentType = 'multipart/form-data;boundary=HSUWJ_WSJKWNBHB'
+           jsonFlag = false
+        }
+        let options = {
             method: 'POST',
             uri: url,
             body: tx,
             headers: {
-                'content-type': 'application/json', 
+                'content-type': contentType, 
             },
-            json: true,
-        });
+            json: jsonFlag,
+            
+            //encoding: null,
+        }
+        return rp(options);
     }
  }
 module.exports = RestAPI;
