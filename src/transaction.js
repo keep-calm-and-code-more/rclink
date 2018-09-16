@@ -7,53 +7,73 @@ let txMsg = new WeakMap()
 let txMsgType
 
 class Transaction{
+    /**
+     * 
+     * @param {*} consArgsObj 
+     */
     constructor(consArgsObj){
         if(!txMsgType)// 调用构造函数之前必须先完成setTxMsgType方法
             throw new Error("Can not be called before setTxMsgType function completed")
-
-        let txType = consArgsObj.type
-        let txChaincodeID = {path: consArgsObj.path, name: consArgsObj.name}
-        let txChaincodeInput = {function: consArgsObj.function, args: consArgsObj.args}
-        let txChaincodeSpec = {chaincodeID: txChaincodeID, ctorMsg: txChaincodeInput,
-            timeout: consArgsObj.timeout || 1000, secureContext: consArgsObj.secureContext,
-            code_package: consArgsObj.codePackage, ctype: consArgsObj.codeType || 2}
-        let txMetaData = consArgsObj.metaData 
-        let txid = ""
-        let txTimestamp = this.getTimestamp(consArgsObj.timestampMillis)
-        let txConfidentialityLevel = consArgsObj.confidentialityLevel || 1
-        let txConfidentialityProtocolVersion = consArgsObj.confidentialityProtocolVersion
-        let txNonce = this.getNonce(consArgsObj.nonce)
-        let txToValidators = this.getValidators(consArgsObj.toValidators)
-        let txAccountAdr = this.getAccountAddr(consArgsObj.accountAddr)
-        let txSignature = null 
-
-        let chaincodeIDStr = "path: \"" + txChaincodeID.path + "\"\n" + "name: \"" + txChaincodeID.name + "\"\n";
-        let txJsonObj = {
-            type: txType,
-            chaincodeID: Buffer.from(chaincodeIDStr),
-            payload: txChaincodeSpec,
-            metadata: txMetaData,
-            txid: txid,
-            timestamp: txTimestamp,
-            confidentialityLevel: txConfidentialityLevel,
-            confidentialityProtocolVersion: txConfidentialityProtocolVersion,
-            nonce: txNonce,
-            toValidators: txToValidators,
-            cert: txAccountAdr,
-            signature: txSignature,
-        }
         
-        let err = txMsgType.verify(txJsonObj)
-        if(err)
-            throw err
-        // 计算txid
-        let msg = txMsgType.create(txJsonObj)
-        let txBuffer = txMsgType.encode(msg).finish()
-        msg.txid = Crypto.GetHashVal(txBuffer, 'sha256').toString('hex')
-        txMsg.set(this, msg) 
+        // 根据参数类型构造属性txMsg
+        if(Buffer.isBuffer(consArgsObj)){ // Buffer类型的已签名交易
+            try{
+                let msg = txMsgType.decode(consArgsObj)
+                txMsg.set(this, msg)
+            }
+            catch(e){
+                throw e
+            }
+        }
+        else{ // 描述交易的Json Object对象
+            let txType = consArgsObj.type
+            let txChaincodeID = {path: consArgsObj.path, name: consArgsObj.name}
+            let txChaincodeInput = {function: consArgsObj.function, args: consArgsObj.args}
+            let txChaincodeSpec = {chaincodeID: txChaincodeID, ctorMsg: txChaincodeInput,
+                timeout: consArgsObj.timeout || 1000, secureContext: consArgsObj.secureContext,
+                code_package: consArgsObj.codePackage, ctype: consArgsObj.codeType || 2}
+            let txMetaData = consArgsObj.metaData 
+            let txid = ""
+            let txTimestamp = this.getTimestamp(consArgsObj.timestampMillis)
+            let txConfidentialityLevel = consArgsObj.confidentialityLevel || 1
+            let txConfidentialityProtocolVersion = consArgsObj.confidentialityProtocolVersion
+            let txNonce = this.getNonce(consArgsObj.nonce)
+            let txToValidators = this.getValidators(consArgsObj.toValidators)
+            let txAccountAdr = this.getAccountAddr(consArgsObj.accountAddr)
+            let txSignature = null 
+
+            let chaincodeIDStr = "path: \"" + txChaincodeID.path + "\"\n" + "name: \"" + txChaincodeID.name + "\"\n";
+            let txJsonObj = {
+                type: txType,
+                chaincodeID: Buffer.from(chaincodeIDStr),
+                payload: txChaincodeSpec,
+                metadata: txMetaData,
+                txid: txid,
+                timestamp: txTimestamp,
+                confidentialityLevel: txConfidentialityLevel,
+                confidentialityProtocolVersion: txConfidentialityProtocolVersion,
+                nonce: txNonce,
+                toValidators: txToValidators,
+                cert: txAccountAdr,
+                signature: txSignature,
+            }
+            
+            let err = txMsgType.verify(txJsonObj)
+            if(err)
+                throw err
+            // 计算txid
+            let msg = txMsgType.create(txJsonObj)
+            let txBuffer = txMsgType.encode(msg).finish()
+            msg.txid = Crypto.GetHashVal(txBuffer, 'sha256').toString('hex')
+
+            txMsg.set(this, msg) 
+        }
     }
     
     // 必须先调用此异步方法，才能构造Transaction实例
+    /**
+     * 
+     */
     static async setTxMsgType(){
         if(txMsgType)
             return 
@@ -69,6 +89,11 @@ class Transaction{
         return txMsg.get(this)
     }
 
+    /**
+     * 
+     * @param {*} prvKey 
+     * @param {*} alg 
+     */
     createSignedTransaction(prvKey, alg){
         let msg = txMsg.get(this)
         if(msg.signature.toString() !== '')
@@ -84,6 +109,11 @@ class Transaction{
         return txBuffer
     }
 
+    /**
+     * 
+     * @param {*} pubKey 
+     * @param {*} alg 
+     */
     verifySignedTransaction(pubKey, alg){
         // 深拷贝
         let msg = Object.assign({}, txMsg.get(this))
@@ -123,6 +153,9 @@ class Transaction{
     }
     
     // Todo: calculate account address from public key
+    /**
+     * 
+     */
     calculateAddr(){
         return Buffer.from("")
     }

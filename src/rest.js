@@ -48,25 +48,27 @@ class RestAPI {
  * @returns {Promise} rp 接收交易后RepChain节点的返回信息
  */
     sendTX(tx){
-        let url = this._address + 'transaction/postTranByString'
-        let contentType = 'application/json'
-        let jsonFlag = true
+        let options
         if (Buffer.isBuffer(tx)){
            // Todo: 待完成提交字节流形式的交易数据
-           url = this._address + 'transaction/postTranStream' 
-           contentType = 'multipart/form-data;boundary=HSUWJ_WSJKWNBHB'
-           jsonFlag = false
+           options = {
+               method: 'POST',
+               uri: this._address + 'transaction/postTranStream',
+               formData: {
+                    signedTrans: "haha",
+               }, 
+           }
         }
-        let options = {
-            method: 'POST',
-            uri: url,
-            body: tx,
-            headers: {
-                'content-type': contentType, 
-            },
-            json: jsonFlag,
-            
-            //encoding: null,
+        else{
+            options = {
+                method: 'POST',
+                uri: this._address + 'transaction/postTranByString',
+                body: tx,
+                headers: {
+                    'content-type': 'application/json', 
+                },
+                json: true,
+            }
         }
         return rp(options);
     }

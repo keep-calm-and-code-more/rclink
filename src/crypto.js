@@ -8,27 +8,34 @@ const X509 = jsrsasign.X509
  * 根据指定的密码学哈希算法为给定数据计算哈希值
  * @param {Buffer | String} data 待对其计算哈希值的原数据 
  * @param {String} alg 密码学哈希算法，默认使用sha256
+ * @param {String} prov 密码学哈希算法的提供者，支持使用jsrsasign或node内建的crypto(默认使用), 待支持用国密算法的提供者
  * @returns {Buffer} 结果哈希值
  */
-const GetHashVal = (data, alg = 'sha256') => {
-    /*
-    let hash = new KJUR.crypto.MessageDigest({alg: alg, prov: "cryptojs"})
-    let dataTBH = data
-    const bFlag = Buffer.isBuffer(data)
-    if(bFlag)
-        dataTBH = data.toString()
-    hash.updateString(dataTBH)
-    let digestHex = hash.digest()
-    let digest = Buffer.from(digestHex, 'hex')
+const GetHashVal = (data, alg = 'sha256', prov = 'nodecrypto') => {
+    let hash, digest
+    switch (prov) {
+        case 'nodecrypto':
+            // 使用Node自带crypto包计算哈希值
+            // 支持的哈希算法更多
+            hash = crypto.createHash(alg);
+            hash.update(data);
+            digest = hash.digest();
+            break
+        case 'jsrsasign':
+            hash = new KJUR.crypto.MessageDigest({alg: alg, prov: "cryptojs"})
+            let dataTBH = data
+            const bFlag = Buffer.isBuffer(data)
+            if(bFlag)
+                dataTBH = data.toString()
+            hash.updateString(dataTBH)
+            let digestHex = hash.digest()
+            digest = Buffer.from(digestHex, 'hex')
+            break
+        // Todo: case '国密'
+        default:
+            throw new Error("Not supported hash provider") 
+    }
     return digest
-    */
-
-    // 使用Node自带crypto包计算哈希值
-    // 支持的哈希算法更多
-    let hash = crypto.createHash(alg);
-    hash.update(data);
-    let digest = hash.digest();
-    return digest;
 }
 
 /**
@@ -37,33 +44,40 @@ const GetHashVal = (data, alg = 'sha256') => {
  * 或直接使用符合PKCS#5的未加密pem格式DSA/RSA私钥，符合PKCS#8的未加密pem格式RSA/ECDSA私钥
  * @param {String | Buffer} data 待被签名的数据
  * @param {String} alg 签名算法，默认使用ecdsa-with-SHA1
+ * @param {String} prov 签名算法的提供者，支持使用jsrsasign或node内建的crypto(默认使用)，带支持使用国密算法提供者
  * @returns {Buffer} signature 签名结果值
  */
-const Sign = (prvKey, data, alg = 'ecdsa-with-SHA1') => {
-/*
-    let sig = new KJUR.crypto.Signature({ 'alg': alg}); // alg = <hash>wth<crypto> like: SHA1withECDSA
-    sig.init(prvKey);
-    let dataTBS = data;
-    const bFlag = Buffer.isBuffer(data)
-    if (bFlag)
-        dataTBS = data.toString();
-    sig.updateString(dataTBS);
-    let sigHexValue = sig.sign();
-    let signature = Buffer.from(sigHexValue, 'hex')
-    return signature;
-*/    
-    // 使用Node自带的crypto包进行签名
-    // ps: 发现jsrsasign提供的签名工具包有bug:
-    // 对普通数据签名时，在本地和RepChain端验签都ok,
-    // 但是，当对一个哈希值进行签名时，在本地验签成功，但在RepChain端验签失败
-    let sig = crypto.createSign(alg)
-    sig.update(data)
-    let prvK = prvKey
-    if(typeof prvKey == 'object')
-        prvK = GetKeyPEM(prvKey)
-    let signature = sig.sign(prvK)
+const Sign = (prvKey, data, alg = 'ecdsa-with-SHA1', prov = 'nodecrypto') => {
+    let sig, signature
+    switch(prov){
+        case 'nodecrypto':
+            // 使用Node自带的crypto包进行签名
+            // ps: 发现jsrsasign提供的签名工具包有bug:
+            // 对普通数据签名时，在本地和RepChain端验签都ok,
+            // 但是，当对一个哈希值进行签名时，在本地验签成功，但在RepChain端验签失败
+            sig = crypto.createSign(alg)
+            sig.update(data)
+            let prvK = prvKey
+            if(typeof prvKey == 'object')
+                prvK = GetKeyPEM(prvKey)
+            signature = sig.sign(prvK)
+            break
+        case 'jsrsasign':
+            sig = new KJUR.crypto.Signature({ 'alg': alg}); // alg = <hash>wth<crypto> like: SHA1withECDSA
+            sig.init(prvKey);
+            let dataTBS = data;
+            const bFlag = Buffer.isBuffer(data)
+            if (bFlag)
+                dataTBS = data.toString();
+            sig.updateString(dataTBS);
+            let sigHexValue = sig.sign();
+            signature = Buffer.from(sigHexValue, 'hex')
+            break
+        // Todo: case '国密'
+        default:
+            throw new Error("Not supported sign provider")
+    }
     return signature
-
 }
 
 /**
@@ -73,27 +87,35 @@ const Sign = (prvKey, data, alg = 'ecdsa-with-SHA1') => {
  * @param {Buffer} sigValue 签名结果
  * @param {String | Buffer} data 被签名的原数据
  * @param {String} alg 签名算法，默认使用ecdsa-with-SHA1
+ * @param {String} prov 签名算法的提供者，支持使用jsrsasign或node内建的crypto(默认使用)，带支持使用国密算法提供者
  * @returns {Boolean} isValid 签名真实性鉴定结果
  */
-const VerifySign = (pubKey, sigValue, data, alg = 'ecdsa-with-SHA1') => {
-    /*
-    let sig = new KJUR.crypto.Signature({ 'alg': alg }); // SHA1withECDSA
-    sig.init(pubKey);
-    let dataTVS = data;
-    const bFlag = Buffer.isBuffer(data);
-    if (bFlag)
-        dataTVS = data.toString();
-    sig.updateString(dataTVS);
-    let sigValHex = sigValue.toString('hex')
-    let isValid = sig.verify(sigValHex);
-    return isValid;
-    */
-    let verify = crypto.createVerify(alg)
-    verify.update(data)
-    let pubK = pubKey
-    if(typeof pubKey == 'object')
-        pubK = GetKeyPEM(pubKey)
-    let isValid = verify.verify(pubK, sigValue)
+const VerifySign = (pubKey, sigValue, data, alg = 'ecdsa-with-SHA1', prov = 'nodecrypto') => {
+    let isValid
+    switch(prov){
+        case 'nodecrypto':
+            let verify = crypto.createVerify(alg)
+            verify.update(data)
+            let pubK = pubKey
+            if(typeof pubKey == 'object')
+                pubK = GetKeyPEM(pubKey)
+            isValid = verify.verify(pubK, sigValue)
+            break
+        case 'jsrsasign':
+            let sig = new KJUR.crypto.Signature({ 'alg': alg }); // SHA1withECDSA
+            sig.init(pubKey);
+            let dataTVS = data;
+            const bFlag = Buffer.isBuffer(data);
+            if (bFlag)
+                dataTVS = data.toString();
+            sig.updateString(dataTVS);
+            let sigValHex = sigValue.toString('hex')
+            isValid = sig.verify(sigValHex);
+            break
+        // Todo: case '国密'
+        default:
+            throw new Error("Not supported sign provider")
+    }
     return isValid
 }
 
