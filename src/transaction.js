@@ -4,7 +4,7 @@ const Crypto = require('./crypto')
 
 // Implement private properties
 let txMsg = new WeakMap()
-let txMsgType
+let txMsgType // static private property
 
 class Transaction{
     /**
