@@ -8,10 +8,10 @@ const X509 = jsrsasign.X509
  * 根据指定的密码学哈希算法为给定数据计算哈希值
  * @param {Buffer | String} data 待对其计算哈希值的原数据 
  * @param {String} alg 密码学哈希算法，默认使用sha256
- * @param {String} prov 密码学哈希算法的提供者，支持使用jsrsasign或node内建的crypto(默认使用), 待支持用国密算法的提供者
+ * @param {String} prov 密码学哈希算法的提供者，支持使用jsrsasign或node内建的crypto(默认使用), 待支持国密算法的提供者
  * @returns {Buffer} 结果哈希值
  */
-const GetHashVal = (data, alg = 'sha256', prov = 'nodecrypto') => {
+export const GetHashVal = (data, alg = 'sha256', prov = 'nodecrypto') => {
     let hash, digest
     switch (prov) {
         case 'nodecrypto':
@@ -47,7 +47,7 @@ const GetHashVal = (data, alg = 'sha256', prov = 'nodecrypto') => {
  * @param {String} prov 签名算法的提供者，支持使用jsrsasign或node内建的crypto(默认使用)，带支持使用国密算法提供者
  * @returns {Buffer} signature 签名结果值
  */
-const Sign = (prvKey, data, alg = 'ecdsa-with-SHA1', prov = 'nodecrypto') => {
+export const Sign = (prvKey, data, alg = 'ecdsa-with-SHA1', prov = 'nodecrypto') => {
     let sig, signature
     switch(prov){
         case 'nodecrypto':
@@ -90,7 +90,7 @@ const Sign = (prvKey, data, alg = 'ecdsa-with-SHA1', prov = 'nodecrypto') => {
  * @param {String} prov 签名算法的提供者，支持使用jsrsasign或node内建的crypto(默认使用)，带支持使用国密算法提供者
  * @returns {Boolean} isValid 签名真实性鉴定结果
  */
-const VerifySign = (pubKey, sigValue, data, alg = 'ecdsa-with-SHA1', prov = 'nodecrypto') => {
+export const VerifySign = (pubKey, sigValue, data, alg = 'ecdsa-with-SHA1', prov = 'nodecrypto') => {
     let isValid
     switch(prov){
         case 'nodecrypto':
@@ -126,7 +126,7 @@ const VerifySign = (pubKey, sigValue, data, alg = 'ecdsa-with-SHA1', prov = 'nod
  * 默认使用EC secp256k1曲线
  * @returns {Object} keypair 含有jsrsasign提供的prvKeyObj与pubKeyObj对象
  */
-const CreateKeypair = (alg = 'EC', keylenOrCurve = 'secp256k1') => {
+export const CreateKeypair = (alg = 'EC', keylenOrCurve = 'secp256k1') => {
     const keypair = KEYUTIL.generateKeypair(alg, keylenOrCurve);
     return keypair;
 }
@@ -137,7 +137,7 @@ const CreateKeypair = (alg = 'EC', keylenOrCurve = 'secp256k1') => {
  * 使用pem格式公钥信息或符合X.509的证书信息获取公钥对象
  * @returns {Object} keyObj 密钥对象，prvkeyObj或pubKeyObj
  */
-const ImportKey = (keyorCertPEM) => {
+export const ImportKey = (keyorCertPEM) => {
     const keyObj = KEYUTIL.getKey(keyorCertPEM);
     return keyObj;
 }
@@ -147,7 +147,7 @@ const ImportKey = (keyorCertPEM) => {
  * @param {String} keyObj prvKeyObj或pubKeyObj
  * @returns {String} keyPEM 符合PKCS#8标准的密钥信息
  */
-const GetKeyPEM = (keyObj) => {
+export const GetKeyPEM = (keyObj) => {
     let keyPEM;
     if(keyObj.isPrivate)
         keyPEM = KEYUTIL.getPEM(keyObj, "PKCS8PRV");
@@ -168,7 +168,7 @@ const GetKeyPEM = (keyObj) => {
  * @param {Object} issuerPrvKey 证书发行方的私钥对象，使用jsrsasign提供的prvKeyObj
  * @returns {String} certPEM pem格式的已签名证书信息
  */
-const CreateCertificate = (serialNumber, sigAlg, issuerDN, subjectDN, notBefore, notAfter, subjectPubKey, issuerPrvKey) => {
+export const CreateCertificate = (serialNumber, sigAlg, issuerDN, subjectDN, notBefore, notAfter, subjectPubKey, issuerPrvKey) => {
     let tbs = new KJUR.asn1.x509.TBSCertificate();
     tbs.setSerialNumberByParam({ 'int': serialNumber});
     tbs.setSignatureAlgByParam({ 'name': sigAlg});
@@ -193,7 +193,7 @@ const CreateCertificate = (serialNumber, sigAlg, issuerDN, subjectDN, notBefore,
  * @param {Object} keypair 证书拥有方的密钥对，含有jsrsasign提供的prvKeyObj和pubKeyObj对象
  * @returns {String} certPEM pem格式的自签名证书信息
  */
-const CreateSelfSignedCertificate = (serialNumber, sigAlg, DN, notBefore, notAfter, keypair) => {
+export const CreateSelfSignedCertificate = (serialNumber, sigAlg, DN, notBefore, notAfter, keypair) => {
     let certPEM = CreateCertificate(serialNumber, sigAlg, DN, DN, notBefore, notAfter, keypair.pubKeyObj, keypair.prvKeyObj);
     return certPEM;
 }
@@ -204,13 +204,10 @@ const CreateSelfSignedCertificate = (serialNumber, sigAlg, DN, notBefore, notAft
  * @param {Object} pubKey 证书签发者的公钥对象
  * @returns {isValid} 证书签名验证结果，true or false
  */
-const VerifyCertificateSignature = (certPEM, pubKey) => {
+export const VerifyCertificateSignature = (certPEM, pubKey) => {
     let isValid;
     let x509 = new X509();
     x509.readCertPEM(certPEM);
     isValid = x509.verifySignature(pubKey)
     return isValid;
 }
-
-module.exports = {GetHashVal, Sign, VerifySign, CreateKeypair, ImportKey, GetKeyPEM, 
-    CreateCertificate, CreateSelfSignedCertificate, VerifyCertificateSignature}

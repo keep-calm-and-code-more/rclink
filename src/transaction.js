@@ -160,4 +160,4 @@ class Transaction{
         return Buffer.from("")
     }
 }
-module.exports = Transaction
+export default Transaction

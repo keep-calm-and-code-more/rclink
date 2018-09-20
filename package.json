@@ -1,9 +1,9 @@
 {
-  "name": "RCNode",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "rclinktest",
+  "version": "1.0.2",
+  "main": "./src/index.js",
   "repository": "https://gitee.com/BTAJL/RCNode.git",
-  "author": "c4w <“chen4w@sina.com”>",
+  "author": "c4w <“chen4w@sina.com”>, jaytsang <beaclnd92@gmail.com>",
   "license": "MIT",
   "jest": {
     "testEnvironment": "node"

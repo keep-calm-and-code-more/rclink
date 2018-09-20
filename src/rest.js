@@ -73,4 +73,4 @@ class RestAPI {
         return rp(options);
     }
  }
-module.exports = RestAPI;
+export default RestAPI;

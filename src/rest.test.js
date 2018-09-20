@@ -1,6 +1,6 @@
-const RestAPI = require('./rest');
+const RestAPI = require('./rest').default;
 const protobuf = require("protobufjs");
-const Transaction = require("./transaction")
+const Transaction = require("./transaction").default
 const CreateKeypair = require("./crypto").CreateKeypair
 
 describe('Restful API验证', () => {

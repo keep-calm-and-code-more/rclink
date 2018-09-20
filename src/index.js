@@ -1,3 +1,4 @@
+/*
 const protobuf = require("protobufjs");
 import EventTube from './events';
 
@@ -12,4 +13,11 @@ var et = new EventTube('ws://localhost:8081/event',function(evt){
     var msg = Message.decode(ed);
     console.log(msg)
 })            
-
+*/
+module.exports = {
+    EventTube :  require('./events').default,
+    Crypto: require('./crypto'),
+    IndexDBRest: require('./indexdbRest').default,
+    Transaction: require('./transaction').default,
+    Rest: require('./rest').default
+}
