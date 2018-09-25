@@ -9,7 +9,12 @@ let txMsgType // static private property
 class Transaction{
     /**
      * 
-     * @param {*} consArgsObj 
+     * @param {Object | Buffer} consArgsObj 交易对象构造参数，可为Json Object或Buffer,
+     * 当使用Json Object时，consArgsObj应具有以下属性：
+     * type, {Number}, 需与RepChain的交易了类型定义一致，1表示CHAINCODE_DEPLOY，2表示CHAINCODE_INVOKE
+     * name, {String}, 交易调用的合约名字即合约ID
+     * function, {String}, 交易调用的合约方法名
+     * args, {Array[String]}, 传递给交易所调用合约方法的参数
      */
     constructor(consArgsObj){
         if(!txMsgType)// 调用构造函数之前必须先完成setTxMsgType方法
@@ -72,7 +77,7 @@ class Transaction{
     
     // 必须先调用此异步方法，才能构造Transaction实例
     /**
-     * 
+     * 复用txMsgType实例
      */
     static async setTxMsgType(){
         if(txMsgType)
@@ -90,9 +95,9 @@ class Transaction{
     }
 
     /**
-     * 
-     * @param {*} prvKey 
-     * @param {*} alg 
+     * 对新创建的交易实例进行签名
+     * @param {String | Object} prvKey 支持使用pem格式的私钥或jsrsasign提供的prvkeyObj对象
+     * @param {String} alg 使用的签名算法名称
      */
     createSignedTransaction(prvKey, alg){
         let msg = txMsg.get(this)
@@ -110,9 +115,9 @@ class Transaction{
     }
 
     /**
-     * 
-     * @param {*} pubKey 
-     * @param {*} alg 
+     * 对已签名的交易对象进行验签 
+     * @param {String | Object} pubKey pem格式的公钥或者jsrsasign提供的pubKeyObj对象
+     * @param {String} alg 使用的签名算法 
      */
     verifySignedTransaction(pubKey, alg){
         // 深拷贝
@@ -152,7 +157,7 @@ class Transaction{
             return this.calculateAddr()
     }
     
-    // Todo: calculate account address from public key
+    // Todo: 计算账户地址 
     /**
      * 
      */
