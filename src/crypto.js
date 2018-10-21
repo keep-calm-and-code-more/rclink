@@ -133,24 +133,26 @@ export const CreateKeypair = (alg = 'EC', keylenOrCurve = 'secp256k1') => {
 
 /**
  * 导入已有非对称密钥
- * @param {String} keyPEM 使用未加密的pem格式私钥信息获取私钥对象，
- * 使用pem格式公钥信息或符合X.509的证书信息获取公钥对象
+ * @param {String} keyPEM 使用符合PKCS#8标准的pem格式私钥信息获取私钥对象，支持导入使用PBKDF2/HmacSHA1/3DES加密的pem格式私钥信息
+ * 使用符合PKCS#8标准的pem格式公钥信息或符合X.509标准的pem格式证书信息获取公钥对象
+ * @param {String} passWord 私钥保护密码, 当导入已加密私钥时，需要提供该参数
  * @returns {Object} keyObj 密钥对象，prvkeyObj或pubKeyObj
  */
-export const ImportKey = (keyorCertPEM) => {
-    const keyObj = KEYUTIL.getKey(keyorCertPEM);
+export const ImportKey = (keyorCertPEM, passWord) => {
+    const keyObj = KEYUTIL.getKey(keyorCertPEM, passWord);
     return keyObj;
 }
 
 /**
  * 获得PEM格式的私钥或公钥信息
  * @param {String} keyObj prvKeyObj或pubKeyObj
+ * @param {String} passWord 私钥保护密码，当需要生成加密私钥信息时需提供该参数, 目前是由jsrsasign使用PBKDF2/HmacSHA1/3DES算法对私钥进行加密
  * @returns {String} keyPEM 符合PKCS#8标准的密钥信息
  */
-export const GetKeyPEM = (keyObj) => {
+export const GetKeyPEM = (keyObj, passWord) => {
     let keyPEM;
     if(keyObj.isPrivate)
-        keyPEM = KEYUTIL.getPEM(keyObj, "PKCS8PRV");
+        keyPEM = KEYUTIL.getPEM(keyObj, "PKCS8PRV", passWord);
     else
         keyPEM = KEYUTIL.getPEM(keyObj);
     return keyPEM;

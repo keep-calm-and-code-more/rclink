@@ -62,6 +62,9 @@ describe('非对称密钥对生成与导出及导入测试', () => {
     let kp2PrvKey
     let kp2PubKey
 
+    let kp1EncryptedPrvKeyPEM
+    let pass
+
     beforeAll(() => {
         kp1 = CreateKeypair("EC", "secp256r1") 
         kp2 = CreateKeypair("RSA", 1024)
@@ -74,6 +77,10 @@ describe('非对称密钥对生成与导出及导入测试', () => {
         kp1PubKey = ImportKey(kp1PubKeyPEM)
         kp2PrvKey = ImportKey(kp2PrvKeyPEM)
         kp2PubKey = ImportKey(kp2PubKeyPEM)
+
+        pass = '1234567890'
+        kp1EncryptedPrvKeyPEM = GetKeyPEM(kp1.prvKeyObj, pass)
+
     })
 
     test('生成密钥对导出为pem格式后再导入，密钥对应相同', () => {
@@ -87,6 +94,13 @@ describe('非对称密钥对生成与导出及导入测试', () => {
         expect(kp3.prvKeyObj.curveName).toBe("secp256k1")
         expect(kp3.pubKeyObj.type).toBe("EC")
         expect(kp3.pubKeyObj.curveName).toBe("secp256k1")
+    })
+    test('私钥的加密pem格式信息与未加密pem格式信息应不同', () => {
+        expect(kp1EncryptedPrvKeyPEM).not.toBe(kp1PrvKeyPEM)
+    })
+    test('使用私钥的加密pem格式信息导入生成的私钥对象，应与原私钥对象相同', () => {
+        const kp1ImportedPrvKeyObj = ImportKey(kp1EncryptedPrvKeyPEM, pass)
+        expect(GetKeyPEM(kp1ImportedPrvKeyObj)).toBe(kp1PrvKeyPEM)
     })
 })
 
