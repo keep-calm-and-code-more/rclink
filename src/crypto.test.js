@@ -5,7 +5,8 @@ const GetKeyPEM = Crypto.GetKeyPEM
 const ImportKey = Crypto.ImportKey
 import {
     Sign,VerifySign,CreateCertificate,CreateSelfSignedCertificate,
-    VerifyCertificateSignature} from './crypto'
+    VerifyCertificateSignature,
+    ImportCertificate} from './crypto'
 
 describe('密码学哈希值生成测试', () => {
     //欲计算哈希值的数据
@@ -212,7 +213,7 @@ describe('X509证书生成测试', () => {
             notBefore, notAfter, subjectKp) 
     })
 
-    test('使用签发者公钥验证生成的X509证书应能通过验证', () => {
+    test('使用签发者公钥验证生成的X509证书，应能通过验证', () => {
         let isValid1 = VerifyCertificateSignature(cert, issuerKp.pubKeyObj)
         let isvalid2 = VerifyCertificateSignature(certSelfSigned, subjectKp.pubKeyObj)
         expect(isValid1).toBeTruthy()
@@ -220,5 +221,9 @@ describe('X509证书生成测试', () => {
 
     })
 
-
+    test('导入PEM格式证书得到的公钥对象与导入PEM格式证书得到的X509证书对象，应能互相印证', () => {
+        const pubKeyObj = ImportKey(cert)
+        const x509 = ImportCertificate(cert)
+        expect(GetKeyPEM(x509.getPublicKey())).toBe(GetKeyPEM(pubKeyObj))
+    })
 })

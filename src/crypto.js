@@ -208,8 +208,18 @@ export const CreateSelfSignedCertificate = (serialNumber, sigAlg, DN, notBefore,
  */
 export const VerifyCertificateSignature = (certPEM, pubKey) => {
     let isValid;
-    let x509 = new X509();
-    x509.readCertPEM(certPEM);
+    let x509 = ImportCertificate(certPEM); 
     isValid = x509.verifySignature(pubKey)
     return isValid;
+}
+
+/**
+ * 
+ * @param {String} certPEM 符合X.509标准的公钥证书信息
+ * @returns {Object} jsrsasign提供的X509对象实例
+ */
+export const ImportCertificate = (certPEM) => {
+    let x509 = new X509();
+    x509.readCertPEM(certPEM);
+    return x509;
 }
