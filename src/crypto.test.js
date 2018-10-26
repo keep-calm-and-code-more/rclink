@@ -197,8 +197,8 @@ describe('X509证书生成测试', () => {
     let sigAlg = "SHA256withECDSA"
     let issuerDN = "/C=CN/CN=CA for RepChain Usage Test/O=ISCAS/OU=SDR/L=BeiJing"
     let subjectDN = "/C=US/CN=Dapp1 User1 Test/O=Fake Federal Reserve/OU=FFR/L=WS"
-    let notBefore = "1535810998" 
-    let notAfter = "1567267200" 
+    let notBefore = 1535810998
+    let notAfter = 1567267200 
     
     let cert
     let certSelfSigned

@@ -1,9 +1,12 @@
 {
   "name": "rclink",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "main": "./src/index.js",
   "repository": "https://gitee.com/BTAJL/RCNode.git",
-  "author": "c4w <“chen4w@sina.com”>, jaytsang <beaclnd92@gmail.com>",
+  "author": "c4w <“chen4w@sina.com”>",
+  "contributors": [
+    "jaytsang <beaclnd92@gmail.com>"
+  ],
   "license": "MIT",
   "jest": {
     "testEnvironment": "node"

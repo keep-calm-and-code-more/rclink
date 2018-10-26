@@ -3,6 +3,7 @@ const jsrsasign = require('jsrsasign')
 const KEYUTIL = jsrsasign.KEYUTIL
 const KJUR = jsrsasign.KJUR
 const X509 = jsrsasign.X509
+const moment = require('moment')
 
 /**
  * 根据指定的密码学哈希算法为给定数据计算哈希值
@@ -164,8 +165,8 @@ export const GetKeyPEM = (keyObj, passWord) => {
  * @param {String} sigAlg 证书签发时使用的签名算法
  * @param {String} issuerDN 符合X500标准的代表证书发行方身份标识的Distinguished Name
  * @param {String} subjectDN 符合X500标准的代表证书拥有方标识的Distinguished Name
- * @param {String} notBefore 代表证书有效性起始时间的unix时间戳
- * @param {String} notAfter 代表证书有效性终止时间的unix时间戳
+ * @param {Number} notBefore 代表证书有效性起始时间的unix时间戳
+ * @param {Number} notAfter 代表证书有效性终止时间的unix时间戳
  * @param {Object} subjectPubKey 证书拥有方的公钥对象，使用jsrsasign提供的pubKeyObj
  * @param {Object} issuerPrvKey 证书发行方的私钥对象，使用jsrsasign提供的prvKeyObj
  * @returns {String} certPEM pem格式的已签名证书信息
@@ -176,8 +177,10 @@ export const CreateCertificate = (serialNumber, sigAlg, issuerDN, subjectDN, not
     tbs.setSignatureAlgByParam({ 'name': sigAlg});
     tbs.setIssuerByParam({ 'str': issuerDN});
     tbs.setSubjectByParam({ 'str': subjectDN});
-    tbs.setNotBeforeByParam({'str': notBefore + 'Z' });
-    tbs.setNotAfterByParam({'str': notAfter + 'Z' });
+    const notBeforeFormat = moment.utc(notBefore).format('YYYYMMDDHHmmss') + 'Z';
+    tbs.setNotBeforeByParam({'str': notBeforeFormat });
+    const notAfterFormat = moment.utc(notAfter).format('YYYYMMDDHHmmss') + 'Z';
+    tbs.setNotAfterByParam({'str': notAfterFormat });
     tbs.setSubjectPublicKey(subjectPubKey);
     let cert = new KJUR.asn1.x509.Certificate({ 'tbscertobj': tbs, 'prvkeyobj': issuerPrvKey});
     cert.sign();
@@ -190,8 +193,8 @@ export const CreateCertificate = (serialNumber, sigAlg, issuerDN, subjectDN, not
  * @param {Number} serialNumber 证书序列号
  * @param {String} sigAlg 证书签名算法
  * @param {String} DN 符合X500标准的代表证书所有者身份标识的Distinguished Name 
- * @param {String} notBefore 代表证书有效性起始时间的unix时间戳
- * @param {String} notAfter 代表证书有效性终止时间的unix时间戳
+ * @param {Number} notBefore 代表证书有效性起始时间的unix时间戳
+ * @param {Number} notAfter 代表证书有效性终止时间的unix时间戳
  * @param {Object} keypair 证书拥有方的密钥对，含有jsrsasign提供的prvKeyObj和pubKeyObj对象
  * @returns {String} certPEM pem格式的自签名证书信息
  */
