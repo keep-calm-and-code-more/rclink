@@ -177,10 +177,10 @@ export const CreateCertificate = (serialNumber, sigAlg, issuerDN, subjectDN, not
     tbs.setSignatureAlgByParam({ 'name': sigAlg});
     tbs.setIssuerByParam({ 'str': issuerDN});
     tbs.setSubjectByParam({ 'str': subjectDN});
-    const notBeforeFormat = moment.utc(notBefore).format('YYYYMMDDHHmmss') + 'Z';
-    tbs.setNotBeforeByParam({'str': notBeforeFormat });
-    const notAfterFormat = moment.utc(notAfter).format('YYYYMMDDHHmmss') + 'Z';
-    tbs.setNotAfterByParam({'str': notAfterFormat });
+    const notBeforeFormated = moment.unix(notBefore).utc().format('YYYYMMDDHHmmss') + 'Z';
+    tbs.setNotBeforeByParam({'str': notBeforeFormated });
+    const notAfterFormated = moment.unix(notAfter).utc().format('YYYYMMDDHHmmss') + 'Z';
+    tbs.setNotAfterByParam({'str': notAfterFormated });
     tbs.setSubjectPublicKey(subjectPubKey);
     let cert = new KJUR.asn1.x509.Certificate({ 'tbscertobj': tbs, 'prvkeyobj': issuerPrvKey});
     cert.sign();
@@ -224,5 +224,21 @@ export const VerifyCertificateSignature = (certPEM, pubKey) => {
 export const ImportCertificate = (certPEM) => {
     let x509 = new X509();
     x509.readCertPEM(certPEM);
+
+    const getUnixTimestamp = (notBeforeOrNotAfterFormatTimestampStr) => {
+        let time;
+        time = moment.utc(notBeforeOrNotAfterFormatTimestampStr, 'YYYYMMDDHHmmss')
+        .unix();
+        return time;
+    }
+
+    x509.getNotBeforeUnixTimestamp = () => {
+        return getUnixTimestamp(x509.getNotBefore());
+    }
+
+    x509.getNotAfterUnixTimestamp = () => {
+        return getUnixTimestamp(x509.getNotAfter());
+    }
+
     return x509;
 }

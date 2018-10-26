@@ -198,32 +198,37 @@ describe('X509证书生成测试', () => {
     let issuerDN = "/C=CN/CN=CA for RepChain Usage Test/O=ISCAS/OU=SDR/L=BeiJing"
     let subjectDN = "/C=US/CN=Dapp1 User1 Test/O=Fake Federal Reserve/OU=FFR/L=WS"
     let notBefore = 1535810998
-    let notAfter = 1567267200 
+    let notAfter = 1567267200
     
-    let cert
-    let certSelfSigned
-
+    let certPEM
+    let certSelfSignedPEM
 
     beforeAll(() => {
         issuerKp = CreateKeypair("EC", "secp256k1")
         subjectKp = CreateKeypair("EC", "secp256k1")
-        cert = CreateCertificate(serialNumber, sigAlg, issuerDN, 
+        certPEM = CreateCertificate(serialNumber, sigAlg, issuerDN, 
             subjectDN, notBefore, notAfter, subjectKp.pubKeyObj, issuerKp.prvKeyObj) 
-        certSelfSigned = CreateSelfSignedCertificate(serialNumber, sigAlg, issuerDN, 
+        certSelfSignedPEM = CreateSelfSignedCertificate(serialNumber, sigAlg, issuerDN, 
             notBefore, notAfter, subjectKp) 
     })
 
     test('使用签发者公钥验证生成的X509证书，应能通过验证', () => {
-        let isValid1 = VerifyCertificateSignature(cert, issuerKp.pubKeyObj)
-        let isvalid2 = VerifyCertificateSignature(certSelfSigned, subjectKp.pubKeyObj)
+        let isValid1 = VerifyCertificateSignature(certPEM, issuerKp.pubKeyObj)
+        let isvalid2 = VerifyCertificateSignature(certSelfSignedPEM, subjectKp.pubKeyObj)
         expect(isValid1).toBeTruthy()
         expect(isvalid2).toBeTruthy()
 
     })
 
     test('导入PEM格式证书得到的公钥对象与导入PEM格式证书得到的X509证书对象，应能互相印证', () => {
-        const pubKeyObj = ImportKey(cert)
-        const x509 = ImportCertificate(cert)
+        const pubKeyObj = ImportKey(certPEM)
+        const x509 = ImportCertificate(certPEM)
         expect(GetKeyPEM(x509.getPublicKey())).toBe(GetKeyPEM(pubKeyObj))
+    })
+
+    test('导入PEM格式证书得到的X509证书对象，可以返回unix时间戳形式的证书有效期', () => {
+        const x509 = ImportCertificate(certPEM);
+        //expect(x509.getNotBeforeUnixTimestamp()).toBe(notBefore);
+        expect(x509.getNotAfterUnixTimestamp()).toBe(notAfter);
     })
 })
