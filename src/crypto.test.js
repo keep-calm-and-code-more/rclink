@@ -228,7 +228,7 @@ describe('X509证书生成测试', () => {
 
     test('导入PEM格式证书得到的X509证书对象，可以返回unix时间戳形式的证书有效期', () => {
         const x509 = ImportCertificate(certPEM);
-        //expect(x509.getNotBeforeUnixTimestamp()).toBe(notBefore);
+        expect(x509.getNotBeforeUnixTimestamp()).toBe(notBefore);
         expect(x509.getNotAfterUnixTimestamp()).toBe(notAfter);
     })
 })

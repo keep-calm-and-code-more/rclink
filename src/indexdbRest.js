@@ -1,5 +1,6 @@
-// 提供在Browser端的本地数据持久化，基于indexDB，实现模拟Rest
+// 提供在Browser端的本地数据持久化功能，基于indexDB，实现模拟的Rest接口服务
 import Dexie from 'dexie'
+import FlatPlainObj from 'flat-plain-object'
 
 // The private attribute
 let indexDBInstance = new WeakMap()
@@ -35,12 +36,22 @@ class IndexDBRest {
 
     getCollection(resource, query){
         const db = indexDBInstance.get(this)
-        const filter =  query.filter
+        const filter =  FlatPlainObj(query.filter)
         const sort = query.sort
-        //const {field, order} = params.sort
         const range = query.range 
 
-        let collection = JSON.stringify(filter) === '{}' ? db.table(resource).toCollection() : db.table(resource).where(filter)
+        let collection = JSON.stringify(filter) === '{}' 
+            ? db.table(resource).toCollection() 
+            : db.table(resource).toCollection().filter(record => {
+                for(const field in filter){
+                    const regExpPatternStr = filter[field]
+                    const regExp = new RegExp(regExpPatternStr, 'i')
+                    const flatedRecord = FlatPlainObj(record)
+                    if(!(regExp.test(flatedRecord[field])))
+                        return false
+                }
+                return true
+            })
         if(sort[1] === 'DESC')
             collection = collection.reverse()
         return collection.sortBy(sort[0]).then(rs => {
