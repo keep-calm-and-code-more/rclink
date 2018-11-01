@@ -17,7 +17,6 @@ var et = new EventTube('ws://localhost:8081/event',function(evt){
 module.exports = {
     EventTube :  require('./events').default,
     Crypto: require('./crypto'),
-    IndexDBRest: require('./indexdbRest').default,
     Transaction: require('./transaction').default,
     Rest: require('./rest').default
 }

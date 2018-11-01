@@ -120,8 +120,12 @@ class Transaction{
      * @param {String} alg 使用的签名算法 
      */
     verifySignedTransaction(pubKey, alg){
-        // 深拷贝
+        // 深拷贝（相对于"=")
+        // 实际上使用Object.assign()只能保证第一级属性的深拷贝
+        // 是满足这里的需求的
         let msg = Object.assign({}, txMsg.get(this))
+        // 使用JSON.parse与JSON.stringify不能复制function等非object的属性
+        // let msg = JSON.parse(JSON.stringify(txMsg.get(this)))
         msg.metadata = null
         let signature = msg.signature
         if(signature.toString() === '')
