@@ -45,4 +45,4 @@ class EventTube {
         };
     }
 }
-export default EventTube;
+module.exports.EventTube=EventTube;
