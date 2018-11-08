@@ -1,4 +1,4 @@
-import WebSocket from 'ws';
+const WebSocket = require('ws'); 
 
 class EventTube {
     /**
