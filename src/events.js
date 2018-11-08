@@ -1,4 +1,4 @@
-import WebSocket from 'ws';
+const WebSocket = require('ws'); 
 
 class EventTube {
     /**
@@ -45,4 +45,4 @@ class EventTube {
         };
     }
 }
-module.exports = EventTube;
+module.exports.EventTube=EventTube;
