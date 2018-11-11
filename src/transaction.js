@@ -3,7 +3,7 @@ const Long = require('long')
 const Crypto = require('./crypto')
 
 // Implement private properties
-let txMsg = new WeakMap()
+let txMsgs = new WeakMap()
 let txMsgType // static private property
 
 class Transaction{
@@ -24,7 +24,7 @@ class Transaction{
         if(Buffer.isBuffer(consArgsObj)){ // Buffer类型的已签名交易
             try{
                 let msg = txMsgType.decode(consArgsObj)
-                txMsg.set(this, msg)
+                txMsgs.set(this, msg)
             }
             catch(e){
                 throw e
@@ -71,7 +71,7 @@ class Transaction{
             let txBuffer = txMsgType.encode(msg).finish()
             msg.txid = Crypto.GetHashVal(txBuffer, 'sha256').toString('hex')
 
-            txMsg.set(this, msg) 
+            txMsgs.set(this, msg) 
         }
     }
     
@@ -91,7 +91,7 @@ class Transaction{
     }
 
     getTxMsg(){
-        return txMsg.get(this)
+        return txMsgs.get(this)
     }
 
     /**
@@ -100,7 +100,7 @@ class Transaction{
      * @param {String} alg 使用的签名算法名称
      */
     createSignedTransaction(prvKey, alg){
-        let msg = txMsg.get(this)
+        let msg = txMsgs.get(this)
         if(msg.signature.toString() !== '')
             throw new Error("The transaction has been signed already")
         
@@ -109,7 +109,7 @@ class Transaction{
         let txBufferHash = Crypto.GetHashVal(txBuffer)
         let signature = Crypto.Sign(prvKey, txBufferHash, alg)
         msg.signature = signature
-        //txMsg.set(this, msg)
+        //txMsgs.set(this, msg)
         txBuffer = txMsgType.encode(msg).finish()
         return txBuffer
     }
@@ -123,9 +123,9 @@ class Transaction{
         // 深拷贝（相对于"=")
         // 实际上使用Object.assign()只能保证第一级属性的深拷贝
         // 是满足这里的需求的
-        let msg = Object.assign({}, txMsg.get(this))
+        let msg = Object.assign({}, txMsgs.get(this))
         // 使用JSON.parse与JSON.stringify不能复制function等非object的属性
-        // let msg = JSON.parse(JSON.stringify(txMsg.get(this)))
+        // let msg = JSON.parse(JSON.stringify(txMsgs.get(this)))
         msg.metadata = null
         let signature = msg.signature
         if(signature.toString() === '')

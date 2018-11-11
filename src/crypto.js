@@ -4,24 +4,35 @@ const KEYUTIL = jsrsasign.KEYUTIL
 const KJUR = jsrsasign.KJUR
 const X509 = jsrsasign.X509
 const moment = require('moment')
+const GmCryptoUtils = require('./gmCryptoUtils');
 
 /**
  * 根据指定的密码学哈希算法为给定数据计算哈希值
  * @param {Buffer | String} data 待对其计算哈希值的原数据 
  * @param {String} alg 密码学哈希算法，默认使用sha256
- * @param {String} prov 密码学哈希算法的提供者，支持使用jsrsasign或node内建的crypto(默认使用), 待支持国密算法的提供者
+ * @param {String} prov 密码学哈希算法的提供者provider，支持使用nodecrypto、jsrsasign以及gm
+ * - nodecrypto，NodeJS内建的crypto工具，默认使用该provider，支持openssl提供的hash算法，
+ *   可在终端使用命令`openssl list-message-digest-algorithms`(1.0.2版)或`openssl list -digest-algorithms`(1.1.0版)查看支持的哈希算法
+ * - jsrsasign，由kjur开源的nodejs加密工具(https://kjur.github.io/jsrsasign),
+ *   支持的哈希算法如https://kjur.github.io/jsrsasign/api/symbols/KJUR.crypto.MessageDigest.html 所示 
+ * - gm，国密算法加密工具，支持sm3哈希算法
  * @returns {Buffer} 结果哈希值
  */
 export const GetHashVal = (data, alg = 'sha256', prov = 'nodecrypto') => {
-    let hash, digest
+    let hash, digest;
+    if(alg === 'sm3' && prov !== 'gm')
+        throw new Error("必须指定provider为gm，即prov='gm'");
+    if(alg !== 'sm3' && prov === 'gm')
+        throw new Error("该provider只支持sm3算法")
+
     switch (prov) {
         case 'nodecrypto':
-            // 使用Node自带crypto包计算哈希值
+            // 使用NodeJS自带crypto工具计算哈希值
             // 支持的哈希算法更多
             hash = crypto.createHash(alg);
             hash.update(data);
             digest = hash.digest();
-            break
+            break;
         case 'jsrsasign':
             hash = new KJUR.crypto.MessageDigest({alg: alg, prov: "cryptojs"})
             let dataTBH = data
@@ -31,12 +42,14 @@ export const GetHashVal = (data, alg = 'sha256', prov = 'nodecrypto') => {
             hash.updateString(dataTBH)
             let digestHex = hash.digest()
             digest = Buffer.from(digestHex, 'hex')
-            break
-        // Todo: case '国密'
+            break;
+        case 'gm':
+
+            break;
         default:
-            throw new Error("Not supported hash provider") 
+            throw new Error("Not supported hash provider") ;
     }
-    return digest
+    return digest;
 }
 
 /**

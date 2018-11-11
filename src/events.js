@@ -1,4 +1,5 @@
 const WebSocket = require('ws'); 
+let wsClients = new WeakMap();
 
 class EventTube {
     /**
@@ -43,6 +44,23 @@ class EventTube {
             console.log('disconnected');
             me.reconnect();
         };
+
+        wsClients.set(this, ws);
+    }
+
+    sendMessage(message, target) {
+        let wsClient = wsClients.get(this);
+        if(target === 'gmWSServer'){
+            wsClient.onclose = () => {
+                console.log('disconnected');
+            }
+            wsClient.onopen=function() {
+                console.log('connected');
+                wsClient.send(encodeURIComponent(message));
+            };
+            wsClients.set(this, wsClient);
+        }
+        wsClient.send(encodeURIComponent(message));
     }
 }
 module.exports.EventTube=EventTube;
