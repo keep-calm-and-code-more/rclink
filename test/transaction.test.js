@@ -1,6 +1,6 @@
-const Transaction = require('./transaction').default
-const CreateKeypair = require('./crypto').CreateKeypair
-const GetHashVal = require('./crypto').GetHashVal
+const {Transaction} = require('../src/transaction');
+const {CreateKeypair} = require('../src/crypto');
+const {GetHashVal} = require('../src/crypto');
 
 describe('测试交易生成功能', () => {
     let t

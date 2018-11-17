@@ -1,12 +1,8 @@
-const Crypto = require("./crypto")
-const GetHashVal = Crypto.GetHashVal
-const CreateKeypair = Crypto.CreateKeypair
-const GetKeyPEM = Crypto.GetKeyPEM
-const ImportKey = Crypto.ImportKey
-import {
+const {
+    GetHashVal, CreateKeypair, GetKeyPEM, ImportKey, 
     Sign,VerifySign,CreateCertificate,CreateSelfSignedCertificate,
-    VerifyCertificateSignature,
-    ImportCertificate} from './crypto'
+    VerifyCertificateSignature, ImportCertificate
+} = require('../src/crypto');
 
 describe('密码学哈希值生成测试', () => {
     //欲计算哈希值的数据
@@ -192,7 +188,7 @@ describe('X509证书生成测试', () => {
     //发行者与拥有者密钥对生成
     let issuerKp 
     let subjectKp 
-    //证书生成所需信息
+    //证书field信息
     let serialNumber = 20180901
     let sigAlg = "SHA256withECDSA"
     let issuerDN = "/C=CN/CN=CA for RepChain Usage Test/O=ISCAS/OU=SDR/L=BeiJing"
@@ -206,15 +202,31 @@ describe('X509证书生成测试', () => {
     beforeAll(() => {
         issuerKp = CreateKeypair("EC", "secp256k1")
         subjectKp = CreateKeypair("EC", "secp256k1")
-        certPEM = CreateCertificate(serialNumber, sigAlg, issuerDN, 
-            subjectDN, notBefore, notAfter, subjectKp.pubKeyObj, issuerKp.prvKeyObj) 
-        certSelfSignedPEM = CreateSelfSignedCertificate(serialNumber, sigAlg, issuerDN, 
-            notBefore, notAfter, subjectKp) 
-    })
+        let certFields = {
+            serialNumber: serialNumber,
+            sigAlg: sigAlg,
+            issuerDN: issuerDN,
+            subjectDN: subjectDN,
+            notBefore: notBefore,
+            notAfter: notAfter, 
+            subjectPubKey: subjectKp.pubKeyObj,
+            issuerPrvKey: issuerKp.prvKeyObj,
+        };
+        let selfSignedCertFields = {
+            serialNumber: serialNumber,
+            sigAlg: sigAlg,
+            DN: issuerDN,
+            notBefore: notBefore,
+            notAfter: notAfter, 
+            keypair: issuerKp,
+        };
+        certPEM = CreateCertificate(certFields);
+        certSelfSignedPEM = CreateSelfSignedCertificate(selfSignedCertFields);
+    });
 
     test('使用签发者公钥验证生成的X509证书，应能通过验证', () => {
         let isValid1 = VerifyCertificateSignature(certPEM, issuerKp.pubKeyObj)
-        let isvalid2 = VerifyCertificateSignature(certSelfSignedPEM, subjectKp.pubKeyObj)
+        let isvalid2 = VerifyCertificateSignature(certSelfSignedPEM, issuerKp.pubKeyObj)
         expect(isValid1).toBeTruthy()
         expect(isvalid2).toBeTruthy()
 

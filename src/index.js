@@ -15,8 +15,8 @@ var et = new EventTube('ws://localhost:8081/event',function(evt){
 })            
 */
 module.exports = {
-    EventTube :  require('./events').default,
+    EventTube :  require('./events').EventTube,
     Crypto: require('./crypto'),
-    Transaction: require('./transaction').default,
-    Rest: require('./rest').default
+    Transaction: require('./transaction').Transaction,
+    Rest: require('./rest').RestAPI
 }

@@ -1,5 +1,5 @@
 const protobuf = require("protobufjs");
-const {EventTube} =require( './events');
+const {EventTube} =require( '../src/events');
 
 
 describe('事件订阅与数据获取', () => {
