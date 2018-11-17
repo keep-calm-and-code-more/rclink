@@ -4,6 +4,7 @@ const KEYUTIL = jsrsasign.KEYUTIL
 const KJUR = jsrsasign.KJUR
 const X509 = jsrsasign.X509
 const moment = require('moment')
+const GmCryptoUtils = require('./gmCryptoUtils');
 
 const { GMCryptoUtils } = require('./gmCryptoUtils');
 let gmCUs = new GMCryptoUtils("wss://localhost:9003");
