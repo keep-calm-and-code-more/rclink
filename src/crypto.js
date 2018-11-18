@@ -259,7 +259,7 @@ const VerifyCertificateSignature = (certPEM, pubKey) => {
 /**
  * 
  * @param {String} certPEM 符合X.509标准的公钥证书信息
- * @returns {Object} jsrsasign提供的X509对象实例
+ * @returns {Object} x509 jsrsasign提供的X509对象实例
  */
 const ImportCertificate = (certPEM) => {
     let x509 = new X509();

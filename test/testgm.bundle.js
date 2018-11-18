@@ -27553,7 +27553,7 @@ const VerifyCertificateSignature = (certPEM, pubKey) => {
 /**
  * 
  * @param {String} certPEM 符合X.509标准的公钥证书信息
- * @returns {Object} jsrsasign提供的X509对象实例
+ * @returns {Object} x509 jsrsasign提供的X509对象实例
  */
 const ImportCertificate = (certPEM) => {
     let x509 = new X509();
@@ -27589,6 +27589,7 @@ module.exports = {
     VerifyCertificateSignature: VerifyCertificateSignature,
     ImportCertificate: ImportCertificate,
 }
+
 }).call(this,require("buffer").Buffer)
 },{"./gmCryptoUtils":160,"buffer":47,"crypto":55,"jsrsasign":154,"moment":155}],160:[function(require,module,exports){
 const ws = require('websocket').w3cwebsocket;
@@ -27637,6 +27638,9 @@ const callbacks = {
             getGMBase(instance, sendMessage);
         }
         else{
+            let certPrefix = "-----BEGIN CERTIFICATE-----\r\n";
+            let certSuffix = "\r\n-----END CERTIFICATE-----";
+            result = certPrefix + result + certSuffix;
             instance.getGMCertificateCB(result);
         }
     },
@@ -27736,26 +27740,47 @@ class GMCryptoUtils {
 
 module.exports.GMCryptoUtils = GMCryptoUtils;
 },{"websocket":156}],161:[function(require,module,exports){
-const {GetHashVal, CreateCertificate, Sign} = require('../src/crypto');
+const {
+    GetHashVal, 
+    CreateCertificate, 
+    Sign, 
+    ImportCertificate
+} = require('../src/crypto');
 
-let sm3PlainData = "123";
-GetHashVal(sm3PlainData, 'sm3', 'gm', (sm3HashVal) => {
-    console.log(`got sm3 hash value: ${sm3HashVal} for plain data: ${sm3PlainData}`);
+$("button#get-sm3-hash-val-test").on("click", () => {
+    let sm3PlainData = $("#sm3-plaindata").val();
+    GetHashVal(sm3PlainData, 'sm3', 'gm', (sm3HashVal) => {
+        console.log(`got sm3 hash value: ${sm3HashVal} for plain data: ${sm3PlainData}`);
+        $("#sm3-hash-val").val(sm3HashVal);
+    });
 });
 
-let userID = "user_test";
-CreateCertificate({gmUserID: userID}, 'gm', (certPEM) => {
-    console.log(`got gmCertPEM: ${certPEM} for user: ${userID}`);
-});
+$("button#get-gm-cert-test").on("click", () => {
+    let userID = $("#userid-get-gm-cert").val();
+    CreateCertificate({gmUserID: userID}, 'gm', (certPEM) => {
+        console.log(`got gmCertPEM: ${certPEM} for user: ${userID}`);
+        let x509 = ImportCertificate(certPEM);
+        $("#gm-cert-pem").val(certPEM);
+        $("table#gm-cert-info tbody").empty();
+        $("table#gm-cert-info tbody").append(`<tr class="table-warning"><td>版本</td><td style="word-wrap: break-word;">${x509.getVersion()}</td></tr>`);
+        $("table#gm-cert-info tbody").append(`<tr class="table-active"><td>序列号Hex</td><td style="word-wrap: break-word;">${x509.getSerialNumberHex()}</td></tr>`);
+        $("table#gm-cert-info tbody").append(`<tr class="table-success"><td>发行者</td><td style="word-wrap: break-word;">${x509.getIssuerString()}</td></tr>`);
+        $("table#gm-cert-info tbody").append(`<tr class="table-active"><td>拥有者</td><td style="word-wrap: break-word;">${x509.getSubjectString()}</td></tr>`);
+        $("table#gm-cert-info tbody").append(`<tr class="table-warning"><td>有效期起始时间</td><td style="word-wrap: break-word;">${x509.getNotBefore()}</td></tr>`);
+        $("table#gm-cert-info tbody").append(`<tr class="table-active"><td>有效期终止时间</td><td style="word-wrap: break-word;">${x509.getNotAfter()}</td></tr>`);
+        $("table#gm-cert-info tbody").append(`<tr class="table-success"><td>公钥Hex</td><td style="word-wrap: break-word;">${x509.getPublicKeyHex()}</td></tr>`);
+        $("table#gm-cert-info tbody").append(`<tr class="table-warning"><td>签名算法</td><td style="word-wrap: break-word;">${x509.getSignatureAlgorithmField()}</td></tr>`);
+        $("table#gm-cert-info tbody").append(`<tr class="table-danger"><td>签名Hex</td><td style="word-wrap: break-word;">${x509.getSignatureValueHex()}</td></tr>`);
+    });
+})
 
-let plainData = "plain text";
-Sign(null, plainData, 'sm2-with-SM3', 'gm', userID, (signature) => {
-    console.log(`got gmSignature: ${signature} for plainData: ${plainData} with userID: ${userID}`);
-});
-
-userID = "notRegYet";
-Sign(null, plainData, 'sm2-with-SM3', 'gm', userID, (signature) => {
-    console.log(`got gmSignature: ${signature} for plainData: ${plainData} with userID: ${userID}`);
+$("button#get-gm-signature-test").on("click", () => {
+    let userID = $("#userid-get-gm-signature").val();
+    let plainData = $("#plaindata-get-gm-signature").val();
+    Sign(null, plainData, 'sm2-with-SM3', 'gm', userID, (signature) => {
+        console.log(`got gmSignature: ${signature} for plainData: ${plainData} with userID: ${userID}`);
+        $("#gm-signature").val(signature);
+    });
 });
 
 
