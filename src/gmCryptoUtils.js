@@ -44,6 +44,9 @@ const callbacks = {
             getGMBase(instance, sendMessage);
         }
         else{
+            let certPrefix = "-----BEGIN CERTIFICATE-----\r\n";
+            let certSuffix = "\r\n-----END CERTIFICATE-----";
+            result = certPrefix + result + certSuffix;
             instance.getGMCertificateCB(result);
         }
     },
