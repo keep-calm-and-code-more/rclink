@@ -267,8 +267,8 @@ const ImportCertificate = (certPEM) => {
 
     const getUnixTimestamp = (notBeforeOrNotAfterFormatTimestampStr) => {
         let time;
-        time = moment.utc(notBeforeOrNotAfterFormatTimestampStr, 'YYYYMMDDHHmmss')
-        .unix();
+        let format = notBeforeOrNotAfterFormatTimestampStr.length === 15 ? 'YYYYMMDDHHmmss' : 'YYMMDDHHmmss';
+        time = moment.utc(notBeforeOrNotAfterFormatTimestampStr, format).unix();
         return time;
     }
 
