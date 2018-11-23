@@ -55,7 +55,7 @@ class RestAPI {
                method: 'POST',
                uri: this._address + 'transaction/postTranStream',
                formData: {
-                    signedTrans: "haha",
+                    signedTrans: tx,
                }, 
            }
         }
