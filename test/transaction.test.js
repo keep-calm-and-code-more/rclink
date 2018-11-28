@@ -47,4 +47,14 @@ describe('测试交易生成功能', () => {
         expect(tra.getTxMsg().cert.toString()).toBe("1Luv5vq4v1CRkTN98YMhqQV1F18nGv11gX");
 
     });
+    test('使用pem格式密钥对生成签名交易', () => {
+        const prvkpem = "-----BEGIN PRIVATE KEY-----\nMIGNAgEAMBAGByqGSM49AgEGBSuBBAAKBHYwdAIBAQQgOUm2PF8apyaK1bXjKH5j\njCld/I6ExpefemRGsS0C4+WgBwYFK4EEAAqhRANCAAT6VLE/eF9+sK1ROn8n6x7h\nKsBxehW42qf1IB8quBn5OrQD3x2H4yZVDwPgcEUCjH8PcFgswdtbo8JL/7f66yEC\n-----END PRIVATE KEY-----"
+        let tra = new Transaction({type: 2, pubKeyPEM: `-----BEGIN PUBLIC KEY-----
+                    MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+lSxP3hffrCtUTp/J+se4SrAcXoVuNqn
+                    9SAfKrgZ+Tq0A98dh+MmVQ8D4HBFAox/D3BYLMHbW6PCS/+3+ushAg==
+                    -----END PUBLIC KEY-----`, 
+                    name: "xxxxx", function: "sd", args: ["123", "456"]});
+        tra.createSignedTransaction(prvkpem, 'ecdsa-with-SHA1');
+        console.log("");
+    });
 })

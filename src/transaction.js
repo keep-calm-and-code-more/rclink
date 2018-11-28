@@ -21,7 +21,7 @@ class Transaction{
     constructor(consArgsObj){
         if(!txMsgType)// 调用构造函数之前必须先完成setTxMsgType方法
             throw new Error("Can not be called before setTxMsgType function completed")
-        
+         
         // 根据参数类型构造属性txMsg
         if(Buffer.isBuffer(consArgsObj)){ // Buffer类型的已签名交易
             try{
@@ -73,6 +73,8 @@ class Transaction{
             let txBuffer = txMsgType.encode(msg).finish()
             msg.txid = Crypto.GetHashVal(txBuffer, 'sha256').toString('hex')
 
+            this.pubKeyPEM = consArgsObj.pubKeyPEM;
+
             txMsgCollection.set(this, msg) 
         }
     }
@@ -110,13 +112,15 @@ class Transaction{
         // 签名 
         let txBuffer = txMsgType.encode(msg).finish()
         let txBufferHash = Crypto.GetHashVal(txBuffer)
-        if(typeof prvKey === 'string')
+        if(typeof prvKey === 'string'){
             prvKey = Crypto.ImportKey(prvKey, pass);
+            // 当使用从pem格式转object格式的私钥签名时，需在该object中补充pubKeyHex
+            prvKey.pubKeyHex = Crypto.ImportKey(this.pubKeyPEM).pubKeyHex;
+        }
         let signature = Crypto.Sign(prvKey, txBufferHash, alg)
         msg.signature = signature
-        //txMsgCollection.set(this, msg)
-        txBuffer = txMsgType.encode(msg).finish()
-        return txBuffer
+        txBuffer = txMsgType.encode(msg).finish();
+        return txBuffer;
     }
 
     /**

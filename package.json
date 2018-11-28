@@ -1,7 +1,7 @@
 {
   "name": "rclink",
   "main": "./src/index.js",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "repository": "https://gitee.com/BTAJL/RCNode.git",
   "author": "c4w <“chen4w@sina.com”>",
   "contributors": [
