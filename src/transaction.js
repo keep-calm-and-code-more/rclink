@@ -98,8 +98,9 @@ class Transaction{
      * 对新创建的交易实例进行签名
      * @param {String | Object} prvKey 支持使用pem格式的私钥或jsrsasign提供的prvkeyObj对象
      * @param {String} alg 使用的签名算法名称
+     * @param {String} pass 私钥解密密码，如果prvKey为已加密的pem格式私钥，则需要提供此解密密码
      */
-    createSignedTransaction(prvKey, alg){
+    createSignedTransaction(prvKey, alg, pass){
         let msg = txMsgCollection.get(this)
         if(msg.signature.toString() !== '')
             throw new Error("The transaction has been signed already")
@@ -107,6 +108,8 @@ class Transaction{
         // 签名 
         let txBuffer = txMsgType.encode(msg).finish()
         let txBufferHash = Crypto.GetHashVal(txBuffer)
+        if(typeof prvKey === 'string')
+            prvKey = Crypto.ImportKey(prvKey, pass);
         let signature = Crypto.Sign(prvKey, txBufferHash, alg)
         msg.signature = signature
         //txMsgCollection.set(this, msg)

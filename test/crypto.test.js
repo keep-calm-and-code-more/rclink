@@ -98,7 +98,23 @@ describe('非对称密钥对生成与导出及导入测试', () => {
     test('使用私钥的加密pem格式信息导入生成的私钥对象，应与原私钥对象相同', () => {
         const kp1ImportedPrvKeyObj = ImportKey(kp1EncryptedPrvKeyPEM, pass)
         expect(GetKeyPEM(kp1ImportedPrvKeyObj)).toBe(kp1PrvKeyPEM)
-    })
+    });
+    test('使用错误密码解密已加密的pem格式私钥，应该抛出异常', () => {
+        expect(() => {
+            const kp1ImportedPrvKeyObj = ImportKey(kp1EncryptedPrvKeyPEM, pass+"x");
+        }).toThrow('提供的私钥信息无效或解密密码无效');
+        expect(() => {
+            const kp1ImportedPrvKeyObj = ImportKey(kp1EncryptedPrvKeyPEM);
+        }).toThrow('提供的私钥信息无效或解密密码无效');
+        expect(() => {
+            const kp1ImportedPrvKeyObj = ImportKey(kp1EncryptedPrvKeyPEM, null);
+        }).toThrow('提供的私钥信息无效或解密密码无效');
+    });
+    test('使用密码解密未加密的pem格式私钥，不应抛出异常', () => {
+        expect(() => {
+            const kp1ImportedPrvKeyObj = ImportKey(kp1PrvKeyPEM, pass);
+        }).not.toThrow('提供的私钥信息无效或解密密码无效');
+    });
 })
 
 describe('签名及签名验证测试', () => {

@@ -154,7 +154,13 @@ const CreateKeypair = (alg = 'EC', keylenOrCurve = 'secp256k1') => {
  * @returns {Object} keyObj 密钥对象，prvkeyObj或pubKeyObj
  */
 const ImportKey = (keyorCertPEM, passWord) => {
-    const keyObj = KEYUTIL.getKey(keyorCertPEM, passWord);
+    let keyObj;
+    try{
+        keyObj = KEYUTIL.getKey(keyorCertPEM, passWord);
+    }
+    catch(e){
+        throw new Error("提供的私钥信息无效或解密密码无效");
+    }
     return keyObj;
 }
 
