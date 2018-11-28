@@ -1,6 +1,7 @@
 const protobuf = require('protobufjs')
 const Long = require('long')
 const Crypto = require('./crypto')
+const bitcoinUtils = require('bitcore-lib');
 
 // Implement private properties
 let txMsgCollection = new WeakMap()
@@ -11,10 +12,11 @@ class Transaction{
      * 
      * @param {Object | Buffer} consArgsObj 交易对象构造参数，可为Json Object或Buffer,
      * 当使用Json Object时，consArgsObj应具有以下属性：
-     * type, {Number}, 需与RepChain的交易了类型定义一致，1表示CHAINCODE_DEPLOY，2表示CHAINCODE_INVOKE
-     * name, {String}, 交易调用的合约名字即合约ID
-     * function, {String}, 交易调用的合约方法名
-     * args, {Array[String]}, 传递给交易所调用合约方法的参数
+     * - type, {Number}, 需与RepChain的交易了类型定义一致，1表示CHAINCODE_DEPLOY，2表示CHAINCODE_INVOKE
+     * - pubKeyPEM, {String} 交易发起者的PEM格式公钥信息
+     * - name, {String}, 交易调用的合约名字即合约ID
+     * - function, {String}, 交易调用的合约方法名
+     * - args, {Array[String]}, 传递给交易所调用合约方法的参数
      */
     constructor(consArgsObj){
         if(!txMsgType)// 调用构造函数之前必须先完成setTxMsgType方法
@@ -44,7 +46,7 @@ class Transaction{
             let txConfidentialityProtocolVersion = consArgsObj.confidentialityProtocolVersion
             let txNonce = this.getNonce(consArgsObj.nonce)
             let txToValidators = this.getValidators(consArgsObj.toValidators)
-            let txAccountAdr = this.getAccountAddr(consArgsObj.accountAddr)
+            let txAccountAdr = this.getAccountAddr(consArgsObj.pubKeyPEM)
             let txSignature = null 
 
             let chaincodeIDStr = "path: \"" + txChaincodeID.path + "\"\n" + "name: \"" + txChaincodeID.name + "\"\n";
@@ -157,19 +159,16 @@ class Transaction{
         return Buffer.from("toValidators")
     }
     
-    getAccountAddr(accountAddr){
-        if(accountAddr)
-            return Buffer.from(accountAddr)
-        else
-            return this.calculateAddr()
+    getAccountAddr(pubKeyPEM){
+        return calculateAddr(pubKeyPEM);
     }
     
-    // Todo: 计算账户地址 
-    /**
-     * 
-     */
-    calculateAddr(){
-        return Buffer.from("")
-    }
 }
+
+const calculateAddr = (pubKeyPEM) => {
+    let pubKey = new bitcoinUtils.PublicKey(Crypto.ImportKey(pubKeyPEM).pubKeyHex);
+    let addr = new bitcoinUtils.Address(pubKey);
+    return Buffer.from(addr.toString());
+}
+
 module.exports.Transaction = Transaction;
