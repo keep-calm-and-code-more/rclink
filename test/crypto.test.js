@@ -1,5 +1,5 @@
 const {
-    GetHashVal, CreateKeypair, GetKeyPEM, ImportKey, 
+    GetHashVal, CreateKeypair, GetKeyPEM, ImportKey, CalculateAddr,
     Sign,VerifySign,CreateCertificate,CreateSelfSignedCertificate,
     VerifyCertificateSignature, ImportCertificate
 } = require('../src/crypto');
@@ -114,6 +114,28 @@ describe('非对称密钥对生成与导出及导入测试', () => {
         expect(() => {
             const kp1ImportedPrvKeyObj = ImportKey(kp1PrvKeyPEM, pass);
         }).not.toThrow('提供的私钥信息无效或解密密码无效');
+    });
+})
+
+describe('bitcoin地址生成测试', () => {
+    const pubkpem = "-----BEGIN PUBLIC KEY-----\nMFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+lSxP3hffrCtUTp/J+se4SrAcXoVuNqn\n9SAfKrgZ+Tq0A98dh+MmVQ8D4HBFAox/D3BYLMHbW6PCS/+3+ushAg==\n-----END PUBLIC KEY-----";
+    const certpem = `-----BEGIN CERTIFICATE-----
+    MIIBmjCCAT+gAwIBAgIEWWV+AzAKBggqhkjOPQQDAjBWMQswCQYDVQQGEwJjbjEL
+    MAkGA1UECAwCYmoxCzAJBgNVBAcMAmJqMREwDwYDVQQKDAhyZXBjaGFpbjEOMAwG
+    A1UECwwFaXNjYXMxCjAIBgNVBAMMATEwHhcNMTcwNzEyMDE0MjE1WhcNMTgwNzEy
+    MDE0MjE1WjBWMQswCQYDVQQGEwJjbjELMAkGA1UECAwCYmoxCzAJBgNVBAcMAmJq
+    MREwDwYDVQQKDAhyZXBjaGFpbjEOMAwGA1UECwwFaXNjYXMxCjAIBgNVBAMMATEw
+    VjAQBgcqhkjOPQIBBgUrgQQACgNCAAT6VLE/eF9+sK1ROn8n6x7hKsBxehW42qf1
+    IB8quBn5OrQD3x2H4yZVDwPgcEUCjH8PcFgswdtbo8JL/7f66yECMAoGCCqGSM49
+    BAMCA0kAMEYCIQCud+4/3njnfUkG9ffSqcHhnsuZNMQwaW62EVXbcjoiBgIhAPoL
+    JK1D06IMoholYcsgTQb5Trrej/erZONMm1cS1iP+
+    -----END CERTIFICATE-----
+    `;
+
+    test('分别使用公钥信息和公钥证书信息计算bitcoin地址，所得结果应一致', () => {
+        let addr1 = CalculateAddr(pubkpem);
+        let addr2 = CalculateAddr(certpem);
+        expect(addr1).toEqual(addr2);
     });
 })
 

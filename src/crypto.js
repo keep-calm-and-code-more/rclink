@@ -4,6 +4,7 @@ const KEYUTIL = jsrsasign.KEYUTIL
 const KJUR = jsrsasign.KJUR
 const X509 = jsrsasign.X509
 const moment = require('moment')
+const bitcoinUtils = require('bitcore-lib');
 
 const { GMCryptoUtils } = require('./gmCryptoUtils');
 let gmCUs = new GMCryptoUtils("wss://localhost:9003");
@@ -180,6 +181,17 @@ const GetKeyPEM = (keyObj, passWord) => {
 }
 
 /**
+ * 根据公钥信息计算其bitcoin地址
+ * @param {String} pubKeyPEM 符合PKCS#8标准的pem格式公钥信息，或符合X.509标准的公钥证书信息
+ * @returns {Buffer} bitcoin地址的Buffer数据
+ */
+const CalculateAddr = (pubKeyPEM) => {
+    let pubKey = new bitcoinUtils.PublicKey(ImportKey(pubKeyPEM).pubKeyHex);
+    let addr = new bitcoinUtils.Address(pubKey);
+    return Buffer.from(addr.toString());
+}
+
+/**
  * 生成符合X.509标准的证书信息
  * @param {Object} certFields 证书的具体信息，
  * 当creator为jsrsasign时所需信息包括:
@@ -300,4 +312,5 @@ module.exports = {
     CreateSelfSignedCertificate: CreateSelfSignedCertificate,
     VerifyCertificateSignature: VerifyCertificateSignature,
     ImportCertificate: ImportCertificate,
+    CalculateAddr: CalculateAddr,
 }
