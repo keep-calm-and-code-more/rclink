@@ -102,6 +102,7 @@ class Transaction{
      * @param {String | Object} prvKey 支持使用pem格式的私钥或jsrsasign提供的prvkeyObj对象
      * @param {String} alg 使用的签名算法名称
      * @param {String} pass 私钥解密密码，如果prvKey为已加密的pem格式私钥，则需要提供此解密密码
+     * @returns {Buffer} txBuffer 已签名交易
      */
     createSignedTransaction(prvKey, alg, pass){
         let msg = txMsgCollection.get(this)
