@@ -9,43 +9,43 @@ let txMsgType // static private property
 class Transaction{
     /**
      * 
-     * @param {Object | Buffer} consArgsObj 交易对象构造参数，可为Json Object或Buffer,
-     * 当使用Json Object时，consArgsObj应具有以下属性：
-     * - type, {Number}, 需与RepChain的交易了类型定义一致，1表示CHAINCODE_DEPLOY，2表示CHAINCODE_INVOKE
+     * @param {Object | Buffer} consArgs 交易对象构造参数，可为Json Object或Buffer
+     * 当使用Json Object时，consArgs应具有以下属性：
+     * - type, {Number}, 需与RepChain的交易类型定义一致，1表示CHAINCODE_DEPLOY，2表示CHAINCODE_INVOKE
      * - pubKeyPEM, {String} 交易发起者的PEM格式公钥信息，或符合X.509标准的pem格式证书信息
      * - name, {String}, 交易调用的合约名字即合约ID
      * - function, {String}, 交易调用的合约方法名
      * - args, {Array[String]}, 传递给交易所调用合约方法的参数
      */
-    constructor(consArgsObj){
+    constructor(consArgs){
         if(!txMsgType)// 调用构造函数之前必须先完成setTxMsgType方法
             throw new Error("Can not be called before setTxMsgType function completed")
          
         // 根据参数类型构造属性txMsg
-        if(Buffer.isBuffer(consArgsObj)){ // Buffer类型的已签名交易
+        if(Buffer.isBuffer(consArgs)){ // 已签名的序列化交易数据
             try{
-                let msg = txMsgType.decode(consArgsObj)
+                let msg = txMsgType.decode(consArgs)
                 txMsgCollection.set(this, msg)
             }
             catch(e){
                 throw e
             }
         }
-        else{ // 描述交易的Json Object对象
-            let txType = consArgsObj.type
-            let txChaincodeID = {path: consArgsObj.path, name: consArgsObj.name}
-            let txChaincodeInput = {function: consArgsObj.function, args: consArgsObj.args}
+        else if(consArgs.constructor.name === 'Object'){ // 描述交易的Json Object对象
+            let txType = consArgs.type
+            let txChaincodeID = {path: consArgs.path, name: consArgs.name}
+            let txChaincodeInput = {function: consArgs.function, args: consArgs.args}
             let txChaincodeSpec = {chaincodeID: txChaincodeID, ctorMsg: txChaincodeInput,
-                timeout: consArgsObj.timeout || 1000, secureContext: consArgsObj.secureContext,
-                code_package: consArgsObj.codePackage, ctype: consArgsObj.codeType || 2}
-            let txMetaData = consArgsObj.metaData 
+                timeout: consArgs.timeout || 1000, secureContext: consArgs.secureContext,
+                code_package: consArgs.codePackage, ctype: consArgs.codeType || 2}
+            let txMetaData = consArgs.metaData 
             let txid = ""
-            let txTimestamp = this.getTimestamp(consArgsObj.timestampMillis)
-            let txConfidentialityLevel = consArgsObj.confidentialityLevel || 1
-            let txConfidentialityProtocolVersion = consArgsObj.confidentialityProtocolVersion
-            let txNonce = this.getNonce(consArgsObj.nonce)
-            let txToValidators = this.getValidators(consArgsObj.toValidators)
-            let txAccountAdr = this.getAccountAddr(consArgsObj.pubKeyPEM)
+            let txTimestamp = this.getTimestamp(consArgs.timestampMillis)
+            let txConfidentialityLevel = consArgs.confidentialityLevel || 1
+            let txConfidentialityProtocolVersion = consArgs.confidentialityProtocolVersion
+            let txNonce = this.getNonce(consArgs.nonce)
+            let txToValidators = this.getValidators(consArgs.toValidators)
+            let txAccountAdr = this.getAccountAddr(consArgs.pubKeyPEM)
             let txSignature = null 
 
             let chaincodeIDStr = "path: \"" + txChaincodeID.path + "\"\n" + "name: \"" + txChaincodeID.name + "\"\n";
@@ -67,15 +67,19 @@ class Transaction{
             let err = txMsgType.verify(txJsonObj)
             if(err)
                 throw err
+            
             // 计算txid
             let msg = txMsgType.create(txJsonObj)
-            let txBuffer = txMsgType.encode(msg).finish()
+            // 在Browser环境下protobufjs中的encode().finish()返回原始的Uint8Array，为了屏蔽其与Buffer经browserify或webpack转译后的Uint8Array的差异，这里需转为Buffer
+            let txBuffer = Buffer.from(txMsgType.encode(msg).finish()); 
             msg.txid = Crypto.GetHashVal(txBuffer, 'sha256').toString('hex')
 
-            this.pubKeyPEM = consArgsObj.pubKeyPEM;
+            this.pubKeyPEM = consArgs.pubKeyPEM;
 
             txMsgCollection.set(this, msg) 
         }
+        else
+            throw new error("Bad consArgs type to construct an instance of Transaction, need Object or Buffer type");
     }
     
     // 必须先调用此异步方法，才能构造Transaction实例
@@ -110,8 +114,8 @@ class Transaction{
             throw new Error("The transaction has been signed already")
         
         // 签名 
-        let txBuffer = txMsgType.encode(msg).finish()
-        let txBufferHash = Crypto.GetHashVal(txBuffer)
+        let txBuffer = Buffer.from(txMsgType.encode(msg).finish());
+        let txBufferHash = Crypto.GetHashVal(txBuffer);
         if(typeof prvKey === 'string'){
             prvKey = Crypto.ImportKey(prvKey, pass);
             // 当使用从pem格式转object格式的私钥签名时，需在该object中补充pubKeyHex
@@ -119,7 +123,7 @@ class Transaction{
         }
         let signature = Crypto.Sign(prvKey, txBufferHash, alg)
         msg.signature = signature
-        txBuffer = txMsgType.encode(msg).finish();
+        txBuffer = Buffer.from(txMsgType.encode(msg).finish());
         return txBuffer;
     }
 
@@ -140,7 +144,7 @@ class Transaction{
         if(signature.toString() === '')
             throw new Error("The transaction has not been signed yet")
         msg.signature = null
-        let msgBuffer = txMsgType.encode(msg).finish()
+        let msgBuffer = Buffer.from(txMsgType.encode(msg).finish());
         let isValid = Crypto.VerifySign(pubKey, signature, Crypto.GetHashVal(msgBuffer), alg)
         return isValid
     }

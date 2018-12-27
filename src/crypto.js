@@ -39,13 +39,17 @@ const GetHashVal = (data, alg = 'sha256', prov = 'nodecrypto', cb) => {
             break;
         case 'jsrsasign':
             hash = new KJUR.crypto.MessageDigest({alg: alg, prov: "cryptojs"})
-            data = Buffer.isBuffer(data) ? data.toString() : data;
+            // data = Buffer.isBuffer(data) ? data.toString() : data;
+            // 兼容经browserify或webpack处理后，Buffer在Browser (Uint8Array)端的相关操作
+            // data = data.constructor.name !== 'String' ? Buffer.from(data).toString() : data;
+            data = Buffer.from(data).toString();
             hash.updateString(data)
             let digestHex = hash.digest()
             digest = Buffer.from(digestHex, 'hex')
             break;
         case 'gm':
-            data = Buffer.isBuffer(data) ? data.toString('hex') : Buffer.from(data).toString('hex');
+            // data = Buffer.isBuffer(data) ? data.toString('hex') : Buffer.from(data).toString('hex');
+            data = Buffer.from(data).toString('hex');
             gmCUs.getGMHashVal(data, cb);
             break;
         default:
@@ -81,13 +85,17 @@ const Sign = (prvKey, data, alg = 'ecdsa-with-SHA1', prov = 'nodecrypto', gmUser
         case 'jsrsasign':
             sig = new KJUR.crypto.Signature({ 'alg': alg}); // alg = <hash>wth<crypto> like: SHA1withECDSA
             sig.init(prvKey);
-            let dataTBS = Buffer.isBuffer(data) ? data.toString() : data;
+            // let dataTBS = Buffer.isBuffer(data) ? data.toString() : data;
+            // 兼容经browserify或webpack处理后，Buffer在Browser (Uint8Array)端的相关操作
+            let dataTBS = Buffer.from(data).toString();
             sig.updateString(dataTBS);
             let sigHexValue = sig.sign();
             signature = Buffer.from(sigHexValue, 'hex')
             break
         case 'gm':
-            data = Buffer.isBuffer(data) ? data.toString('base64') : Buffer.from(data).toString('base64'); 
+            // data = Buffer.isBuffer(data) ? data.toString('base64') : Buffer.from(data).toString('base64'); 
+            // 兼容经browserify或webpack处理后，Buffer在Browser (Uint8Array)端的相关操作
+            data = Buffer.from(data).toString('base64');
             gmCUs.getGMSignature(gmUserID, data, cb);
             break;
         default:
@@ -120,12 +128,9 @@ const VerifySign = (pubKey, sigValue, data, alg = 'ecdsa-with-SHA1', prov = 'nod
         case 'jsrsasign':
             let sig = new KJUR.crypto.Signature({ 'alg': alg }); // SHA1withECDSA
             sig.init(pubKey);
-            let dataTVS = data;
-            const bFlag = Buffer.isBuffer(data);
-            if (bFlag)
-                dataTVS = data.toString();
-            sig.updateString(dataTVS);
-            let sigValHex = sigValue.toString('hex')
+            let dataOrigin = Buffer.from(data).toString();
+            sig.updateString(dataOrigin);
+            let sigValHex = sigValue.toString('hex');
             isValid = sig.verify(sigValHex);
             break
         // Todo: case '国密'
