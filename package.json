@@ -27,6 +27,7 @@
     "jsrsasign": "^8.0.12",
     "jsrsasign-util": "^1.0.0",
     "long": "^4.0.0",
+    "mock-fs": "^4.7.0",
     "moment": "^2.22.2",
     "protobufjs": "^6.8.8",
     "request": "^2.88.0",
@@ -38,5 +39,9 @@
     "build": "babel ./src -d ./build --source-maps",
     "start": "npm run build && node ./build/index.js",
     "test": "jest"
+  },
+  "browser": {
+    "./src/restSendTX.js": "./src/browser/restSendTX.js"
+
   }
 }

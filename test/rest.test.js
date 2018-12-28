@@ -29,7 +29,7 @@ describe('Restful API验证', () => {
             type: 2,
             name: "ed7a1a5adac2c5fe4e82ef2839cdbe43a59a04ae6e7ad248e9788c0348aa36a8",
             function: "put_proof",
-            args: [`{"testKey23":"testVal"}`],
+            args: [`{"testKey34":"testVal"}`],
             pubKeyPEM: pubKeyPEM, 
         });
         txSignedBuffer1 = tx1.createSignedTransaction(prvKeyPEM, "ecdsa-with-SHA1")
@@ -38,7 +38,7 @@ describe('Restful API验证', () => {
             type: 2,
             name: "ed7a1a5adac2c5fe4e82ef2839cdbe43a59a04ae6e7ad248e9788c0348aa36a8",
             function: "put_proof",
-            args: [`{"testKey24":"testVal"}`],
+            args: [`{"testKey35":"testVal"}`],
             pubKeyPEM: pubKeyPEM, 
         });
         txSignedBuffer2 = tx2.createSignedTransaction(prvKeyPEM, "ecdsa-with-SHA1")
@@ -85,7 +85,7 @@ describe('Restful API验证', () => {
         let result = await ra.sendTX(txSignedBuffer2)
         console.log(result)
         // issue: 字节流与字符串提交交易返回结果类型不统一
-        expect(JSON.parse(result).txid).toBe(tx2.getTxMsg().txid)
+        expect(result.txid).toBe(tx2.getTxMsg().txid)
         expect(/^验证签名出错/.test(result.err)).toBeFalsy()
     })
   });
