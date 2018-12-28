@@ -55,6 +55,5 @@ describe('测试交易生成功能', () => {
                     -----END PUBLIC KEY-----`, 
                     name: "xxxxx", function: "sd", args: ["123", "456"]});
         tra.createSignedTransaction(prvkpem, 'ecdsa-with-SHA1');
-        console.log("");
     });
 })

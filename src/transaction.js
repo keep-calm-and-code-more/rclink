@@ -79,7 +79,7 @@ class Transaction{
             txMsgCollection.set(this, msg) 
         }
         else
-            throw new error("Bad consArgs type to construct an instance of Transaction, need Object or Buffer type");
+            throw new TypeError("Bad consArgs type to construct an instance of Transaction, need Object or Buffer");
     }
     
     // 必须先调用此异步方法，才能构造Transaction实例

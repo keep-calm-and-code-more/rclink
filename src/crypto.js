@@ -165,7 +165,11 @@ const ImportKey = (keyorCertPEM, passWord) => {
         keyObj = KEYUTIL.getKey(keyorCertPEM, passWord);
     }
     catch(e){
-        throw new Error("提供的私钥信息无效或解密密码无效");
+        if(e === 'malformed plain PKCS8 private key(code:001)' 
+        || e.message === `Cannot read property 'sigBytes' of undefined`)
+            throw new Error("提供的私钥信息无效或解密密码无效");
+        else
+            throw e;
     }
     return keyObj;
 }
