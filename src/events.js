@@ -1,4 +1,5 @@
-const WebSocket = require('ws'); 
+//使用w3cwebsocket对象，兼容Browser和Node环境
+const WebSocket = require('websocket').w3cwebsocket;
 
 class EventTube {
     /**
