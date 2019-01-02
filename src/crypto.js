@@ -166,7 +166,8 @@ const ImportKey = (keyorCertPEM, passWord) => {
     }
     catch(e){
         if(e === 'malformed plain PKCS8 private key(code:001)' 
-        || e.message === `Cannot read property 'sigBytes' of undefined`)
+        || e.message === `Cannot read property 'sigBytes' of undefined`
+        || e.message === `Cannot read property 'sigBytes' of null`)
             throw new Error("提供的私钥信息无效或解密密码无效");
         else
             throw e;
@@ -182,8 +183,11 @@ const ImportKey = (keyorCertPEM, passWord) => {
  */
 const GetKeyPEM = (keyObj, passWord) => {
     let keyPEM;
-    if(keyObj.isPrivate)
+    if(keyObj.isPrivate){
+        if(keyObj.isPrivate && keyObj.pubKeyHex === undefined)
+            keyObj.pubKeyHex = null; // 当keyObj为私钥且其pubKeyHex信息为Undefined时（如从其它加密工具导入）则getPEM会报错，这里设置为null
         keyPEM = KEYUTIL.getPEM(keyObj, "PKCS8PRV", passWord);
+    }
     else
         keyPEM = KEYUTIL.getPEM(keyObj);
     return keyPEM;
@@ -191,10 +195,11 @@ const GetKeyPEM = (keyObj, passWord) => {
 
 /**
  * 根据公钥信息计算其bitcoin地址
- * @param {String} pubKeyPEM 符合PKCS#8标准的pem格式公钥信息，或符合X.509标准的公钥证书信息
+ * @param {String} pubKeyPEM 符合PKCS#8标准的pem格式公钥信息，或符合X.509标准的公钥证书信息，目前只支持EC-secp256k1曲线
  * @returns {Buffer} bitcoin地址的Buffer数据
  */
 const CalculateAddr = (pubKeyPEM) => {
+    // Todo: 支持其它非对称算法公钥的地址计算
     let pubKey = new bitcoinUtils.PublicKey(ImportKey(pubKeyPEM).pubKeyHex);
     let addr = new bitcoinUtils.Address(pubKey);
     return Buffer.from(addr.toString());

@@ -118,7 +118,8 @@ class Transaction{
         let txBufferHash = Crypto.GetHashVal(txBuffer);
         if(typeof prvKey === 'string'){
             prvKey = Crypto.ImportKey(prvKey, pass);
-            // 当使用从pem格式转object格式的私钥签名时，需在该object中补充pubKeyHex
+            if(prvKey.pubKeyHex === undefined)
+            // 当使用从pem格式转object格式的私钥签名时，若其pubKeyHex为undefined则需在该object中补充pubKeyHex
             prvKey.pubKeyHex = Crypto.ImportKey(this.pubKeyPEM).pubKeyHex;
         }
         let signature = Crypto.Sign(prvKey, txBufferHash, alg)
