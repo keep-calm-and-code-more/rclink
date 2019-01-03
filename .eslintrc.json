@@ -1,0 +1,10 @@
+{
+    "env": {
+        "browser": true
+    },
+    "plugins": ["jest", "import"],
+    "extends": ["airbnb-base", "plugin:jest/recommended"],
+    "rules": {
+        "indent": ["error", 4]
+    }
+}

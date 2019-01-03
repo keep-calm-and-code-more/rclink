@@ -16,31 +16,31 @@ const restSendTX = ({ tx, address }) => {
         // signedTrans需要为文件流数据，没找到更好的实现方法，
         // 目前是先将tx写入文件，再获取其ReadableStream
         // 这里使用在内存中模拟的文件系统
-        const fileName = 'tx-' + GetHashVal(tx).toString('base64');
+        const fileName = `tx-${GetHashVal(tx).toString('base64')}`;
         const config = {};
         config[fileName] = tx;
         mockFs(config);
         const txStream = fs.createReadStream(fileName);
         const options = {
             method: 'POST',
-            uri: address + 'transaction/postTranStream',
+            uri: `${address}transaction/postTranStream`,
             formData: {
-                signedTrans: txStream
+                signedTrans: txStream,
             },
-            json: true
+            json: true,
         };
-        return rp(options).then(r => {
+        return rp(options).then((r) => {
             mockFs.restore();
             return r;
-        }).catch(e => {
+        }).catch((e) => {
             mockFs.restore();
             throw e;
         });
     }
-    else if (tx.constructor.name === 'String') {
+    if (tx.constructor.name === 'String') {
         const options = {
             method: 'POST',
-            uri: address + 'transaction/postTranByString',
+            uri: `${address}transaction/postTranByString`,
             body: tx,
             headers: {
                 'content-type': 'application/json',
@@ -49,8 +49,7 @@ const restSendTX = ({ tx, address }) => {
         };
         return rp(options);
     }
-    else
-        throw new TypeError(`Bad tx type: ${tx.constructor.name}, need Buffer or String`);
-}
+    throw new TypeError(`Bad tx type: ${tx.constructor.name}, need Buffer or String`);
+};
 
 module.exports = restSendTX;

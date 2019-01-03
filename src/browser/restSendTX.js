@@ -10,26 +10,26 @@ const restSendTX = ({ tx, address }) => {
     // let xhr = new XMLHttpRequest();
     // fetch支持promise，且其使用比XMLHttpRequest更简单
     if (Buffer.isBuffer(tx)) {
-        let formData = new FormData();
+        const formData = new FormData();
         formData.append('signedTrans', new Blob([tx]));
-        return fetch(address + 'transaction/postTranStream', {
+        return fetch(`${address}transaction/postTranStream`, {
             method: 'POST',
             mode: 'cors',
-            body: formData
-        }).then(r => r.json()); 
+            body: formData,
+        }).then(r => r.json());
     }
-    else if (tx.constructor.name === 'String'){
-        return fetch(address + 'transaction/postTranByString', {
+    if (tx.constructor.name === 'String') {
+        return fetch(`${address}transaction/postTranByString`, {
             method: 'POST',
             mode: 'cors',
             headers: {
-                'content-type': 'application/json'
+                'content-type': 'application/json',
             },
-            body: JSON.stringify(tx) // Note: 如果先JSON.stringify()，直接使用原数据的话会返回400（Bad Request), why?
+            body: JSON.stringify(tx),
+            // Note: 如果先JSON.stringify()，直接使用原数据的话会返回400（Bad Request), why?
         }).then(r => r.json());
     }
-    else
-        throw new TypeError(`Bad tx type: ${tx.constructor.name}, need Buffer or String`);
-}
+    throw new TypeError(`Bad tx type: ${tx.constructor.name}, need Buffer or String`);
+};
 
 module.exports = restSendTX;
