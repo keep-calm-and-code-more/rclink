@@ -1,6 +1,6 @@
-const protobuf = require('protobufjs');
-const Long = require('long');
-const Crypto = require('./crypto');
+const protobuf = require("protobufjs");
+const Long = require("long");
+const Crypto = require("./crypto");
 
 // Implement private properties
 const txMsgCollection = new WeakMap();
@@ -17,11 +17,11 @@ const getTimestamp = (millis) => {
 
 const getNonce = (nonce) => {
     if (nonce) { return Buffer.from(nonce); }
-    return Buffer.from('nonce');
+    return Buffer.from("nonce");
 };
 const getValidators = (toValidators) => {
     if (toValidators) { return Buffer.from(toValidators); }
-    return Buffer.from('toValidators');
+    return Buffer.from("toValidators");
 };
 
 const getAccountAddr = pubKeyPEM => Crypto.CalculateAddr(pubKeyPEM);
@@ -39,7 +39,7 @@ class Transaction {
      */
     constructor(consArgs) {
         if (!txMsgType) { // 调用构造函数之前必须先完成setTxMsgType方法
-            throw new Error('Can not be called before setTxMsgType function completed');
+            throw new Error("Can not be called before setTxMsgType function completed");
         }
 
         // 根据参数类型构造属性txMsg
@@ -50,7 +50,7 @@ class Transaction {
             } catch (e) {
                 throw e;
             }
-        } else if (consArgs.constructor.name === 'Object') { // 描述交易的Json Object对象
+        } else if (consArgs.constructor.name === "Object") { // 描述交易的Json Object对象
             const txType = consArgs.type;
             const txChaincodeID = { path: consArgs.path, name: consArgs.name };
             const txChaincodeInput = { function: consArgs.function, args: consArgs.args };
@@ -63,7 +63,7 @@ class Transaction {
                 ctype: consArgs.codeType || 2,
             };
             const txMetaData = consArgs.metaData;
-            const txid = '';
+            const txid = "";
             const txTimestamp = getTimestamp(consArgs.timestampMillis);
             const txConfidentialityLevel = consArgs.confidentialityLevel || 1;
             const txConfidentialityProtocolVersion = consArgs.confidentialityProtocolVersion;
@@ -96,13 +96,13 @@ class Transaction {
             // 在Browser环境下protobufjs中的encode().finish()返回原始的Uint8Array，
             // 为了屏蔽其与Buffer经browserify或webpack转译后的Uint8Array的差异，这里需转为Buffer
             const txBuffer = Buffer.from(txMsgType.encode(msg).finish());
-            msg.txid = Crypto.GetHashVal(txBuffer, 'sha256').toString('hex');
+            msg.txid = Crypto.GetHashVal(txBuffer, "sha256").toString("hex");
 
             this.pubKeyPEM = consArgs.pubKeyPEM;
 
             txMsgCollection.set(this, msg);
         } else {
-            throw new TypeError('Bad consArgs type to construct an instance of Transaction, need Object or Buffer');
+            throw new TypeError("Bad consArgs type to construct an instance of Transaction, need Object or Buffer");
         }
     }
 
@@ -112,8 +112,8 @@ class Transaction {
      */
     static async setTxMsgType() {
         if (txMsgType) { return; }
-        const root = await protobuf.load('protos/peer.proto');
-        txMsgType = root.lookupType('rep.protos.Transaction');
+        const root = await protobuf.load("protos/peer.proto");
+        txMsgType = root.lookupType("rep.protos.Transaction");
     }
 
     static getTxMsgType() {
@@ -133,13 +133,13 @@ class Transaction {
      */
     createSignedTransaction(prvKey, alg, pass) {
         const msg = txMsgCollection.get(this);
-        if (msg.signature.toString() !== '') { throw new Error('The transaction has been signed already'); }
+        if (msg.signature.toString() !== "") { throw new Error("The transaction has been signed already"); }
 
         // 签名
         let txBuffer = Buffer.from(txMsgType.encode(msg).finish());
         const txBufferHash = Crypto.GetHashVal(txBuffer);
         let prvK = prvKey;
-        if (typeof prvK === 'string') {
+        if (typeof prvK === "string") {
             prvK = Crypto.ImportKey(prvK, pass);
             if (prvK.pubKeyHex === undefined) {
                 // 当使用从pem格式转object格式的私钥签名时，若其pubKeyHex为undefined则需在该object中补充pubKeyHex
@@ -166,7 +166,7 @@ class Transaction {
         // let msg = JSON.parse(JSON.stringify(txMsgCollection.get(this)))
         msg.metadata = null;
         const { signature } = msg;
-        if (signature.toString() === '') { throw new Error('The transaction has not been signed yet'); }
+        if (signature.toString() === "") { throw new Error("The transaction has not been signed yet"); }
         msg.signature = null;
         const msgBuffer = Buffer.from(txMsgType.encode(msg).finish());
         const isValid = Crypto.VerifySign(pubKey, signature, Crypto.GetHashVal(msgBuffer), alg);

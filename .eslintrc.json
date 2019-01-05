@@ -1,10 +1,17 @@
 {
     "env": {
-        "browser": true
+        "browser": true,
+        "jquery": true
     },
-    "plugins": ["jest", "import"],
+    "plugins": ["jest", "import", "jquery"],
     "extends": ["airbnb-base", "plugin:jest/recommended"],
     "rules": {
-        "indent": ["error", 4]
+        "indent": ["error", 4, { "SwitchCase": 1 }],
+        "no-underscore-dangle": "off",
+        "no-plusplus": "off",
+        "no-trailing-spaces": "off",
+        "quotes": ["error", "double"],
+        "no-param-reassign": ["error", {"props": false}],
+        "no-restricted-syntax": "off"
     }
 }

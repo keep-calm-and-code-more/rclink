@@ -7,6 +7,12 @@
             "type": "npm",
             "script": "test",
             "problemMatcher": []
+        },
+        {
+            "type": "eslint",
+            "problemMatcher": [
+                "$eslint-stylish"
+            ]
         }
     ]
 }

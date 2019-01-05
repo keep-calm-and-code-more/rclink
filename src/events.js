@@ -1,9 +1,9 @@
-//使用w3cwebsocket对象，兼容Browser和Node环境
-const WebSocket = require('websocket').w3cwebsocket;
+// 使用w3cwebsocket对象，兼容Browser和Node环境
+const WebSocket = require("websocket").w3cwebsocket;
 
 class EventTube {
     /**
-     * 
+     *
      * @param {*} address 服务地址
      * @param {*} protocols 协议
      * @param {*} cb 回调函数
@@ -15,35 +15,36 @@ class EventTube {
         this.timer = null;
         this.connect();
     }
-    reconnect(){
-        var me = this;
-        var timeout = me._timeout;
-        if(!me.timer){
-            me.timer = setTimeout(function() {
+
+    reconnect() {
+        const me = this;
+        const timeout = me._timeout;
+        if (!me.timer) {
+            me.timer = setTimeout(() => {
                 me.connect();
-              }, timeout);    
+            }, timeout);
         }
     }
+
     connect() {
-        var me = this;
+        const me = this;
         me.timer = null;
-        console.log('connecting '+me._address);
-        var ws;        
-        ws = new WebSocket(me._address);        
-        ws.onerror=function(evt) {
-            console.log('error:'+evt.message);
+        console.log(`connecting ${me._address}`);
+        const ws = new WebSocket(me._address);
+        ws.onerror = (evt) => {
+            console.log(`error:${evt.message}`);
             me.reconnect();
         };
-        ws.onmessage = function (m) {
+        ws.onmessage = (m) => {
             me._cb(m);
-        }
-        ws.onopen=function() {
-            console.log('connected');
         };
-        ws.onclose=function() {
-            console.log('disconnected');
+        ws.onopen = () => {
+            console.log("connected");
+        };
+        ws.onclose = () => {
+            console.log("disconnected");
             me.reconnect();
         };
     }
 }
-module.exports.EventTube=EventTube;
+module.exports.EventTube = EventTube;

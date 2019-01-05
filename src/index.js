@@ -1,22 +1,11 @@
-/*
-const protobuf = require("protobufjs");
-import EventTube from './events';
+const EventT = require("./events").EventTube;
+const Cryp = require("./crypto");
+const Tx = require("./transaction").Transaction;
+const { RestAPI } = require("./rest");
 
-var root = protobuf.loadSync("protos/peer.proto");
-var Message = root.lookupType("rep.protos.Event");
-var Block = root.lookupType("rep.protos.Block");
-
-
-var et = new EventTube('ws://localhost:8081/event',function(evt){
-    //console.log(m);
-    var ed = new Uint8Array(evt.data);
-    var msg = Message.decode(ed);
-    console.log(msg)
-})            
-*/
 module.exports = {
-    EventTube :  require('./events').EventTube,
-    Crypto: require('./crypto'),
-    Transaction: require('./transaction').Transaction,
-    Rest: require('./rest').RestAPI
-}
+    EventTube: EventT, 
+    Crypto: Cryp,
+    Transaction: Tx, 
+    Rest: RestAPI,
+};

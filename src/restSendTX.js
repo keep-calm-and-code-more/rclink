@@ -1,7 +1,7 @@
-const rp = require('request-promise');
-const fs = require('fs');
-const mockFs = require('mock-fs');
-const { GetHashVal } = require('./crypto');
+const rp = require("request-promise");
+const fs = require("fs");
+const mockFs = require("mock-fs");
+const { GetHashVal } = require("./crypto");
 
 /**
  * 实现在Node端通过RestAPI向RepChain节点提交已签名的交易数据
@@ -16,13 +16,13 @@ const restSendTX = ({ tx, address }) => {
         // signedTrans需要为文件流数据，没找到更好的实现方法，
         // 目前是先将tx写入文件，再获取其ReadableStream
         // 这里使用在内存中模拟的文件系统
-        const fileName = `tx-${GetHashVal(tx).toString('base64')}`;
+        const fileName = `tx-${GetHashVal(tx).toString("base64")}`;
         const config = {};
         config[fileName] = tx;
         mockFs(config);
         const txStream = fs.createReadStream(fileName);
         const options = {
-            method: 'POST',
+            method: "POST",
             uri: `${address}transaction/postTranStream`,
             formData: {
                 signedTrans: txStream,
@@ -37,13 +37,13 @@ const restSendTX = ({ tx, address }) => {
             throw e;
         });
     }
-    if (tx.constructor.name === 'String') {
+    if (tx.constructor.name === "String") {
         const options = {
-            method: 'POST',
+            method: "POST",
             uri: `${address}transaction/postTranByString`,
             body: tx,
             headers: {
-                'content-type': 'application/json',
+                "content-type": "application/json",
             },
             json: true,
         };

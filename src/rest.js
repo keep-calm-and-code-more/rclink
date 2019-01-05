@@ -1,6 +1,6 @@
-const rp = require('request-promise');
+const rp = require("request-promise");
 // 在package.json中的browser属性中设置{src/restSendTX : src/browser/restSendTX}以使用相应环境下的实现
-const restSendTX = require('./restSendTX');
+const restSendTX = require("./restSendTX");
 
 class RestAPI {
     /**
@@ -10,38 +10,40 @@ class RestAPI {
     constructor(address) {
         this._address = address;
     }
+
     /**
      * 返回含区块高度的概要信息
      */
     chaininfo() {
-        var url = this._address + 'chaininfo';
+        const url = `${this._address}chaininfo`;
         return rp({
-            "method": "GET",
-            "uri": url,
-            "json": true
-        })
+            method: "GET",
+            uri: url,
+            json: true,
+        });
     }
-    //TODO repChain应该提供流式接口,走protobuf序列化
+
+    // TODO repChain应该提供流式接口,走protobuf序列化
     /**
      * 根据区块高度获取区块数据
      * @param {*} height 区块高度
      */
     block(height) {
-        var url = this._address + 'block/' + height;
+        const url = `${this._address}block/${height}`;
         return rp({
-            "method": "GET",
-            "uri": url,
-            "json": true
-        })
+            method: "GET",
+            uri: url,
+            json: true,
+        });
     }
 
     blockStream(height) {
-        var url = this._address + 'block/stream/' + height;
+        const url = `${this._address}block/stream/${height}`;
         return rp({
-            "method": "GET",
-            "uri": url,
-            encoding: null
-        })
+            method: "GET",
+            uri: url,
+            encoding: null,
+        });
     }
 
     /**
@@ -51,7 +53,7 @@ class RestAPI {
      * @returns {Promise} 接收交易后RepChain节点的返回信息
      */
     sendTX(tx) {
-        return restSendTX({tx: tx, address: this._address}); 
+        return restSendTX({ tx, address: this._address });
     }
 }
 module.exports.RestAPI = RestAPI;

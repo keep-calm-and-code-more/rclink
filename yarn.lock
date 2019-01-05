@@ -1636,6 +1636,11 @@ eslint-plugin-jest@^22.1.2:
   resolved "http://registry.npm.taobao.org/eslint-plugin-jest/download/eslint-plugin-jest-22.1.2.tgz#1ea36cc3faedbdb788e702ca633d635ca14e91e8"
   integrity sha1-HqNsw/rtvbeI5wLKYz1jXKFOkeg=
 
+eslint-plugin-jquery@^1.5.0:
+  version "1.5.0"
+  resolved "http://registry.npm.taobao.org/eslint-plugin-jquery/download/eslint-plugin-jquery-1.5.0.tgz#408a804b8f2a1f4ade5f3df84bd45c5b9a28efe0"
+  integrity sha1-QIqAS48qH0reXz34S9RcW5oo7+A=
+
 eslint-restricted-globals@^0.1.1:
   version "0.1.1"
   resolved "http://registry.npm.taobao.org/eslint-restricted-globals/download/eslint-restricted-globals-0.1.1.tgz#35f0d5cbc64c2e3ed62e93b4b1a7af05ba7ed4d7"
