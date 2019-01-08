@@ -25,6 +25,7 @@
     "eslint-plugin-jquery": "^1.5.0",
     "jest": "^23.5.0",
     "jsdoc": "^3.5.5",
+    "pre-commit": "^1.2.2",
     "regenerator-runtime": "^0.12.1",
     "rimraf": "^2.6.3"
   },
@@ -43,8 +44,10 @@
   "scripts": {
     "build": "rimraf ./lib && babel ./src -d ./lib --source-maps",
     "test": "jest",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "eslint": "eslint ."
   },
+  "pre-commit": ["eslint"],
   "browser": {
     "./lib/restSendTX.js": "./lib/browser/restSendTX.js"
   }
