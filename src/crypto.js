@@ -1,10 +1,8 @@
-const crypto = require("crypto");
-const jsrsasign = require("jsrsasign");
-
-const { KEYUTIL, KJUR, X509 } = jsrsasign;
-const moment = require("moment");
-const bitcoinUtils = require("bitcore-lib");
-const { GMCryptoUtils } = require("./gmCryptoUtils");
+import crypto from "crypto";
+import { KEYUTIL, KJUR, X509 } from "jsrsasign";
+import moment from "moment";
+import bitcoinUtils from "bitcore-lib";
+import GMCryptoUtils from "./gmCryptoUtils";
 
 const gmCUs = new GMCryptoUtils("wss://localhost:9003");
 
@@ -296,7 +294,7 @@ const VerifyCertificateSignature = (certPEM, pubKey) => {
     return x509.verifySignature(pubKey);
 };
 
-module.exports = {
+export {
     GetHashVal,
     CreateKeypair,
     ImportKey,

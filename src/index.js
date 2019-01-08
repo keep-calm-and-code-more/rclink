@@ -1,11 +1,6 @@
-const EventT = require("./events").EventTube;
-const Cryp = require("./crypto");
-const Tx = require("./transaction").Transaction;
-const { RestAPI } = require("./rest");
+import * as Crypto from "./crypto";
 
-module.exports = {
-    EventTube: EventT, 
-    Crypto: Cryp,
-    Transaction: Tx, 
-    Rest: RestAPI,
-};
+export { Crypto };
+export { default as EventTube } from "./events";
+export { default as Transaction } from "./transaction";
+export { default as RestAPI } from "./rest";

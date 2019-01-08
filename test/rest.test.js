@@ -1,6 +1,6 @@
-const protobuf = require("protobufjs");
-const { RestAPI } = require("../src/rest");
-const { Transaction } = require("../src/transaction");
+import protobuf from "protobufjs";
+import RestAPI from "../src/rest";
+import Transaction from "../src/transaction";
 
 describe("Restful API验证", () => {
     let ra;
@@ -32,7 +32,7 @@ describe("Restful API验证", () => {
             type: 2,
             name: "ed7a1a5adac2c5fe4e82ef2839cdbe43a59a04ae6e7ad248e9788c0348aa36a8",
             function: "put_proof",
-            args: ["{\"testKey48\":\"testVal\"}"],
+            args: ["{\"testKey50\":\"testVal\"}"],
             pubKeyPEM,
         });
         txSignedBuffer1 = tx1.createSignedTransaction(prvKeyPEM, "ecdsa-with-SHA1");
@@ -41,7 +41,7 @@ describe("Restful API验证", () => {
             type: 2,
             name: "ed7a1a5adac2c5fe4e82ef2839cdbe43a59a04ae6e7ad248e9788c0348aa36a8",
             function: "put_proof",
-            args: ["{\"testKey49\":\"testVal\"}"],
+            args: ["{\"testKey51\":\"testVal\"}"],
             pubKeyPEM,
         });
         txSignedBuffer2 = tx2.createSignedTransaction(prvKeyPEM, "ecdsa-with-SHA1");

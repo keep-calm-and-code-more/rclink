@@ -1,6 +1,5 @@
-const { Transaction } = require("../src/transaction");
-const { CreateKeypair } = require("../src/crypto");
-const { GetKeyPEM } = require("../src/crypto");
+import Transaction from "../src/transaction";
+import { CreateKeypair, GetKeyPEM } from "../src/crypto";
 
 describe("测试交易生成功能", () => {
     let t;

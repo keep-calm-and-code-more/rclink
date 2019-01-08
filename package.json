@@ -1,7 +1,7 @@
 {
   "name": "rclink",
-  "main": "./src/index.js",
-  "version": "1.0.30",
+  "main": "./lib/index.js",
+  "version": "1.0.35",
   "repository": "https://gitee.com/BTAJL/RCNode.git",
   "author": "c4w <“chen4w@sina.com”>",
   "contributors": [
@@ -25,7 +25,8 @@
     "eslint-plugin-jquery": "^1.5.0",
     "jest": "^23.5.0",
     "jsdoc": "^3.5.5",
-    "regenerator-runtime": "^0.12.1"
+    "regenerator-runtime": "^0.12.1",
+    "rimraf": "^2.6.3"
   },
   "dependencies": {
     "bitcore-lib": "^0.15.0",
@@ -40,11 +41,11 @@
     "websocket": "^1.0.28"
   },
   "scripts": {
-    "build": "babel ./src -d ./build --source-maps",
-    "start": "npm run build && node ./build/index.js",
-    "test": "jest"
+    "build": "rimraf ./lib && babel ./src -d ./lib --source-maps",
+    "test": "jest",
+    "prepublishOnly": "npm run build"
   },
   "browser": {
-    "./src/restSendTX.js": "./src/browser/restSendTX.js"
+    "./lib/restSendTX.js": "./lib/browser/restSendTX.js"
   }
 }

@@ -1,4 +1,4 @@
-const WS = require("websocket").w3cwebsocket;
+import { w3cwebsocket as WS } from "websocket";
 
 // Private property
 const websocketClientCollection = new WeakMap();
@@ -139,4 +139,4 @@ class GMCryptoUtils {
     }
 }
 
-module.exports.GMCryptoUtils = GMCryptoUtils;
+export default GMCryptoUtils;

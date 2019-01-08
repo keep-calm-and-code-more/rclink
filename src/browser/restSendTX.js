@@ -32,4 +32,4 @@ const restSendTX = ({ tx, address }) => {
     throw new TypeError(`Bad tx type: ${tx.constructor.name}, need Buffer or String`);
 };
 
-module.exports = restSendTX;
+export default restSendTX;

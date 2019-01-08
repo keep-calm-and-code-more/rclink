@@ -1,5 +1,5 @@
-const protobuf = require("protobufjs");
-const { EventTube } = require("../src/events");
+import protobuf from "protobufjs";
+import EventTube from "../src/events";
 
 
 describe("事件订阅与数据获取", () => {
@@ -20,7 +20,7 @@ describe("事件订阅与数据获取", () => {
         let cout = 0;
         const et = new EventTube("ws://localhost:8081/event", ((evt) => {
             // console.log(m);
-            const ed = new Uint8Array(evt.data);
+            const ed = Buffer.from(evt.data);
             const msg = Message.decode(ed);
             console.log(msg);
             expect(msg.action).toBeGreaterThan(0);

@@ -1,6 +1,8 @@
-const protobuf = require("protobufjs");
-const Long = require("long");
-const Crypto = require("./crypto");
+import protobuf from "protobufjs";
+import Long from "long";
+import {
+    GetHashVal, CalculateAddr, ImportKey, Sign, VerifySign, 
+} from "./crypto";
 
 // Implement private properties
 const txMsgCollection = new WeakMap();
@@ -24,7 +26,7 @@ const getValidators = (toValidators) => {
     return Buffer.from("toValidators");
 };
 
-const getAccountAddr = pubKeyPEM => Crypto.CalculateAddr(pubKeyPEM);
+const getAccountAddr = pubKeyPEM => CalculateAddr(pubKeyPEM);
 
 class Transaction {
     /**
@@ -96,7 +98,7 @@ class Transaction {
             // 在Browser环境下protobufjs中的encode().finish()返回原始的Uint8Array，
             // 为了屏蔽其与Buffer经browserify或webpack转译后的Uint8Array的差异，这里需转为Buffer
             const txBuffer = Buffer.from(txMsgType.encode(msg).finish());
-            msg.txid = Crypto.GetHashVal(txBuffer, "sha256").toString("hex");
+            msg.txid = GetHashVal(txBuffer, "sha256").toString("hex");
 
             this.pubKeyPEM = consArgs.pubKeyPEM;
 
@@ -110,10 +112,11 @@ class Transaction {
     /**
      * 复用txMsgType实例
      */
-    static async setTxMsgType() {
+    static setTxMsgType() {
         if (txMsgType) { return; }
-        const root = await protobuf.load("protos/peer.proto");
-        txMsgType = root.lookupType("rep.protos.Transaction");
+        protobuf.load("protos/peer.proto").then((root) => {
+            txMsgType = root.lookupType("rep.protos.Transaction");
+        });
     }
 
     static getTxMsgType() {
@@ -137,16 +140,16 @@ class Transaction {
 
         // 签名
         let txBuffer = Buffer.from(txMsgType.encode(msg).finish());
-        const txBufferHash = Crypto.GetHashVal(txBuffer);
+        const txBufferHash = GetHashVal(txBuffer);
         let prvK = prvKey;
         if (typeof prvK === "string") {
-            prvK = Crypto.ImportKey(prvK, pass);
+            prvK = ImportKey(prvK, pass);
             if (prvK.pubKeyHex === undefined) {
                 // 当使用从pem格式转object格式的私钥签名时，若其pubKeyHex为undefined则需在该object中补充pubKeyHex
-                prvK.pubKeyHex = Crypto.ImportKey(this.pubKeyPEM).pubKeyHex;
+                prvK.pubKeyHex = ImportKey(this.pubKeyPEM).pubKeyHex;
             }
         }
-        const signature = Crypto.Sign(prvK, txBufferHash, alg);
+        const signature = Sign(prvK, txBufferHash, alg);
         msg.signature = signature;
         txBuffer = Buffer.from(txMsgType.encode(msg).finish());
         return txBuffer;
@@ -169,9 +172,9 @@ class Transaction {
         if (signature.toString() === "") { throw new Error("The transaction has not been signed yet"); }
         msg.signature = null;
         const msgBuffer = Buffer.from(txMsgType.encode(msg).finish());
-        const isValid = Crypto.VerifySign(pubKey, signature, Crypto.GetHashVal(msgBuffer), alg);
+        const isValid = VerifySign(pubKey, signature, GetHashVal(msgBuffer), alg);
         return isValid;
     }
 }
 
-module.exports.Transaction = Transaction;
+export default Transaction;

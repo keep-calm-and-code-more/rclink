@@ -1,6 +1,6 @@
-const rp = require("request-promise");
+import rp from "request-promise";
 // 在package.json中的browser属性中设置{src/restSendTX : src/browser/restSendTX}以使用相应环境下的实现
-const restSendTX = require("./restSendTX");
+import restSendTX from "./restSendTX";
 
 class RestAPI {
     /**
@@ -56,4 +56,4 @@ class RestAPI {
         return restSendTX({ tx, address: this._address });
     }
 }
-module.exports.RestAPI = RestAPI;
+export default RestAPI;

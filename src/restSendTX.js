@@ -1,7 +1,7 @@
-const rp = require("request-promise");
-const fs = require("fs");
-const mockFs = require("mock-fs");
-const { GetHashVal } = require("./crypto");
+import rp from "request-promise";
+import fs from "fs";
+import mockFs from "mock-fs";
+import { GetHashVal } from "./crypto";
 
 /**
  * 实现在Node端通过RestAPI向RepChain节点提交已签名的交易数据
@@ -52,4 +52,4 @@ const restSendTX = ({ tx, address }) => {
     throw new TypeError(`Bad tx type: ${tx.constructor.name}, need Buffer or String`);
 };
 
-module.exports = restSendTX;
+export default restSendTX;

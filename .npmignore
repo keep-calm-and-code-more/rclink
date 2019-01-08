@@ -1,0 +1,9 @@
+src/
+.vscode/
+jks/
+build/
+
+.babelrc
+.eslint*
+*lock*
+*log*

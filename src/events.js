@@ -1,5 +1,5 @@
 // 使用w3cwebsocket对象，兼容Browser和Node环境
-const WebSocket = require("websocket").w3cwebsocket;
+import { w3cwebsocket as WebSocket } from "websocket";
 
 class EventTube {
     /**
@@ -47,4 +47,4 @@ class EventTube {
         };
     }
 }
-module.exports.EventTube = EventTube;
+export default EventTube;
