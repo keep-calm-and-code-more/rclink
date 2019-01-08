@@ -113,9 +113,10 @@ class Transaction {
      * 复用txMsgType实例
      */
     static setTxMsgType() {
-        if (txMsgType) { return; }
-        protobuf.load("protos/peer.proto").then((root) => {
+        if (txMsgType) { return new Promise(resolve => (resolve(true))); }
+        return protobuf.load("protos/peer.proto").then((root) => {
             txMsgType = root.lookupType("rep.protos.Transaction");
+            return txMsgType;
         });
     }
 

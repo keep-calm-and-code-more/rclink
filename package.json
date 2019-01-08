@@ -1,7 +1,7 @@
 {
   "name": "rclink",
   "main": "./lib/index.js",
-  "version": "1.0.35",
+  "version": "1.0.36",
   "repository": "https://gitee.com/BTAJL/RCNode.git",
   "author": "c4w <“chen4w@sina.com”>",
   "contributors": [
@@ -43,7 +43,7 @@
   },
   "scripts": {
     "build": "rimraf ./lib && babel ./src -d ./lib --source-maps",
-    "test": "jest",
+    "test": "jest ./test/*",
     "prepublishOnly": "npm run build",
     "eslint": "eslint ."
   },
