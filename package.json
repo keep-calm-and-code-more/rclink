@@ -33,6 +33,7 @@
   "dependencies": {
     "@babel/runtime": "^7.2.0",
     "bitcore-lib": "^0.15.0",
+    "cross-fetch": "^3.0.0",
     "jsrsasign": "^8.0.12",
     "jsrsasign-util": "^1.0.0",
     "long": "^4.0.0",

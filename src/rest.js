@@ -1,4 +1,5 @@
-import rp from "request-promise";
+// import rp from "request-promise";
+import fetch from "cross-fetch";
 // 在package.json中的browser属性中设置{src/restSendTX : src/browser/restSendTX}以使用相应环境下的实现
 import restSendTX from "./restSendTX";
 
@@ -16,11 +17,13 @@ class RestAPI {
      */
     chaininfo() {
         const url = `${this._address}chaininfo`;
-        return rp({
-            method: "GET",
-            uri: url,
-            json: true,
-        });
+        return fetch(url)
+            .then(res => res.json());
+        // rp({
+        //     method: "GET",
+        //     uri: url,
+        //     json: true,
+        // });
     }
 
     // TODO repChain应该提供流式接口,走protobuf序列化
@@ -30,20 +33,22 @@ class RestAPI {
      */
     block(height) {
         const url = `${this._address}block/${height}`;
-        return rp({
-            method: "GET",
-            uri: url,
-            json: true,
-        });
+        return fetch(url).then(res => res.json());
+        // rp({
+        //     method: "GET",
+        //     uri: url,
+        //     json: true,
+        // });
     }
 
     blockStream(height) {
         const url = `${this._address}block/stream/${height}`;
-        return rp({
-            method: "GET",
-            uri: url,
-            encoding: null,
-        });
+        return fetch(url).then(res => res.buffer());
+        // return rp({
+        //     method: "GET",
+        //     uri: url,
+        //     encoding: null,
+        // });
     }
 
     /**

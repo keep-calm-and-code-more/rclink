@@ -12,6 +12,8 @@
         "no-trailing-spaces": "off",
         "quotes": ["error", "double"],
         "no-param-reassign": ["error", {"props": false}],
-        "no-restricted-syntax": "off"
+        "no-restricted-syntax": "off",
+
+        "jest/no-focused-tests": "off"
     }
 }
