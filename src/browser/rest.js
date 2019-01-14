@@ -1,5 +1,3 @@
-// 在package.json中的browser属性中设置{lib/rest.js : lib/browser/rest.js}以使用相应环境下的实现
-import rp from "request-promise";
 import restSendTX from "./restSendTX";
 
 class RestAPI {
@@ -16,11 +14,8 @@ class RestAPI {
      */
     chainInfo() {
         const url = `${this._address}chaininfo`;
-        return rp({
-            method: "GET",
-            uri: url,
-            json: true,
-        });
+        return fetch(url)
+            .then(res => res.json());
     }
 
     // TODO repChain应该提供流式接口,走protobuf序列化
@@ -30,38 +25,22 @@ class RestAPI {
      */
     block(height) {
         const url = `${this._address}block/${height}`;
-        return rp({
-            method: "GET",
-            uri: url,
-            json: true,
-        });
+        return fetch(url).then(res => res.json());
     }
 
     blockStream(height) {
         const url = `${this._address}block/stream/${height}`;
-        return rp({
-            method: "GET",
-            uri: url,
-            encoding: null,
-        });
+        return fetch(url).then(res => res.arrayBuffer()).then(res => new Uint8Array(res));
     }
 
     transaction(id) {
         const url = `${this._address}transaction/${id}`;
-        return rp({
-            method: "GET",
-            uri: url,
-            json: true,
-        });
+        return fetch(url).then(res => res.json());
     }
 
     transactionStream(id) {
         const url = `${this._address}transaction/stream/${id}`;
-        return rp({
-            method: "GET",
-            uri: url,
-            encoding: null,
-        });
+        return fetch(url).then(res => res.arrayBuffer()).then(res => new Uint8Array(res));
     }
 
     /**

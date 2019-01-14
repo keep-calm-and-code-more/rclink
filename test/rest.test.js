@@ -6,12 +6,12 @@ describe("Restful API验证", () => {
     let ra;
     // let Message;
     let Block;
-    let tx1; let
-        tx2;
-    let prvKeyPEM; let
-        pubKeyPEM;
-    let txSignedBuffer1; let
-        txSignedBuffer2;
+    let tx1;
+    let tx2;
+    let prvKeyPEM;
+    let pubKeyPEM;
+    let txSignedBuffer1;
+    let txSignedBuffer2;
 
     beforeAll(async (done) => {
         ra = new RestAPI("http://localhost:8081/");
@@ -32,7 +32,7 @@ describe("Restful API验证", () => {
             type: 2,
             name: "ed7a1a5adac2c5fe4e82ef2839cdbe43a59a04ae6e7ad248e9788c0348aa36a8",
             function: "put_proof",
-            args: ["{\"testKey50\":\"testVal\"}"],
+            args: ["{\"testKey70\":\"testVal\"}"],
             pubKeyPEM,
         });
         txSignedBuffer1 = tx1.createSignedTransaction(prvKeyPEM, "ecdsa-with-SHA1");
@@ -41,7 +41,7 @@ describe("Restful API验证", () => {
             type: 2,
             name: "ed7a1a5adac2c5fe4e82ef2839cdbe43a59a04ae6e7ad248e9788c0348aa36a8",
             function: "put_proof",
-            args: ["{\"testKey51\":\"testVal\"}"],
+            args: ["{\"testKey71\":\"testVal\"}"],
             pubKeyPEM,
         });
         txSignedBuffer2 = tx2.createSignedTransaction(prvKeyPEM, "ecdsa-with-SHA1");
@@ -50,7 +50,7 @@ describe("Restful API验证", () => {
     });
 
     test("GET chaininfo 区块高度和交易总数应该大于0", (done) => {
-        ra.chaininfo().then((ci) => {
+        ra.chainInfo().then((ci) => {
             expect(parseInt(ci.result.height, 10)).toBeGreaterThan(0);
             expect(parseInt(ci.result.totalTransactions, 10)).toBeGreaterThan(0);
             done();
@@ -67,7 +67,7 @@ describe("Restful API验证", () => {
             let h;
             let blk1; let
                 blk2;
-            await ra.chaininfo().then((ci) => { h = parseInt(ci.result.height, 10); });
+            await ra.chainInfo().then((ci) => { h = parseInt(ci.result.height, 10); });
             await ra.block(h).then((blk) => { blk1 = blk.result; });
             await ra.blockStream(h).then((res) => {
                 const buf = res;

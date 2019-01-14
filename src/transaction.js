@@ -31,7 +31,7 @@ const getAccountAddr = pubKeyPEM => CalculateAddr(pubKeyPEM);
 class Transaction {
     /**
      *
-     * @param {Object | Buffer} consArgs 交易对象构造参数，可为Json Object或Buffer
+     * @param {Object | Buffer | Uint8Array } consArgs 交易对象构造参数，可为Json Object或Buffer/Uint8Array
      * 当使用Json Object时，consArgs应具有以下属性：
      * - type, {Number}, 需与RepChain的交易类型定义一致，1表示CHAINCODE_DEPLOY，2表示CHAINCODE_INVOKE
      * - pubKeyPEM, {String} 交易发起者的PEM格式公钥信息，或符合X.509标准的pem格式证书信息
@@ -45,7 +45,7 @@ class Transaction {
         }
 
         // 根据参数类型构造属性txMsg
-        if (Buffer.isBuffer(consArgs)) { // 已签名的序列化交易数据
+        if (Buffer.isBuffer(consArgs) || consArgs.constructor.name === "Uint8Array") { // 已签名的序列化交易数据
             try {
                 const msg = txMsgType.decode(consArgs);
                 txMsgCollection.set(this, msg);
@@ -104,7 +104,7 @@ class Transaction {
 
             txMsgCollection.set(this, msg);
         } else {
-            throw new TypeError("Bad consArgs type to construct an instance of Transaction, need Object or Buffer");
+            throw new TypeError("Bad consArgs type to construct an instance of Transaction, need Object or Buffer/Uint8Array");
         }
     }
 
