@@ -145,7 +145,7 @@ class Transaction {
 
         // 签名
         let txBuffer = Buffer.from(txMsgType.encode(msg).finish());
-        const txBufferHash = GetHashVal(txBuffer);
+        // const txBufferHash = GetHashVal(txBuffer);
         let prvK = prvKey;
         if (typeof prvK === "string") {
             prvK = ImportKey(prvK, pass);
@@ -154,7 +154,7 @@ class Transaction {
                 prvK.pubKeyHex = ImportKey(this.pubKeyPEM).pubKeyHex;
             }
         }
-        const signature = Sign(prvK, txBufferHash, alg);
+        const signature = Sign(prvK, txBuffer, alg);
         msg.signature = signature;
         txBuffer = Buffer.from(txMsgType.encode(msg).finish());
         return txBuffer;
@@ -177,7 +177,7 @@ class Transaction {
         if (signature.toString() === "") { throw new Error("The transaction has not been signed yet"); }
         msg.signature = null;
         const msgBuffer = Buffer.from(txMsgType.encode(msg).finish());
-        const isValid = VerifySign(pubKey, signature, GetHashVal(msgBuffer), alg);
+        const isValid = VerifySign(pubKey, signature, msgBuffer, alg);
         return isValid;
     }
 }

@@ -30,18 +30,18 @@ describe("Restful API验证", () => {
         await Transaction.setTxMsgType();
         tx1 = new Transaction({
             type: 2,
-            name: "ed7a1a5adac2c5fe4e82ef2839cdbe43a59a04ae6e7ad248e9788c0348aa36a8",
-            function: "put_proof",
-            args: ["{\"testKey70\":\"testVal\"}"],
+            name: "6605cef0dd8fa68492a2b0c9d27bb5aff41153f70938d8605d5999540692ae71",
+            function: "set",
+            args: ["{\"testKey1\":1}"],
             pubKeyPEM,
         });
         txSignedBuffer1 = tx1.createSignedTransaction(prvKeyPEM, "ecdsa-with-SHA1");
 
         tx2 = new Transaction({
             type: 2,
-            name: "ed7a1a5adac2c5fe4e82ef2839cdbe43a59a04ae6e7ad248e9788c0348aa36a8",
-            function: "put_proof",
-            args: ["{\"testKey71\":\"testVal\"}"],
+            name: "6605cef0dd8fa68492a2b0c9d27bb5aff41153f70938d8605d5999540692ae71",
+            function: "set",
+            args: ["{\"testKey2\":2}"],
             pubKeyPEM,
         });
         txSignedBuffer2 = tx2.createSignedTransaction(prvKeyPEM, "ecdsa-with-SHA1");
