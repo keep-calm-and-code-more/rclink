@@ -166,10 +166,10 @@ const VerifySign = (pubKey, sigValue, data, alg = "ecdsa-with-SHA1", prov = "nod
                 .verify((typeof pubKey === "object") ? GetKeyPEM(pubKey) : pubKey, sigValue);
             break;
         case "jsrsasign":
-            isValid = new KJUR.crypto.Signature({ alg })
-                .init(pubKey)
-                .updateString(Buffer.from(data).toString())
-                .verify(sigValue.toString("hex"));
+            isValid = new KJUR.crypto.Signature({ alg });
+            isValid.init(pubKey);
+            isValid.updateString(Buffer.from(data).toString());
+            isValid = isValid.verify(sigValue.toString("hex"));
             break;
         // Todo: case '国密'
         default:

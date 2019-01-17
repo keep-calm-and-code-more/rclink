@@ -9,7 +9,8 @@
   ],
   "license": "MIT",
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": ["<rootDir>/node_modules/", "<rootDir>/test/browser/"]
   },
   "devDependencies": {
     "@babel/cli": "7.0.0-beta.54",
@@ -26,9 +27,14 @@
     "eslint-plugin-jquery": "^1.5.0",
     "jest": "^23.5.0",
     "jsdoc": "^3.5.5",
+    "karma": "^3.1.4",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-jasmine": "^2.0.1",
+    "karma-webpack": "^3.0.5",
     "pre-commit": "^1.2.2",
     "regenerator-runtime": "^0.12.1",
-    "rimraf": "^2.6.3"
+    "rimraf": "^2.6.3",
+    "webpack": "^4.28.4"
   },
   "dependencies": {
     "@babel/runtime": "^7.2.0",
@@ -45,7 +51,8 @@
   },
   "scripts": {
     "build": "rimraf ./lib && babel ./src -d ./lib --source-maps",
-    "test": "jest ./test/*",
+    "test:node": "jest ./test/*",
+    "test:browser": "karma start test/browser/karma.conf.js",
     "prepublishOnly": "npm run build",
     "eslint": "eslint ."
   },
