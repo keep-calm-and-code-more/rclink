@@ -14,6 +14,7 @@
         "no-param-reassign": ["error", {"props": false}],
         "no-restricted-syntax": "off",
 
-        "jest/no-focused-tests": "off"
+        "jest/no-focused-tests": "off",
+        "jest/no-alias-methods": "off"
     }
 }

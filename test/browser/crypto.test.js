@@ -2,7 +2,7 @@ import {
     GetHashVal, CreateKeypair, GetKeyPEM, ImportKey, CalculateAddr,
     Sign, VerifySign, CreateCertificate, CreateSelfSignedCertificate,
     VerifyCertificateSignature, ImportCertificate,
-} from "../../src/crypto";
+} from "../../lib/crypto";
 
 describe("密码学哈希值生成测试", () => {
     // 欲计算哈希值的数据
@@ -101,15 +101,12 @@ describe("非对称密钥对生成与导出及导入测试", () => {
     it("使用错误密码解密已加密的pem格式私钥，应该抛出异常", () => {
         expect(() => {
             ImportKey(kp1EncryptedPrvKeyPEM, `${pass}x`);
-        // eslint-disable-next-line jest/no-alias-methods
         }).toThrowError("提供的私钥信息无效或解密密码无效");
         expect(() => {
             ImportKey(kp1EncryptedPrvKeyPEM);
-        // eslint-disable-next-line jest/no-alias-methods
         }).toThrowError("提供的私钥信息无效或解密密码无效");
         expect(() => {
             ImportKey(kp1EncryptedPrvKeyPEM, null);
-        // eslint-disable-next-line jest/no-alias-methods
         }).toThrowError("提供的私钥信息无效或解密密码无效");
     });
     it("使用密码解密未加密的pem格式私钥，不应抛出异常", () => {

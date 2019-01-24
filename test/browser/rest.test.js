@@ -1,7 +1,7 @@
 // import protobuf from "protobufjs";
-import { rep } from "../protos/peer";
-import RestAPI from "../lib/rest";
-import Transaction from "../lib/transaction";
+import { rep } from "../../protos/peer";
+import RestAPI from "../../lib/rest";
+import Transaction from "../../lib/transaction";
 
 describe("Restful API验证", () => {
     let ra;
@@ -39,20 +39,20 @@ describe("Restful API验证", () => {
         txSignedBuffer2 = tx2.createSignedTransaction(prvKeyPEM, "ecdsa-with-SHA1");
     });
 
-    test("GET chaininfo 区块高度和交易总数应该大于0", (done) => {
+    it("GET chaininfo 区块高度和交易总数应该大于0", (done) => {
         ra.chainInfo().then((ci) => {
             expect(parseInt(ci.result.height, 10)).toBeGreaterThan(0);
             expect(parseInt(ci.result.totalTransactions, 10)).toBeGreaterThan(0);
             done();
         });
     });
-    test("GET block 根据区块高度可以获取区块内容", (done) => {
+    it("GET block 根据区块高度可以获取区块内容", (done) => {
         ra.block(2).then((blk) => {
             expect(blk.result.transactions.length).toBeGreaterThan(0);
             done();
         });
     });
-    test("json方式获得的区块内容与字节流反序列化获得区块内容一致", (done) => {
+    it("json方式获得的区块内容与字节流反序列化获得区块内容一致", (done) => {
         async function awaitDemo() {
             let h;
             let blk1; let
@@ -63,19 +63,19 @@ describe("Restful API验证", () => {
                 const buf = res;
                 blk2 = Block.decode(buf);
             });
-            expect(blk1.previousBlockHash).toBe(blk2.previousBlockHash.toString("base64"));
+            expect(blk1.previousBlockHash).toEqual(Buffer.from(blk2.previousBlockHash).toString("base64"));
             expect(blk1.transactions.length).toBe(blk2.transactions.length);
             done();
         }
         awaitDemo();
     });
-    test("以hex格式字符串向RepChain节点提交交易数据，应能返回接收信息并验签通过", async () => {
+    it("以hex格式字符串向RepChain节点提交交易数据，应能返回接收信息并验签通过", async () => {
         const result = await ra.sendTX(txSignedBuffer1.toString("hex"));
         // console.log(result);
         expect(result.txid).toBe(tx1.getTxMsg().txid);
         expect(/^验证签名出错/.test(result.err)).toBeFalsy();
     });
-    test("以字节流格式向RepChain节点提交交易数据，应能返回接收信息并验证通过", async () => {
+    it("以字节流格式向RepChain节点提交交易数据，应能返回接收信息并验证通过", async () => {
         const result = await ra.sendTX(txSignedBuffer2);
         // console.log(result);
         expect(result.txid).toBe(tx2.getTxMsg().txid);

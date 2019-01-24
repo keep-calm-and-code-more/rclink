@@ -1,5 +1,5 @@
 import protobuf from "protobufjs";
-import EventTube from "../src/events";
+import EventTube from "../lib/events";
 
 
 describe("事件订阅与数据获取", () => {
@@ -19,7 +19,7 @@ describe("事件订阅与数据获取", () => {
     test("订阅RepChain事件", (done) => {
         let cout = 0;
         const et = new EventTube("ws://localhost:8081/event", ((evt) => {
-            // console.log(m);
+            // console.log("Received info from websocket service:\n", evt);
             const ed = Buffer.from(evt.data);
             const msg = Message.decode(ed);
             console.log(msg);
