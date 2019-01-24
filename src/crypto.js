@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import { KEYUTIL, KJUR, X509 } from "jsrsasign";
 import moment from "moment";
-import bitcoinUtils from "bitcore-lib";
+import CoinString from "coinstring";
 import GMCryptoUtils from "./gmCryptoUtils";
 
 const gmCUs = new GMCryptoUtils("wss://localhost:9003");
@@ -186,9 +186,10 @@ const VerifySign = (pubKey, sigValue, data, alg = "ecdsa-with-SHA1", prov = "nod
  */
 const CalculateAddr = (pubKeyPEM) => {
     // Todo: 支持其它非对称算法公钥的地址计算
-    const pubKey = new bitcoinUtils.PublicKey(ImportKey(pubKeyPEM).pubKeyHex);
-    const addr = new bitcoinUtils.Address(pubKey);
-    return Buffer.from(addr.toString());
+    const pubKeySha256 = GetHashVal(Buffer.from(ImportKey(pubKeyPEM).pubKeyHex, "hex"), "sha256");
+    const pubKeyRmd160 = GetHashVal(pubKeySha256, "rmd160");
+    const addr = CoinString.encode(pubKeyRmd160, 0x00);
+    return Buffer.from(addr);
 };
 
 /**

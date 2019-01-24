@@ -2,7 +2,7 @@ import {
     GetHashVal, CreateKeypair, GetKeyPEM, ImportKey, CalculateAddr,
     Sign, VerifySign, CreateCertificate, CreateSelfSignedCertificate,
     VerifyCertificateSignature, ImportCertificate,
-} from "../src/crypto";
+} from "../lib/crypto";
 
 describe("密码学哈希值生成测试", () => {
     // 欲计算哈希值的数据

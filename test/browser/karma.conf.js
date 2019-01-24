@@ -27,7 +27,7 @@ module.exports = function (config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            "*.test.js": ["webpack"],
+            "*.test.js": ["webpack", "sourcemap"],
         },
 
 
@@ -59,6 +59,8 @@ module.exports = function (config) {
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
         browsers: ["Chrome"],
 
+        failOnEmptyTestSuite: false,
+
 
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
@@ -67,6 +69,25 @@ module.exports = function (config) {
         webpack: {
             mode: "development",
             devtool: "inline-source-map",
+            // output: {
+            //     filename: "[name].js",
+            // },
+            // optimization: {
+            //     splitChunks: {
+            //         minChunks: 2,
+            //         chunks: "initial",
+            //         name: "common",
+            //     },
+            // },
+            module: {
+                rules: [
+                    {
+                        test: /\.js$/,
+                        use: ["source-map-loader"],
+                        enforce: "pre",
+                    },
+                ],
+            },
         },
 
         // Concurrency level

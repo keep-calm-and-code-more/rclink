@@ -1,12 +1,13 @@
-import protobuf from "protobufjs";
+// import protobuf from "protobufjs";
 import Long from "long";
+import { rep } from "../protos/peer"; // use generated static js code
 import {
     GetHashVal, CalculateAddr, ImportKey, Sign, VerifySign, 
 } from "./crypto";
 
 // Implement private properties
 const txMsgCollection = new WeakMap();
-let txMsgType; // static private property
+const txMsgType = rep.protos.Transaction; // static private property
 
 const getTimestamp = (millis) => {
     const timestampMillis = millis || Date.now();
@@ -108,25 +109,27 @@ class Transaction {
         }
     }
 
-    // 必须先调用此异步方法，才能构造Transaction实例
-    /**
-     * 复用txMsgType实例
-     */
-    static async setTxMsgType() {
-        if (txMsgType) { return txMsgType; }
-        // if (txMsgType) { return new Promise(resolve => (resolve(true))); }
-        // return protobuf.load("protos/peer.proto").then((root) => {
-        //     txMsgType = root.lookupType("rep.protos.Transaction");
-        //     return txMsgType;
-        // });
-        const root = await protobuf.load("protos/peer.proto");
-        txMsgType = root.lookupType("rep.protos.Transaction");
-        return txMsgType;
-    }
+    // // 必须调用此方法，才能构造Transaction实例
+    // /**
+    //  * 复用txMsgType实例
+    //  */
+    // static setTxMsgType() {
+    //     if (txMsgType) { return txMsgType; }
+    //     // if (txMsgType) { return new Promise(resolve => (resolve(true))); }
+    //     // return protobuf.load("protos/peer.proto").then((root) => {
+    //     //     txMsgType = root.lookupType("rep.protos.Transaction");
+    //     //     return txMsgType;
+    //     // });
 
-    static getTxMsgType() {
-        return txMsgType;
-    }
+    //     // const root = await protobuf.load("protos/peer.proto");
+    //     // txMsgType = root.lookupType("rep.protos.Transaction");
+    //     txMsgType = rep.protos.Transaction;
+    //     return txMsgType;
+    // }
+
+    // static getTxMsgType() {
+    //     return txMsgType;
+    // }
 
     getTxMsg() {
         return txMsgCollection.get(this);
@@ -141,7 +144,7 @@ class Transaction {
      */
     createSignedTransaction(prvKey, alg, pass) {
         const msg = txMsgCollection.get(this);
-        if (msg.signature.toString() !== "") { throw new Error("The transaction has been signed already"); }
+        if (msg.signature && msg.signature.toString() !== "") { throw new Error("The transaction has been signed already"); }
 
         // 签名
         let txBuffer = Buffer.from(txMsgType.encode(msg).finish());
@@ -174,7 +177,7 @@ class Transaction {
         // let msg = JSON.parse(JSON.stringify(txMsgCollection.get(this)))
         msg.metadata = null;
         const { signature } = msg;
-        if (signature.toString() === "") { throw new Error("The transaction has not been signed yet"); }
+        if (!signature || signature.toString() === "") { throw new Error("The transaction has not been signed yet"); }
         msg.signature = null;
         const msgBuffer = Buffer.from(txMsgType.encode(msg).finish());
         const isValid = VerifySign(pubKey, signature, msgBuffer, alg);
