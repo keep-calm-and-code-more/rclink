@@ -13,6 +13,7 @@ class EventTube {
         this._cb = cb;
         this._timeout = timeout || 5000;
         this.timer = null;
+        this.ws = null;
         this.connect();
     }
 
@@ -31,6 +32,7 @@ class EventTube {
         me.timer = null;
         console.log(`connecting ${me._address}`);
         const ws = new WebSocket(me._address);
+        me.ws = ws;
         ws.onerror = (evt) => {
             console.log(`error:${evt.message}`);
             me.reconnect();
@@ -41,10 +43,22 @@ class EventTube {
         ws.onopen = () => {
             console.log("connected");
         };
-        ws.onclose = () => {
+        ws.onclose = (e) => {
             console.log("disconnected");
-            me.reconnect();
+            if (e.code !== 4000) { 
+                me.reconnect(); 
+            } else {
+                console.log(`for the reason: ${e.reason}`);
+            }
         };
+    }
+
+    /**
+     * 主动关闭websocket连接
+     * @param {String} reason 解释主动关闭连接的原因，不超过123字节
+     */
+    close(reason) {
+        this.ws.close(4000, reason);
     }
 }
 export default EventTube;

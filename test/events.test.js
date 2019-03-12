@@ -27,6 +27,7 @@ describe("事件订阅与数据获取", () => {
             expect(msg.action).toBeLessThan(12);
             cout++;
             if (cout > 2) {
+                et.close("works done");
                 done();
             }
         }));
