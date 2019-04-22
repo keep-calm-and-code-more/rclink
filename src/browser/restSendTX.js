@@ -26,7 +26,6 @@ const restSendTX = ({ tx, address }) => {
                 "content-type": "application/json",
             },
             body: JSON.stringify(tx),
-            // Note: 如果先JSON.stringify()，直接使用原数据的话会返回400（Bad Request), why?
         }).then(r => r.json());
     }
     throw new TypeError(`Bad tx type: ${tx.constructor.name}, need Buffer or String`);

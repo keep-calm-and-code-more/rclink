@@ -25,6 +25,193 @@ export const rep = $root.rep = (() => {
          */
         const protos = {};
 
+        protos.Book = (function() {
+
+            /**
+             * Properties of a Book.
+             * @memberof rep.protos
+             * @interface IBook
+             * @property {string|null} [name] Book name
+             */
+
+            /**
+             * Constructs a new Book.
+             * @memberof rep.protos
+             * @classdesc Represents a Book.
+             * @implements IBook
+             * @constructor
+             * @param {rep.protos.IBook=} [properties] Properties to set
+             */
+            function Book(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * Book name.
+             * @member {string} name
+             * @memberof rep.protos.Book
+             * @instance
+             */
+            Book.prototype.name = "";
+
+            /**
+             * Creates a new Book instance using the specified properties.
+             * @function create
+             * @memberof rep.protos.Book
+             * @static
+             * @param {rep.protos.IBook=} [properties] Properties to set
+             * @returns {rep.protos.Book} Book instance
+             */
+            Book.create = function create(properties) {
+                return new Book(properties);
+            };
+
+            /**
+             * Encodes the specified Book message. Does not implicitly {@link rep.protos.Book.verify|verify} messages.
+             * @function encode
+             * @memberof rep.protos.Book
+             * @static
+             * @param {rep.protos.IBook} message Book message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Book.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.name != null && message.hasOwnProperty("name"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.name);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified Book message, length delimited. Does not implicitly {@link rep.protos.Book.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof rep.protos.Book
+             * @static
+             * @param {rep.protos.IBook} message Book message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Book.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a Book message from the specified reader or buffer.
+             * @function decode
+             * @memberof rep.protos.Book
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {rep.protos.Book} Book
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Book.decode = function decode(reader, length) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rep.protos.Book();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    switch (tag >>> 3) {
+                    case 1:
+                        message.name = reader.string();
+                        break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a Book message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof rep.protos.Book
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {rep.protos.Book} Book
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Book.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a Book message.
+             * @function verify
+             * @memberof rep.protos.Book
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            Book.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.name != null && message.hasOwnProperty("name"))
+                    if (!$util.isString(message.name))
+                        return "name: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a Book message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof rep.protos.Book
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {rep.protos.Book} Book
+             */
+            Book.fromObject = function fromObject(object) {
+                if (object instanceof $root.rep.protos.Book)
+                    return object;
+                let message = new $root.rep.protos.Book();
+                if (object.name != null)
+                    message.name = String(object.name);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a Book message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof rep.protos.Book
+             * @static
+             * @param {rep.protos.Book} message Book
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            Book.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults)
+                    object.name = "";
+                if (message.name != null && message.hasOwnProperty("name"))
+                    object.name = message.name;
+                return object;
+            };
+
+            /**
+             * Converts this Book to JSON.
+             * @function toJSON
+             * @memberof rep.protos.Book
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            Book.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            return Book;
+        })();
+
         protos.Event = (function() {
 
             /**
@@ -381,28 +568,25 @@ export const rep = $root.rep = (() => {
             return Event;
         })();
 
-        protos.Signer = (function() {
+        protos.Endorsement = (function() {
 
             /**
-             * Properties of a Signer.
+             * Properties of an Endorsement.
              * @memberof rep.protos
-             * @interface ISigner
-             * @property {string|null} [name] Signer name
-             * @property {string|null} [creditCode] Signer creditCode
-             * @property {string|null} [mobile] Signer mobile
-             * @property {Array.<string>|null} [certNames] Signer certNames
+             * @interface IEndorsement
+             * @property {Uint8Array|null} [endorser] Endorsement endorser
+             * @property {Uint8Array|null} [signature] Endorsement signature
              */
 
             /**
-             * Constructs a new Signer.
+             * Constructs a new Endorsement.
              * @memberof rep.protos
-             * @classdesc Represents a Signer.
-             * @implements ISigner
+             * @classdesc Represents an Endorsement.
+             * @implements IEndorsement
              * @constructor
-             * @param {rep.protos.ISigner=} [properties] Properties to set
+             * @param {rep.protos.IEndorsement=} [properties] Properties to set
              */
-            function Signer(properties) {
-                this.certNames = [];
+            function Endorsement(properties) {
                 if (properties)
                     for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
@@ -410,865 +594,87 @@ export const rep = $root.rep = (() => {
             }
 
             /**
-             * Signer name.
-             * @member {string} name
-             * @memberof rep.protos.Signer
+             * Endorsement endorser.
+             * @member {Uint8Array} endorser
+             * @memberof rep.protos.Endorsement
              * @instance
              */
-            Signer.prototype.name = "";
+            Endorsement.prototype.endorser = $util.newBuffer([]);
 
             /**
-             * Signer creditCode.
-             * @member {string} creditCode
-             * @memberof rep.protos.Signer
-             * @instance
-             */
-            Signer.prototype.creditCode = "";
-
-            /**
-             * Signer mobile.
-             * @member {string} mobile
-             * @memberof rep.protos.Signer
-             * @instance
-             */
-            Signer.prototype.mobile = "";
-
-            /**
-             * Signer certNames.
-             * @member {Array.<string>} certNames
-             * @memberof rep.protos.Signer
-             * @instance
-             */
-            Signer.prototype.certNames = $util.emptyArray;
-
-            /**
-             * Creates a new Signer instance using the specified properties.
-             * @function create
-             * @memberof rep.protos.Signer
-             * @static
-             * @param {rep.protos.ISigner=} [properties] Properties to set
-             * @returns {rep.protos.Signer} Signer instance
-             */
-            Signer.create = function create(properties) {
-                return new Signer(properties);
-            };
-
-            /**
-             * Encodes the specified Signer message. Does not implicitly {@link rep.protos.Signer.verify|verify} messages.
-             * @function encode
-             * @memberof rep.protos.Signer
-             * @static
-             * @param {rep.protos.ISigner} message Signer message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            Signer.encode = function encode(message, writer) {
-                if (!writer)
-                    writer = $Writer.create();
-                if (message.name != null && message.hasOwnProperty("name"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.name);
-                if (message.creditCode != null && message.hasOwnProperty("creditCode"))
-                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.creditCode);
-                if (message.mobile != null && message.hasOwnProperty("mobile"))
-                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.mobile);
-                if (message.certNames != null && message.certNames.length)
-                    for (let i = 0; i < message.certNames.length; ++i)
-                        writer.uint32(/* id 4, wireType 2 =*/34).string(message.certNames[i]);
-                return writer;
-            };
-
-            /**
-             * Encodes the specified Signer message, length delimited. Does not implicitly {@link rep.protos.Signer.verify|verify} messages.
-             * @function encodeDelimited
-             * @memberof rep.protos.Signer
-             * @static
-             * @param {rep.protos.ISigner} message Signer message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            Signer.encodeDelimited = function encodeDelimited(message, writer) {
-                return this.encode(message, writer).ldelim();
-            };
-
-            /**
-             * Decodes a Signer message from the specified reader or buffer.
-             * @function decode
-             * @memberof rep.protos.Signer
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @param {number} [length] Message length if known beforehand
-             * @returns {rep.protos.Signer} Signer
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            Signer.decode = function decode(reader, length) {
-                if (!(reader instanceof $Reader))
-                    reader = $Reader.create(reader);
-                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rep.protos.Signer();
-                while (reader.pos < end) {
-                    let tag = reader.uint32();
-                    switch (tag >>> 3) {
-                    case 1:
-                        message.name = reader.string();
-                        break;
-                    case 2:
-                        message.creditCode = reader.string();
-                        break;
-                    case 3:
-                        message.mobile = reader.string();
-                        break;
-                    case 4:
-                        if (!(message.certNames && message.certNames.length))
-                            message.certNames = [];
-                        message.certNames.push(reader.string());
-                        break;
-                    default:
-                        reader.skipType(tag & 7);
-                        break;
-                    }
-                }
-                return message;
-            };
-
-            /**
-             * Decodes a Signer message from the specified reader or buffer, length delimited.
-             * @function decodeDelimited
-             * @memberof rep.protos.Signer
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {rep.protos.Signer} Signer
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            Signer.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader))
-                    reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32());
-            };
-
-            /**
-             * Verifies a Signer message.
-             * @function verify
-             * @memberof rep.protos.Signer
-             * @static
-             * @param {Object.<string,*>} message Plain object to verify
-             * @returns {string|null} `null` if valid, otherwise the reason why it is not
-             */
-            Signer.verify = function verify(message) {
-                if (typeof message !== "object" || message === null)
-                    return "object expected";
-                if (message.name != null && message.hasOwnProperty("name"))
-                    if (!$util.isString(message.name))
-                        return "name: string expected";
-                if (message.creditCode != null && message.hasOwnProperty("creditCode"))
-                    if (!$util.isString(message.creditCode))
-                        return "creditCode: string expected";
-                if (message.mobile != null && message.hasOwnProperty("mobile"))
-                    if (!$util.isString(message.mobile))
-                        return "mobile: string expected";
-                if (message.certNames != null && message.hasOwnProperty("certNames")) {
-                    if (!Array.isArray(message.certNames))
-                        return "certNames: array expected";
-                    for (let i = 0; i < message.certNames.length; ++i)
-                        if (!$util.isString(message.certNames[i]))
-                            return "certNames: string[] expected";
-                }
-                return null;
-            };
-
-            /**
-             * Creates a Signer message from a plain object. Also converts values to their respective internal types.
-             * @function fromObject
-             * @memberof rep.protos.Signer
-             * @static
-             * @param {Object.<string,*>} object Plain object
-             * @returns {rep.protos.Signer} Signer
-             */
-            Signer.fromObject = function fromObject(object) {
-                if (object instanceof $root.rep.protos.Signer)
-                    return object;
-                let message = new $root.rep.protos.Signer();
-                if (object.name != null)
-                    message.name = String(object.name);
-                if (object.creditCode != null)
-                    message.creditCode = String(object.creditCode);
-                if (object.mobile != null)
-                    message.mobile = String(object.mobile);
-                if (object.certNames) {
-                    if (!Array.isArray(object.certNames))
-                        throw TypeError(".rep.protos.Signer.certNames: array expected");
-                    message.certNames = [];
-                    for (let i = 0; i < object.certNames.length; ++i)
-                        message.certNames[i] = String(object.certNames[i]);
-                }
-                return message;
-            };
-
-            /**
-             * Creates a plain object from a Signer message. Also converts values to other types if specified.
-             * @function toObject
-             * @memberof rep.protos.Signer
-             * @static
-             * @param {rep.protos.Signer} message Signer
-             * @param {$protobuf.IConversionOptions} [options] Conversion options
-             * @returns {Object.<string,*>} Plain object
-             */
-            Signer.toObject = function toObject(message, options) {
-                if (!options)
-                    options = {};
-                let object = {};
-                if (options.arrays || options.defaults)
-                    object.certNames = [];
-                if (options.defaults) {
-                    object.name = "";
-                    object.creditCode = "";
-                    object.mobile = "";
-                }
-                if (message.name != null && message.hasOwnProperty("name"))
-                    object.name = message.name;
-                if (message.creditCode != null && message.hasOwnProperty("creditCode"))
-                    object.creditCode = message.creditCode;
-                if (message.mobile != null && message.hasOwnProperty("mobile"))
-                    object.mobile = message.mobile;
-                if (message.certNames && message.certNames.length) {
-                    object.certNames = [];
-                    for (let j = 0; j < message.certNames.length; ++j)
-                        object.certNames[j] = message.certNames[j];
-                }
-                return object;
-            };
-
-            /**
-             * Converts this Signer to JSON.
-             * @function toJSON
-             * @memberof rep.protos.Signer
-             * @instance
-             * @returns {Object.<string,*>} JSON object
-             */
-            Signer.prototype.toJSON = function toJSON() {
-                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-            };
-
-            return Signer;
-        })();
-
-        protos.CertId = (function() {
-
-            /**
-             * Properties of a CertId.
-             * @memberof rep.protos
-             * @interface ICertId
-             * @property {string|null} [creditCode] CertId creditCode
-             * @property {string|null} [certName] CertId certName
-             */
-
-            /**
-             * Constructs a new CertId.
-             * @memberof rep.protos
-             * @classdesc Represents a CertId.
-             * @implements ICertId
-             * @constructor
-             * @param {rep.protos.ICertId=} [properties] Properties to set
-             */
-            function CertId(properties) {
-                if (properties)
-                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                        if (properties[keys[i]] != null)
-                            this[keys[i]] = properties[keys[i]];
-            }
-
-            /**
-             * CertId creditCode.
-             * @member {string} creditCode
-             * @memberof rep.protos.CertId
-             * @instance
-             */
-            CertId.prototype.creditCode = "";
-
-            /**
-             * CertId certName.
-             * @member {string} certName
-             * @memberof rep.protos.CertId
-             * @instance
-             */
-            CertId.prototype.certName = "";
-
-            /**
-             * Creates a new CertId instance using the specified properties.
-             * @function create
-             * @memberof rep.protos.CertId
-             * @static
-             * @param {rep.protos.ICertId=} [properties] Properties to set
-             * @returns {rep.protos.CertId} CertId instance
-             */
-            CertId.create = function create(properties) {
-                return new CertId(properties);
-            };
-
-            /**
-             * Encodes the specified CertId message. Does not implicitly {@link rep.protos.CertId.verify|verify} messages.
-             * @function encode
-             * @memberof rep.protos.CertId
-             * @static
-             * @param {rep.protos.ICertId} message CertId message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            CertId.encode = function encode(message, writer) {
-                if (!writer)
-                    writer = $Writer.create();
-                if (message.creditCode != null && message.hasOwnProperty("creditCode"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.creditCode);
-                if (message.certName != null && message.hasOwnProperty("certName"))
-                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.certName);
-                return writer;
-            };
-
-            /**
-             * Encodes the specified CertId message, length delimited. Does not implicitly {@link rep.protos.CertId.verify|verify} messages.
-             * @function encodeDelimited
-             * @memberof rep.protos.CertId
-             * @static
-             * @param {rep.protos.ICertId} message CertId message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            CertId.encodeDelimited = function encodeDelimited(message, writer) {
-                return this.encode(message, writer).ldelim();
-            };
-
-            /**
-             * Decodes a CertId message from the specified reader or buffer.
-             * @function decode
-             * @memberof rep.protos.CertId
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @param {number} [length] Message length if known beforehand
-             * @returns {rep.protos.CertId} CertId
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            CertId.decode = function decode(reader, length) {
-                if (!(reader instanceof $Reader))
-                    reader = $Reader.create(reader);
-                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rep.protos.CertId();
-                while (reader.pos < end) {
-                    let tag = reader.uint32();
-                    switch (tag >>> 3) {
-                    case 1:
-                        message.creditCode = reader.string();
-                        break;
-                    case 2:
-                        message.certName = reader.string();
-                        break;
-                    default:
-                        reader.skipType(tag & 7);
-                        break;
-                    }
-                }
-                return message;
-            };
-
-            /**
-             * Decodes a CertId message from the specified reader or buffer, length delimited.
-             * @function decodeDelimited
-             * @memberof rep.protos.CertId
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {rep.protos.CertId} CertId
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            CertId.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader))
-                    reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32());
-            };
-
-            /**
-             * Verifies a CertId message.
-             * @function verify
-             * @memberof rep.protos.CertId
-             * @static
-             * @param {Object.<string,*>} message Plain object to verify
-             * @returns {string|null} `null` if valid, otherwise the reason why it is not
-             */
-            CertId.verify = function verify(message) {
-                if (typeof message !== "object" || message === null)
-                    return "object expected";
-                if (message.creditCode != null && message.hasOwnProperty("creditCode"))
-                    if (!$util.isString(message.creditCode))
-                        return "creditCode: string expected";
-                if (message.certName != null && message.hasOwnProperty("certName"))
-                    if (!$util.isString(message.certName))
-                        return "certName: string expected";
-                return null;
-            };
-
-            /**
-             * Creates a CertId message from a plain object. Also converts values to their respective internal types.
-             * @function fromObject
-             * @memberof rep.protos.CertId
-             * @static
-             * @param {Object.<string,*>} object Plain object
-             * @returns {rep.protos.CertId} CertId
-             */
-            CertId.fromObject = function fromObject(object) {
-                if (object instanceof $root.rep.protos.CertId)
-                    return object;
-                let message = new $root.rep.protos.CertId();
-                if (object.creditCode != null)
-                    message.creditCode = String(object.creditCode);
-                if (object.certName != null)
-                    message.certName = String(object.certName);
-                return message;
-            };
-
-            /**
-             * Creates a plain object from a CertId message. Also converts values to other types if specified.
-             * @function toObject
-             * @memberof rep.protos.CertId
-             * @static
-             * @param {rep.protos.CertId} message CertId
-             * @param {$protobuf.IConversionOptions} [options] Conversion options
-             * @returns {Object.<string,*>} Plain object
-             */
-            CertId.toObject = function toObject(message, options) {
-                if (!options)
-                    options = {};
-                let object = {};
-                if (options.defaults) {
-                    object.creditCode = "";
-                    object.certName = "";
-                }
-                if (message.creditCode != null && message.hasOwnProperty("creditCode"))
-                    object.creditCode = message.creditCode;
-                if (message.certName != null && message.hasOwnProperty("certName"))
-                    object.certName = message.certName;
-                return object;
-            };
-
-            /**
-             * Converts this CertId to JSON.
-             * @function toJSON
-             * @memberof rep.protos.CertId
-             * @instance
-             * @returns {Object.<string,*>} JSON object
-             */
-            CertId.prototype.toJSON = function toJSON() {
-                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-            };
-
-            return CertId;
-        })();
-
-        protos.Certificate = (function() {
-
-            /**
-             * Properties of a Certificate.
-             * @memberof rep.protos
-             * @interface ICertificate
-             * @property {string|null} [certificate] Certificate certificate
-             * @property {string|null} [algType] Certificate algType
-             * @property {boolean|null} [certValid] Certificate certValid
-             * @property {google.protobuf.ITimestamp|null} [reg_Time] Certificate reg_Time
-             * @property {google.protobuf.ITimestamp|null} [unreg_Time] Certificate unreg_Time
-             */
-
-            /**
-             * Constructs a new Certificate.
-             * @memberof rep.protos
-             * @classdesc Represents a Certificate.
-             * @implements ICertificate
-             * @constructor
-             * @param {rep.protos.ICertificate=} [properties] Properties to set
-             */
-            function Certificate(properties) {
-                if (properties)
-                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                        if (properties[keys[i]] != null)
-                            this[keys[i]] = properties[keys[i]];
-            }
-
-            /**
-             * Certificate certificate.
-             * @member {string} certificate
-             * @memberof rep.protos.Certificate
-             * @instance
-             */
-            Certificate.prototype.certificate = "";
-
-            /**
-             * Certificate algType.
-             * @member {string} algType
-             * @memberof rep.protos.Certificate
-             * @instance
-             */
-            Certificate.prototype.algType = "";
-
-            /**
-             * Certificate certValid.
-             * @member {boolean} certValid
-             * @memberof rep.protos.Certificate
-             * @instance
-             */
-            Certificate.prototype.certValid = false;
-
-            /**
-             * Certificate reg_Time.
-             * @member {google.protobuf.ITimestamp|null|undefined} reg_Time
-             * @memberof rep.protos.Certificate
-             * @instance
-             */
-            Certificate.prototype.reg_Time = null;
-
-            /**
-             * Certificate unreg_Time.
-             * @member {google.protobuf.ITimestamp|null|undefined} unreg_Time
-             * @memberof rep.protos.Certificate
-             * @instance
-             */
-            Certificate.prototype.unreg_Time = null;
-
-            /**
-             * Creates a new Certificate instance using the specified properties.
-             * @function create
-             * @memberof rep.protos.Certificate
-             * @static
-             * @param {rep.protos.ICertificate=} [properties] Properties to set
-             * @returns {rep.protos.Certificate} Certificate instance
-             */
-            Certificate.create = function create(properties) {
-                return new Certificate(properties);
-            };
-
-            /**
-             * Encodes the specified Certificate message. Does not implicitly {@link rep.protos.Certificate.verify|verify} messages.
-             * @function encode
-             * @memberof rep.protos.Certificate
-             * @static
-             * @param {rep.protos.ICertificate} message Certificate message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            Certificate.encode = function encode(message, writer) {
-                if (!writer)
-                    writer = $Writer.create();
-                if (message.certificate != null && message.hasOwnProperty("certificate"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.certificate);
-                if (message.algType != null && message.hasOwnProperty("algType"))
-                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.algType);
-                if (message.certValid != null && message.hasOwnProperty("certValid"))
-                    writer.uint32(/* id 3, wireType 0 =*/24).bool(message.certValid);
-                if (message.reg_Time != null && message.hasOwnProperty("reg_Time"))
-                    $root.google.protobuf.Timestamp.encode(message.reg_Time, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
-                if (message.unreg_Time != null && message.hasOwnProperty("unreg_Time"))
-                    $root.google.protobuf.Timestamp.encode(message.unreg_Time, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
-                return writer;
-            };
-
-            /**
-             * Encodes the specified Certificate message, length delimited. Does not implicitly {@link rep.protos.Certificate.verify|verify} messages.
-             * @function encodeDelimited
-             * @memberof rep.protos.Certificate
-             * @static
-             * @param {rep.protos.ICertificate} message Certificate message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            Certificate.encodeDelimited = function encodeDelimited(message, writer) {
-                return this.encode(message, writer).ldelim();
-            };
-
-            /**
-             * Decodes a Certificate message from the specified reader or buffer.
-             * @function decode
-             * @memberof rep.protos.Certificate
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @param {number} [length] Message length if known beforehand
-             * @returns {rep.protos.Certificate} Certificate
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            Certificate.decode = function decode(reader, length) {
-                if (!(reader instanceof $Reader))
-                    reader = $Reader.create(reader);
-                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rep.protos.Certificate();
-                while (reader.pos < end) {
-                    let tag = reader.uint32();
-                    switch (tag >>> 3) {
-                    case 1:
-                        message.certificate = reader.string();
-                        break;
-                    case 2:
-                        message.algType = reader.string();
-                        break;
-                    case 3:
-                        message.certValid = reader.bool();
-                        break;
-                    case 4:
-                        message.reg_Time = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
-                        break;
-                    case 5:
-                        message.unreg_Time = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
-                        break;
-                    default:
-                        reader.skipType(tag & 7);
-                        break;
-                    }
-                }
-                return message;
-            };
-
-            /**
-             * Decodes a Certificate message from the specified reader or buffer, length delimited.
-             * @function decodeDelimited
-             * @memberof rep.protos.Certificate
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {rep.protos.Certificate} Certificate
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            Certificate.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader))
-                    reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32());
-            };
-
-            /**
-             * Verifies a Certificate message.
-             * @function verify
-             * @memberof rep.protos.Certificate
-             * @static
-             * @param {Object.<string,*>} message Plain object to verify
-             * @returns {string|null} `null` if valid, otherwise the reason why it is not
-             */
-            Certificate.verify = function verify(message) {
-                if (typeof message !== "object" || message === null)
-                    return "object expected";
-                if (message.certificate != null && message.hasOwnProperty("certificate"))
-                    if (!$util.isString(message.certificate))
-                        return "certificate: string expected";
-                if (message.algType != null && message.hasOwnProperty("algType"))
-                    if (!$util.isString(message.algType))
-                        return "algType: string expected";
-                if (message.certValid != null && message.hasOwnProperty("certValid"))
-                    if (typeof message.certValid !== "boolean")
-                        return "certValid: boolean expected";
-                if (message.reg_Time != null && message.hasOwnProperty("reg_Time")) {
-                    let error = $root.google.protobuf.Timestamp.verify(message.reg_Time);
-                    if (error)
-                        return "reg_Time." + error;
-                }
-                if (message.unreg_Time != null && message.hasOwnProperty("unreg_Time")) {
-                    let error = $root.google.protobuf.Timestamp.verify(message.unreg_Time);
-                    if (error)
-                        return "unreg_Time." + error;
-                }
-                return null;
-            };
-
-            /**
-             * Creates a Certificate message from a plain object. Also converts values to their respective internal types.
-             * @function fromObject
-             * @memberof rep.protos.Certificate
-             * @static
-             * @param {Object.<string,*>} object Plain object
-             * @returns {rep.protos.Certificate} Certificate
-             */
-            Certificate.fromObject = function fromObject(object) {
-                if (object instanceof $root.rep.protos.Certificate)
-                    return object;
-                let message = new $root.rep.protos.Certificate();
-                if (object.certificate != null)
-                    message.certificate = String(object.certificate);
-                if (object.algType != null)
-                    message.algType = String(object.algType);
-                if (object.certValid != null)
-                    message.certValid = Boolean(object.certValid);
-                if (object.reg_Time != null) {
-                    if (typeof object.reg_Time !== "object")
-                        throw TypeError(".rep.protos.Certificate.reg_Time: object expected");
-                    message.reg_Time = $root.google.protobuf.Timestamp.fromObject(object.reg_Time);
-                }
-                if (object.unreg_Time != null) {
-                    if (typeof object.unreg_Time !== "object")
-                        throw TypeError(".rep.protos.Certificate.unreg_Time: object expected");
-                    message.unreg_Time = $root.google.protobuf.Timestamp.fromObject(object.unreg_Time);
-                }
-                return message;
-            };
-
-            /**
-             * Creates a plain object from a Certificate message. Also converts values to other types if specified.
-             * @function toObject
-             * @memberof rep.protos.Certificate
-             * @static
-             * @param {rep.protos.Certificate} message Certificate
-             * @param {$protobuf.IConversionOptions} [options] Conversion options
-             * @returns {Object.<string,*>} Plain object
-             */
-            Certificate.toObject = function toObject(message, options) {
-                if (!options)
-                    options = {};
-                let object = {};
-                if (options.defaults) {
-                    object.certificate = "";
-                    object.algType = "";
-                    object.certValid = false;
-                    object.reg_Time = null;
-                    object.unreg_Time = null;
-                }
-                if (message.certificate != null && message.hasOwnProperty("certificate"))
-                    object.certificate = message.certificate;
-                if (message.algType != null && message.hasOwnProperty("algType"))
-                    object.algType = message.algType;
-                if (message.certValid != null && message.hasOwnProperty("certValid"))
-                    object.certValid = message.certValid;
-                if (message.reg_Time != null && message.hasOwnProperty("reg_Time"))
-                    object.reg_Time = $root.google.protobuf.Timestamp.toObject(message.reg_Time, options);
-                if (message.unreg_Time != null && message.hasOwnProperty("unreg_Time"))
-                    object.unreg_Time = $root.google.protobuf.Timestamp.toObject(message.unreg_Time, options);
-                return object;
-            };
-
-            /**
-             * Converts this Certificate to JSON.
-             * @function toJSON
-             * @memberof rep.protos.Certificate
-             * @instance
-             * @returns {Object.<string,*>} JSON object
-             */
-            Certificate.prototype.toJSON = function toJSON() {
-                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-            };
-
-            return Certificate;
-        })();
-
-        protos.Signature = (function() {
-
-            /**
-             * Properties of a Signature.
-             * @memberof rep.protos
-             * @interface ISignature
-             * @property {rep.protos.ICertId|null} [certId] Signature certId
-             * @property {google.protobuf.ITimestamp|null} [tmLocal] Signature tmLocal
-             * @property {Uint8Array|null} [signature] Signature signature
-             */
-
-            /**
-             * Constructs a new Signature.
-             * @memberof rep.protos
-             * @classdesc Represents a Signature.
-             * @implements ISignature
-             * @constructor
-             * @param {rep.protos.ISignature=} [properties] Properties to set
-             */
-            function Signature(properties) {
-                if (properties)
-                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                        if (properties[keys[i]] != null)
-                            this[keys[i]] = properties[keys[i]];
-            }
-
-            /**
-             * Signature certId.
-             * @member {rep.protos.ICertId|null|undefined} certId
-             * @memberof rep.protos.Signature
-             * @instance
-             */
-            Signature.prototype.certId = null;
-
-            /**
-             * Signature tmLocal.
-             * @member {google.protobuf.ITimestamp|null|undefined} tmLocal
-             * @memberof rep.protos.Signature
-             * @instance
-             */
-            Signature.prototype.tmLocal = null;
-
-            /**
-             * Signature signature.
+             * Endorsement signature.
              * @member {Uint8Array} signature
-             * @memberof rep.protos.Signature
+             * @memberof rep.protos.Endorsement
              * @instance
              */
-            Signature.prototype.signature = $util.newBuffer([]);
+            Endorsement.prototype.signature = $util.newBuffer([]);
 
             /**
-             * Creates a new Signature instance using the specified properties.
+             * Creates a new Endorsement instance using the specified properties.
              * @function create
-             * @memberof rep.protos.Signature
+             * @memberof rep.protos.Endorsement
              * @static
-             * @param {rep.protos.ISignature=} [properties] Properties to set
-             * @returns {rep.protos.Signature} Signature instance
+             * @param {rep.protos.IEndorsement=} [properties] Properties to set
+             * @returns {rep.protos.Endorsement} Endorsement instance
              */
-            Signature.create = function create(properties) {
-                return new Signature(properties);
+            Endorsement.create = function create(properties) {
+                return new Endorsement(properties);
             };
 
             /**
-             * Encodes the specified Signature message. Does not implicitly {@link rep.protos.Signature.verify|verify} messages.
+             * Encodes the specified Endorsement message. Does not implicitly {@link rep.protos.Endorsement.verify|verify} messages.
              * @function encode
-             * @memberof rep.protos.Signature
+             * @memberof rep.protos.Endorsement
              * @static
-             * @param {rep.protos.ISignature} message Signature message or plain object to encode
+             * @param {rep.protos.IEndorsement} message Endorsement message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            Signature.encode = function encode(message, writer) {
+            Endorsement.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.certId != null && message.hasOwnProperty("certId"))
-                    $root.rep.protos.CertId.encode(message.certId, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                if (message.tmLocal != null && message.hasOwnProperty("tmLocal"))
-                    $root.google.protobuf.Timestamp.encode(message.tmLocal, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.endorser != null && message.hasOwnProperty("endorser"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.endorser);
                 if (message.signature != null && message.hasOwnProperty("signature"))
-                    writer.uint32(/* id 3, wireType 2 =*/26).bytes(message.signature);
+                    writer.uint32(/* id 2, wireType 2 =*/18).bytes(message.signature);
                 return writer;
             };
 
             /**
-             * Encodes the specified Signature message, length delimited. Does not implicitly {@link rep.protos.Signature.verify|verify} messages.
+             * Encodes the specified Endorsement message, length delimited. Does not implicitly {@link rep.protos.Endorsement.verify|verify} messages.
              * @function encodeDelimited
-             * @memberof rep.protos.Signature
+             * @memberof rep.protos.Endorsement
              * @static
-             * @param {rep.protos.ISignature} message Signature message or plain object to encode
+             * @param {rep.protos.IEndorsement} message Endorsement message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            Signature.encodeDelimited = function encodeDelimited(message, writer) {
+            Endorsement.encodeDelimited = function encodeDelimited(message, writer) {
                 return this.encode(message, writer).ldelim();
             };
 
             /**
-             * Decodes a Signature message from the specified reader or buffer.
+             * Decodes an Endorsement message from the specified reader or buffer.
              * @function decode
-             * @memberof rep.protos.Signature
+             * @memberof rep.protos.Endorsement
              * @static
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
              * @param {number} [length] Message length if known beforehand
-             * @returns {rep.protos.Signature} Signature
+             * @returns {rep.protos.Endorsement} Endorsement
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            Signature.decode = function decode(reader, length) {
+            Endorsement.decode = function decode(reader, length) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rep.protos.Signature();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rep.protos.Endorsement();
                 while (reader.pos < end) {
                     let tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.certId = $root.rep.protos.CertId.decode(reader, reader.uint32());
+                        message.endorser = reader.bytes();
                         break;
                     case 2:
-                        message.tmLocal = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
-                        break;
-                    case 3:
                         message.signature = reader.bytes();
                         break;
                     default:
@@ -1280,42 +686,35 @@ export const rep = $root.rep = (() => {
             };
 
             /**
-             * Decodes a Signature message from the specified reader or buffer, length delimited.
+             * Decodes an Endorsement message from the specified reader or buffer, length delimited.
              * @function decodeDelimited
-             * @memberof rep.protos.Signature
+             * @memberof rep.protos.Endorsement
              * @static
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {rep.protos.Signature} Signature
+             * @returns {rep.protos.Endorsement} Endorsement
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            Signature.decodeDelimited = function decodeDelimited(reader) {
+            Endorsement.decodeDelimited = function decodeDelimited(reader) {
                 if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
                 return this.decode(reader, reader.uint32());
             };
 
             /**
-             * Verifies a Signature message.
+             * Verifies an Endorsement message.
              * @function verify
-             * @memberof rep.protos.Signature
+             * @memberof rep.protos.Endorsement
              * @static
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            Signature.verify = function verify(message) {
+            Endorsement.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.certId != null && message.hasOwnProperty("certId")) {
-                    let error = $root.rep.protos.CertId.verify(message.certId);
-                    if (error)
-                        return "certId." + error;
-                }
-                if (message.tmLocal != null && message.hasOwnProperty("tmLocal")) {
-                    let error = $root.google.protobuf.Timestamp.verify(message.tmLocal);
-                    if (error)
-                        return "tmLocal." + error;
-                }
+                if (message.endorser != null && message.hasOwnProperty("endorser"))
+                    if (!(message.endorser && typeof message.endorser.length === "number" || $util.isString(message.endorser)))
+                        return "endorser: buffer expected";
                 if (message.signature != null && message.hasOwnProperty("signature"))
                     if (!(message.signature && typeof message.signature.length === "number" || $util.isString(message.signature)))
                         return "signature: buffer expected";
@@ -1323,27 +722,22 @@ export const rep = $root.rep = (() => {
             };
 
             /**
-             * Creates a Signature message from a plain object. Also converts values to their respective internal types.
+             * Creates an Endorsement message from a plain object. Also converts values to their respective internal types.
              * @function fromObject
-             * @memberof rep.protos.Signature
+             * @memberof rep.protos.Endorsement
              * @static
              * @param {Object.<string,*>} object Plain object
-             * @returns {rep.protos.Signature} Signature
+             * @returns {rep.protos.Endorsement} Endorsement
              */
-            Signature.fromObject = function fromObject(object) {
-                if (object instanceof $root.rep.protos.Signature)
+            Endorsement.fromObject = function fromObject(object) {
+                if (object instanceof $root.rep.protos.Endorsement)
                     return object;
-                let message = new $root.rep.protos.Signature();
-                if (object.certId != null) {
-                    if (typeof object.certId !== "object")
-                        throw TypeError(".rep.protos.Signature.certId: object expected");
-                    message.certId = $root.rep.protos.CertId.fromObject(object.certId);
-                }
-                if (object.tmLocal != null) {
-                    if (typeof object.tmLocal !== "object")
-                        throw TypeError(".rep.protos.Signature.tmLocal: object expected");
-                    message.tmLocal = $root.google.protobuf.Timestamp.fromObject(object.tmLocal);
-                }
+                let message = new $root.rep.protos.Endorsement();
+                if (object.endorser != null)
+                    if (typeof object.endorser === "string")
+                        $util.base64.decode(object.endorser, message.endorser = $util.newBuffer($util.base64.length(object.endorser)), 0);
+                    else if (object.endorser.length)
+                        message.endorser = object.endorser;
                 if (object.signature != null)
                     if (typeof object.signature === "string")
                         $util.base64.decode(object.signature, message.signature = $util.newBuffer($util.base64.length(object.signature)), 0);
@@ -1353,21 +747,26 @@ export const rep = $root.rep = (() => {
             };
 
             /**
-             * Creates a plain object from a Signature message. Also converts values to other types if specified.
+             * Creates a plain object from an Endorsement message. Also converts values to other types if specified.
              * @function toObject
-             * @memberof rep.protos.Signature
+             * @memberof rep.protos.Endorsement
              * @static
-             * @param {rep.protos.Signature} message Signature
+             * @param {rep.protos.Endorsement} message Endorsement
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            Signature.toObject = function toObject(message, options) {
+            Endorsement.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
                 let object = {};
                 if (options.defaults) {
-                    object.certId = null;
-                    object.tmLocal = null;
+                    if (options.bytes === String)
+                        object.endorser = "";
+                    else {
+                        object.endorser = [];
+                        if (options.bytes !== Array)
+                            object.endorser = $util.newBuffer(object.endorser);
+                    }
                     if (options.bytes === String)
                         object.signature = "";
                     else {
@@ -1376,27 +775,235 @@ export const rep = $root.rep = (() => {
                             object.signature = $util.newBuffer(object.signature);
                     }
                 }
-                if (message.certId != null && message.hasOwnProperty("certId"))
-                    object.certId = $root.rep.protos.CertId.toObject(message.certId, options);
-                if (message.tmLocal != null && message.hasOwnProperty("tmLocal"))
-                    object.tmLocal = $root.google.protobuf.Timestamp.toObject(message.tmLocal, options);
+                if (message.endorser != null && message.hasOwnProperty("endorser"))
+                    object.endorser = options.bytes === String ? $util.base64.encode(message.endorser, 0, message.endorser.length) : options.bytes === Array ? Array.prototype.slice.call(message.endorser) : message.endorser;
                 if (message.signature != null && message.hasOwnProperty("signature"))
                     object.signature = options.bytes === String ? $util.base64.encode(message.signature, 0, message.signature.length) : options.bytes === Array ? Array.prototype.slice.call(message.signature) : message.signature;
                 return object;
             };
 
             /**
-             * Converts this Signature to JSON.
+             * Converts this Endorsement to JSON.
              * @function toJSON
-             * @memberof rep.protos.Signature
+             * @memberof rep.protos.Endorsement
              * @instance
              * @returns {Object.<string,*>} JSON object
              */
-            Signature.prototype.toJSON = function toJSON() {
+            Endorsement.prototype.toJSON = function toJSON() {
                 return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
             };
 
-            return Signature;
+            return Endorsement;
+        })();
+
+        protos.ChaincodeID = (function() {
+
+            /**
+             * Properties of a ChaincodeID.
+             * @memberof rep.protos
+             * @interface IChaincodeID
+             * @property {string|null} [path] ChaincodeID path
+             * @property {string|null} [name] ChaincodeID name
+             */
+
+            /**
+             * Constructs a new ChaincodeID.
+             * @memberof rep.protos
+             * @classdesc Represents a ChaincodeID.
+             * @implements IChaincodeID
+             * @constructor
+             * @param {rep.protos.IChaincodeID=} [properties] Properties to set
+             */
+            function ChaincodeID(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * ChaincodeID path.
+             * @member {string} path
+             * @memberof rep.protos.ChaincodeID
+             * @instance
+             */
+            ChaincodeID.prototype.path = "";
+
+            /**
+             * ChaincodeID name.
+             * @member {string} name
+             * @memberof rep.protos.ChaincodeID
+             * @instance
+             */
+            ChaincodeID.prototype.name = "";
+
+            /**
+             * Creates a new ChaincodeID instance using the specified properties.
+             * @function create
+             * @memberof rep.protos.ChaincodeID
+             * @static
+             * @param {rep.protos.IChaincodeID=} [properties] Properties to set
+             * @returns {rep.protos.ChaincodeID} ChaincodeID instance
+             */
+            ChaincodeID.create = function create(properties) {
+                return new ChaincodeID(properties);
+            };
+
+            /**
+             * Encodes the specified ChaincodeID message. Does not implicitly {@link rep.protos.ChaincodeID.verify|verify} messages.
+             * @function encode
+             * @memberof rep.protos.ChaincodeID
+             * @static
+             * @param {rep.protos.IChaincodeID} message ChaincodeID message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ChaincodeID.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.path != null && message.hasOwnProperty("path"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.path);
+                if (message.name != null && message.hasOwnProperty("name"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.name);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified ChaincodeID message, length delimited. Does not implicitly {@link rep.protos.ChaincodeID.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof rep.protos.ChaincodeID
+             * @static
+             * @param {rep.protos.IChaincodeID} message ChaincodeID message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ChaincodeID.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a ChaincodeID message from the specified reader or buffer.
+             * @function decode
+             * @memberof rep.protos.ChaincodeID
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {rep.protos.ChaincodeID} ChaincodeID
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ChaincodeID.decode = function decode(reader, length) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rep.protos.ChaincodeID();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    switch (tag >>> 3) {
+                    case 1:
+                        message.path = reader.string();
+                        break;
+                    case 2:
+                        message.name = reader.string();
+                        break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a ChaincodeID message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof rep.protos.ChaincodeID
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {rep.protos.ChaincodeID} ChaincodeID
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ChaincodeID.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a ChaincodeID message.
+             * @function verify
+             * @memberof rep.protos.ChaincodeID
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            ChaincodeID.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.path != null && message.hasOwnProperty("path"))
+                    if (!$util.isString(message.path))
+                        return "path: string expected";
+                if (message.name != null && message.hasOwnProperty("name"))
+                    if (!$util.isString(message.name))
+                        return "name: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a ChaincodeID message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof rep.protos.ChaincodeID
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {rep.protos.ChaincodeID} ChaincodeID
+             */
+            ChaincodeID.fromObject = function fromObject(object) {
+                if (object instanceof $root.rep.protos.ChaincodeID)
+                    return object;
+                let message = new $root.rep.protos.ChaincodeID();
+                if (object.path != null)
+                    message.path = String(object.path);
+                if (object.name != null)
+                    message.name = String(object.name);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a ChaincodeID message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof rep.protos.ChaincodeID
+             * @static
+             * @param {rep.protos.ChaincodeID} message ChaincodeID
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            ChaincodeID.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.path = "";
+                    object.name = "";
+                }
+                if (message.path != null && message.hasOwnProperty("path"))
+                    object.path = message.path;
+                if (message.name != null && message.hasOwnProperty("name"))
+                    object.name = message.name;
+                return object;
+            };
+
+            /**
+             * Converts this ChaincodeID to JSON.
+             * @function toJSON
+             * @memberof rep.protos.ChaincodeID
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            ChaincodeID.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            return ChaincodeID;
         })();
 
         protos.ChaincodeInput = (function() {
@@ -1625,25 +1232,29 @@ export const rep = $root.rep = (() => {
             return ChaincodeInput;
         })();
 
-        protos.ChaincodeId = (function() {
+        protos.ChaincodeSpec = (function() {
 
             /**
-             * Properties of a ChaincodeId.
+             * Properties of a ChaincodeSpec.
              * @memberof rep.protos
-             * @interface IChaincodeId
-             * @property {string|null} [chaincodeName] ChaincodeId chaincodeName
-             * @property {number|null} [version] ChaincodeId version
+             * @interface IChaincodeSpec
+             * @property {rep.protos.IChaincodeID|null} [chaincodeID] ChaincodeSpec chaincodeID
+             * @property {rep.protos.IChaincodeInput|null} [ctorMsg] ChaincodeSpec ctorMsg
+             * @property {number|null} [timeout] ChaincodeSpec timeout
+             * @property {string|null} [secureContext] ChaincodeSpec secureContext
+             * @property {Uint8Array|null} [codePackage] ChaincodeSpec codePackage
+             * @property {rep.protos.ChaincodeSpec.CodeType|null} [ctype] ChaincodeSpec ctype
              */
 
             /**
-             * Constructs a new ChaincodeId.
+             * Constructs a new ChaincodeSpec.
              * @memberof rep.protos
-             * @classdesc Represents a ChaincodeId.
-             * @implements IChaincodeId
+             * @classdesc Represents a ChaincodeSpec.
+             * @implements IChaincodeSpec
              * @constructor
-             * @param {rep.protos.IChaincodeId=} [properties] Properties to set
+             * @param {rep.protos.IChaincodeSpec=} [properties] Properties to set
              */
-            function ChaincodeId(properties) {
+            function ChaincodeSpec(properties) {
                 if (properties)
                     for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
@@ -1651,325 +1262,139 @@ export const rep = $root.rep = (() => {
             }
 
             /**
-             * ChaincodeId chaincodeName.
-             * @member {string} chaincodeName
-             * @memberof rep.protos.ChaincodeId
+             * ChaincodeSpec chaincodeID.
+             * @member {rep.protos.IChaincodeID|null|undefined} chaincodeID
+             * @memberof rep.protos.ChaincodeSpec
              * @instance
              */
-            ChaincodeId.prototype.chaincodeName = "";
+            ChaincodeSpec.prototype.chaincodeID = null;
 
             /**
-             * ChaincodeId version.
-             * @member {number} version
-             * @memberof rep.protos.ChaincodeId
+             * ChaincodeSpec ctorMsg.
+             * @member {rep.protos.IChaincodeInput|null|undefined} ctorMsg
+             * @memberof rep.protos.ChaincodeSpec
              * @instance
              */
-            ChaincodeId.prototype.version = 0;
+            ChaincodeSpec.prototype.ctorMsg = null;
 
             /**
-             * Creates a new ChaincodeId instance using the specified properties.
-             * @function create
-             * @memberof rep.protos.ChaincodeId
-             * @static
-             * @param {rep.protos.IChaincodeId=} [properties] Properties to set
-             * @returns {rep.protos.ChaincodeId} ChaincodeId instance
-             */
-            ChaincodeId.create = function create(properties) {
-                return new ChaincodeId(properties);
-            };
-
-            /**
-             * Encodes the specified ChaincodeId message. Does not implicitly {@link rep.protos.ChaincodeId.verify|verify} messages.
-             * @function encode
-             * @memberof rep.protos.ChaincodeId
-             * @static
-             * @param {rep.protos.IChaincodeId} message ChaincodeId message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            ChaincodeId.encode = function encode(message, writer) {
-                if (!writer)
-                    writer = $Writer.create();
-                if (message.chaincodeName != null && message.hasOwnProperty("chaincodeName"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.chaincodeName);
-                if (message.version != null && message.hasOwnProperty("version"))
-                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.version);
-                return writer;
-            };
-
-            /**
-             * Encodes the specified ChaincodeId message, length delimited. Does not implicitly {@link rep.protos.ChaincodeId.verify|verify} messages.
-             * @function encodeDelimited
-             * @memberof rep.protos.ChaincodeId
-             * @static
-             * @param {rep.protos.IChaincodeId} message ChaincodeId message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            ChaincodeId.encodeDelimited = function encodeDelimited(message, writer) {
-                return this.encode(message, writer).ldelim();
-            };
-
-            /**
-             * Decodes a ChaincodeId message from the specified reader or buffer.
-             * @function decode
-             * @memberof rep.protos.ChaincodeId
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @param {number} [length] Message length if known beforehand
-             * @returns {rep.protos.ChaincodeId} ChaincodeId
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            ChaincodeId.decode = function decode(reader, length) {
-                if (!(reader instanceof $Reader))
-                    reader = $Reader.create(reader);
-                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rep.protos.ChaincodeId();
-                while (reader.pos < end) {
-                    let tag = reader.uint32();
-                    switch (tag >>> 3) {
-                    case 1:
-                        message.chaincodeName = reader.string();
-                        break;
-                    case 2:
-                        message.version = reader.int32();
-                        break;
-                    default:
-                        reader.skipType(tag & 7);
-                        break;
-                    }
-                }
-                return message;
-            };
-
-            /**
-             * Decodes a ChaincodeId message from the specified reader or buffer, length delimited.
-             * @function decodeDelimited
-             * @memberof rep.protos.ChaincodeId
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {rep.protos.ChaincodeId} ChaincodeId
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            ChaincodeId.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader))
-                    reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32());
-            };
-
-            /**
-             * Verifies a ChaincodeId message.
-             * @function verify
-             * @memberof rep.protos.ChaincodeId
-             * @static
-             * @param {Object.<string,*>} message Plain object to verify
-             * @returns {string|null} `null` if valid, otherwise the reason why it is not
-             */
-            ChaincodeId.verify = function verify(message) {
-                if (typeof message !== "object" || message === null)
-                    return "object expected";
-                if (message.chaincodeName != null && message.hasOwnProperty("chaincodeName"))
-                    if (!$util.isString(message.chaincodeName))
-                        return "chaincodeName: string expected";
-                if (message.version != null && message.hasOwnProperty("version"))
-                    if (!$util.isInteger(message.version))
-                        return "version: integer expected";
-                return null;
-            };
-
-            /**
-             * Creates a ChaincodeId message from a plain object. Also converts values to their respective internal types.
-             * @function fromObject
-             * @memberof rep.protos.ChaincodeId
-             * @static
-             * @param {Object.<string,*>} object Plain object
-             * @returns {rep.protos.ChaincodeId} ChaincodeId
-             */
-            ChaincodeId.fromObject = function fromObject(object) {
-                if (object instanceof $root.rep.protos.ChaincodeId)
-                    return object;
-                let message = new $root.rep.protos.ChaincodeId();
-                if (object.chaincodeName != null)
-                    message.chaincodeName = String(object.chaincodeName);
-                if (object.version != null)
-                    message.version = object.version | 0;
-                return message;
-            };
-
-            /**
-             * Creates a plain object from a ChaincodeId message. Also converts values to other types if specified.
-             * @function toObject
-             * @memberof rep.protos.ChaincodeId
-             * @static
-             * @param {rep.protos.ChaincodeId} message ChaincodeId
-             * @param {$protobuf.IConversionOptions} [options] Conversion options
-             * @returns {Object.<string,*>} Plain object
-             */
-            ChaincodeId.toObject = function toObject(message, options) {
-                if (!options)
-                    options = {};
-                let object = {};
-                if (options.defaults) {
-                    object.chaincodeName = "";
-                    object.version = 0;
-                }
-                if (message.chaincodeName != null && message.hasOwnProperty("chaincodeName"))
-                    object.chaincodeName = message.chaincodeName;
-                if (message.version != null && message.hasOwnProperty("version"))
-                    object.version = message.version;
-                return object;
-            };
-
-            /**
-             * Converts this ChaincodeId to JSON.
-             * @function toJSON
-             * @memberof rep.protos.ChaincodeId
-             * @instance
-             * @returns {Object.<string,*>} JSON object
-             */
-            ChaincodeId.prototype.toJSON = function toJSON() {
-                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-            };
-
-            return ChaincodeId;
-        })();
-
-        protos.ChaincodeDeploy = (function() {
-
-            /**
-             * Properties of a ChaincodeDeploy.
-             * @memberof rep.protos
-             * @interface IChaincodeDeploy
-             * @property {number|null} [timeout] ChaincodeDeploy timeout
-             * @property {string|null} [codePackage] ChaincodeDeploy codePackage
-             * @property {string|null} [legalProse] ChaincodeDeploy legalProse
-             * @property {rep.protos.ChaincodeDeploy.CodeType|null} [ctype] ChaincodeDeploy ctype
-             */
-
-            /**
-             * Constructs a new ChaincodeDeploy.
-             * @memberof rep.protos
-             * @classdesc Represents a ChaincodeDeploy.
-             * @implements IChaincodeDeploy
-             * @constructor
-             * @param {rep.protos.IChaincodeDeploy=} [properties] Properties to set
-             */
-            function ChaincodeDeploy(properties) {
-                if (properties)
-                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                        if (properties[keys[i]] != null)
-                            this[keys[i]] = properties[keys[i]];
-            }
-
-            /**
-             * ChaincodeDeploy timeout.
+             * ChaincodeSpec timeout.
              * @member {number} timeout
-             * @memberof rep.protos.ChaincodeDeploy
+             * @memberof rep.protos.ChaincodeSpec
              * @instance
              */
-            ChaincodeDeploy.prototype.timeout = 0;
+            ChaincodeSpec.prototype.timeout = 0;
 
             /**
-             * ChaincodeDeploy codePackage.
-             * @member {string} codePackage
-             * @memberof rep.protos.ChaincodeDeploy
+             * ChaincodeSpec secureContext.
+             * @member {string} secureContext
+             * @memberof rep.protos.ChaincodeSpec
              * @instance
              */
-            ChaincodeDeploy.prototype.codePackage = "";
+            ChaincodeSpec.prototype.secureContext = "";
 
             /**
-             * ChaincodeDeploy legalProse.
-             * @member {string} legalProse
-             * @memberof rep.protos.ChaincodeDeploy
+             * ChaincodeSpec codePackage.
+             * @member {Uint8Array} codePackage
+             * @memberof rep.protos.ChaincodeSpec
              * @instance
              */
-            ChaincodeDeploy.prototype.legalProse = "";
+            ChaincodeSpec.prototype.codePackage = $util.newBuffer([]);
 
             /**
-             * ChaincodeDeploy ctype.
-             * @member {rep.protos.ChaincodeDeploy.CodeType} ctype
-             * @memberof rep.protos.ChaincodeDeploy
+             * ChaincodeSpec ctype.
+             * @member {rep.protos.ChaincodeSpec.CodeType} ctype
+             * @memberof rep.protos.ChaincodeSpec
              * @instance
              */
-            ChaincodeDeploy.prototype.ctype = 0;
+            ChaincodeSpec.prototype.ctype = 0;
 
             /**
-             * Creates a new ChaincodeDeploy instance using the specified properties.
+             * Creates a new ChaincodeSpec instance using the specified properties.
              * @function create
-             * @memberof rep.protos.ChaincodeDeploy
+             * @memberof rep.protos.ChaincodeSpec
              * @static
-             * @param {rep.protos.IChaincodeDeploy=} [properties] Properties to set
-             * @returns {rep.protos.ChaincodeDeploy} ChaincodeDeploy instance
+             * @param {rep.protos.IChaincodeSpec=} [properties] Properties to set
+             * @returns {rep.protos.ChaincodeSpec} ChaincodeSpec instance
              */
-            ChaincodeDeploy.create = function create(properties) {
-                return new ChaincodeDeploy(properties);
+            ChaincodeSpec.create = function create(properties) {
+                return new ChaincodeSpec(properties);
             };
 
             /**
-             * Encodes the specified ChaincodeDeploy message. Does not implicitly {@link rep.protos.ChaincodeDeploy.verify|verify} messages.
+             * Encodes the specified ChaincodeSpec message. Does not implicitly {@link rep.protos.ChaincodeSpec.verify|verify} messages.
              * @function encode
-             * @memberof rep.protos.ChaincodeDeploy
+             * @memberof rep.protos.ChaincodeSpec
              * @static
-             * @param {rep.protos.IChaincodeDeploy} message ChaincodeDeploy message or plain object to encode
+             * @param {rep.protos.IChaincodeSpec} message ChaincodeSpec message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            ChaincodeDeploy.encode = function encode(message, writer) {
+            ChaincodeSpec.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
+                if (message.chaincodeID != null && message.hasOwnProperty("chaincodeID"))
+                    $root.rep.protos.ChaincodeID.encode(message.chaincodeID, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.ctorMsg != null && message.hasOwnProperty("ctorMsg"))
+                    $root.rep.protos.ChaincodeInput.encode(message.ctorMsg, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
                 if (message.timeout != null && message.hasOwnProperty("timeout"))
-                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.timeout);
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.timeout);
+                if (message.secureContext != null && message.hasOwnProperty("secureContext"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.secureContext);
                 if (message.codePackage != null && message.hasOwnProperty("codePackage"))
-                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.codePackage);
-                if (message.legalProse != null && message.hasOwnProperty("legalProse"))
-                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.legalProse);
+                    writer.uint32(/* id 5, wireType 2 =*/42).bytes(message.codePackage);
                 if (message.ctype != null && message.hasOwnProperty("ctype"))
-                    writer.uint32(/* id 4, wireType 0 =*/32).int32(message.ctype);
+                    writer.uint32(/* id 6, wireType 0 =*/48).int32(message.ctype);
                 return writer;
             };
 
             /**
-             * Encodes the specified ChaincodeDeploy message, length delimited. Does not implicitly {@link rep.protos.ChaincodeDeploy.verify|verify} messages.
+             * Encodes the specified ChaincodeSpec message, length delimited. Does not implicitly {@link rep.protos.ChaincodeSpec.verify|verify} messages.
              * @function encodeDelimited
-             * @memberof rep.protos.ChaincodeDeploy
+             * @memberof rep.protos.ChaincodeSpec
              * @static
-             * @param {rep.protos.IChaincodeDeploy} message ChaincodeDeploy message or plain object to encode
+             * @param {rep.protos.IChaincodeSpec} message ChaincodeSpec message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            ChaincodeDeploy.encodeDelimited = function encodeDelimited(message, writer) {
+            ChaincodeSpec.encodeDelimited = function encodeDelimited(message, writer) {
                 return this.encode(message, writer).ldelim();
             };
 
             /**
-             * Decodes a ChaincodeDeploy message from the specified reader or buffer.
+             * Decodes a ChaincodeSpec message from the specified reader or buffer.
              * @function decode
-             * @memberof rep.protos.ChaincodeDeploy
+             * @memberof rep.protos.ChaincodeSpec
              * @static
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
              * @param {number} [length] Message length if known beforehand
-             * @returns {rep.protos.ChaincodeDeploy} ChaincodeDeploy
+             * @returns {rep.protos.ChaincodeSpec} ChaincodeSpec
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            ChaincodeDeploy.decode = function decode(reader, length) {
+            ChaincodeSpec.decode = function decode(reader, length) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rep.protos.ChaincodeDeploy();
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rep.protos.ChaincodeSpec();
                 while (reader.pos < end) {
                     let tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.timeout = reader.int32();
+                        message.chaincodeID = $root.rep.protos.ChaincodeID.decode(reader, reader.uint32());
                         break;
                     case 2:
-                        message.codePackage = reader.string();
+                        message.ctorMsg = $root.rep.protos.ChaincodeInput.decode(reader, reader.uint32());
                         break;
                     case 3:
-                        message.legalProse = reader.string();
+                        message.timeout = reader.int32();
                         break;
                     case 4:
+                        message.secureContext = reader.string();
+                        break;
+                    case 5:
+                        message.codePackage = reader.bytes();
+                        break;
+                    case 6:
                         message.ctype = reader.int32();
                         break;
                     default:
@@ -1981,41 +1406,51 @@ export const rep = $root.rep = (() => {
             };
 
             /**
-             * Decodes a ChaincodeDeploy message from the specified reader or buffer, length delimited.
+             * Decodes a ChaincodeSpec message from the specified reader or buffer, length delimited.
              * @function decodeDelimited
-             * @memberof rep.protos.ChaincodeDeploy
+             * @memberof rep.protos.ChaincodeSpec
              * @static
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {rep.protos.ChaincodeDeploy} ChaincodeDeploy
+             * @returns {rep.protos.ChaincodeSpec} ChaincodeSpec
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            ChaincodeDeploy.decodeDelimited = function decodeDelimited(reader) {
+            ChaincodeSpec.decodeDelimited = function decodeDelimited(reader) {
                 if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
                 return this.decode(reader, reader.uint32());
             };
 
             /**
-             * Verifies a ChaincodeDeploy message.
+             * Verifies a ChaincodeSpec message.
              * @function verify
-             * @memberof rep.protos.ChaincodeDeploy
+             * @memberof rep.protos.ChaincodeSpec
              * @static
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            ChaincodeDeploy.verify = function verify(message) {
+            ChaincodeSpec.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
+                if (message.chaincodeID != null && message.hasOwnProperty("chaincodeID")) {
+                    let error = $root.rep.protos.ChaincodeID.verify(message.chaincodeID);
+                    if (error)
+                        return "chaincodeID." + error;
+                }
+                if (message.ctorMsg != null && message.hasOwnProperty("ctorMsg")) {
+                    let error = $root.rep.protos.ChaincodeInput.verify(message.ctorMsg);
+                    if (error)
+                        return "ctorMsg." + error;
+                }
                 if (message.timeout != null && message.hasOwnProperty("timeout"))
                     if (!$util.isInteger(message.timeout))
                         return "timeout: integer expected";
+                if (message.secureContext != null && message.hasOwnProperty("secureContext"))
+                    if (!$util.isString(message.secureContext))
+                        return "secureContext: string expected";
                 if (message.codePackage != null && message.hasOwnProperty("codePackage"))
-                    if (!$util.isString(message.codePackage))
-                        return "codePackage: string expected";
-                if (message.legalProse != null && message.hasOwnProperty("legalProse"))
-                    if (!$util.isString(message.legalProse))
-                        return "legalProse: string expected";
+                    if (!(message.codePackage && typeof message.codePackage.length === "number" || $util.isString(message.codePackage)))
+                        return "codePackage: buffer expected";
                 if (message.ctype != null && message.hasOwnProperty("ctype"))
                     switch (message.ctype) {
                     default:
@@ -2029,23 +1464,36 @@ export const rep = $root.rep = (() => {
             };
 
             /**
-             * Creates a ChaincodeDeploy message from a plain object. Also converts values to their respective internal types.
+             * Creates a ChaincodeSpec message from a plain object. Also converts values to their respective internal types.
              * @function fromObject
-             * @memberof rep.protos.ChaincodeDeploy
+             * @memberof rep.protos.ChaincodeSpec
              * @static
              * @param {Object.<string,*>} object Plain object
-             * @returns {rep.protos.ChaincodeDeploy} ChaincodeDeploy
+             * @returns {rep.protos.ChaincodeSpec} ChaincodeSpec
              */
-            ChaincodeDeploy.fromObject = function fromObject(object) {
-                if (object instanceof $root.rep.protos.ChaincodeDeploy)
+            ChaincodeSpec.fromObject = function fromObject(object) {
+                if (object instanceof $root.rep.protos.ChaincodeSpec)
                     return object;
-                let message = new $root.rep.protos.ChaincodeDeploy();
+                let message = new $root.rep.protos.ChaincodeSpec();
+                if (object.chaincodeID != null) {
+                    if (typeof object.chaincodeID !== "object")
+                        throw TypeError(".rep.protos.ChaincodeSpec.chaincodeID: object expected");
+                    message.chaincodeID = $root.rep.protos.ChaincodeID.fromObject(object.chaincodeID);
+                }
+                if (object.ctorMsg != null) {
+                    if (typeof object.ctorMsg !== "object")
+                        throw TypeError(".rep.protos.ChaincodeSpec.ctorMsg: object expected");
+                    message.ctorMsg = $root.rep.protos.ChaincodeInput.fromObject(object.ctorMsg);
+                }
                 if (object.timeout != null)
                     message.timeout = object.timeout | 0;
+                if (object.secureContext != null)
+                    message.secureContext = String(object.secureContext);
                 if (object.codePackage != null)
-                    message.codePackage = String(object.codePackage);
-                if (object.legalProse != null)
-                    message.legalProse = String(object.legalProse);
+                    if (typeof object.codePackage === "string")
+                        $util.base64.decode(object.codePackage, message.codePackage = $util.newBuffer($util.base64.length(object.codePackage)), 0);
+                    else if (object.codePackage.length)
+                        message.codePackage = object.codePackage;
                 switch (object.ctype) {
                 case "CODE_UNDEFINED":
                 case 0:
@@ -2064,55 +1512,67 @@ export const rep = $root.rep = (() => {
             };
 
             /**
-             * Creates a plain object from a ChaincodeDeploy message. Also converts values to other types if specified.
+             * Creates a plain object from a ChaincodeSpec message. Also converts values to other types if specified.
              * @function toObject
-             * @memberof rep.protos.ChaincodeDeploy
+             * @memberof rep.protos.ChaincodeSpec
              * @static
-             * @param {rep.protos.ChaincodeDeploy} message ChaincodeDeploy
+             * @param {rep.protos.ChaincodeSpec} message ChaincodeSpec
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            ChaincodeDeploy.toObject = function toObject(message, options) {
+            ChaincodeSpec.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
                 let object = {};
                 if (options.defaults) {
+                    object.chaincodeID = null;
+                    object.ctorMsg = null;
                     object.timeout = 0;
-                    object.codePackage = "";
-                    object.legalProse = "";
+                    object.secureContext = "";
+                    if (options.bytes === String)
+                        object.codePackage = "";
+                    else {
+                        object.codePackage = [];
+                        if (options.bytes !== Array)
+                            object.codePackage = $util.newBuffer(object.codePackage);
+                    }
                     object.ctype = options.enums === String ? "CODE_UNDEFINED" : 0;
                 }
+                if (message.chaincodeID != null && message.hasOwnProperty("chaincodeID"))
+                    object.chaincodeID = $root.rep.protos.ChaincodeID.toObject(message.chaincodeID, options);
+                if (message.ctorMsg != null && message.hasOwnProperty("ctorMsg"))
+                    object.ctorMsg = $root.rep.protos.ChaincodeInput.toObject(message.ctorMsg, options);
                 if (message.timeout != null && message.hasOwnProperty("timeout"))
                     object.timeout = message.timeout;
+                if (message.secureContext != null && message.hasOwnProperty("secureContext"))
+                    object.secureContext = message.secureContext;
                 if (message.codePackage != null && message.hasOwnProperty("codePackage"))
-                    object.codePackage = message.codePackage;
-                if (message.legalProse != null && message.hasOwnProperty("legalProse"))
-                    object.legalProse = message.legalProse;
+                    object.codePackage = options.bytes === String ? $util.base64.encode(message.codePackage, 0, message.codePackage.length) : options.bytes === Array ? Array.prototype.slice.call(message.codePackage) : message.codePackage;
                 if (message.ctype != null && message.hasOwnProperty("ctype"))
-                    object.ctype = options.enums === String ? $root.rep.protos.ChaincodeDeploy.CodeType[message.ctype] : message.ctype;
+                    object.ctype = options.enums === String ? $root.rep.protos.ChaincodeSpec.CodeType[message.ctype] : message.ctype;
                 return object;
             };
 
             /**
-             * Converts this ChaincodeDeploy to JSON.
+             * Converts this ChaincodeSpec to JSON.
              * @function toJSON
-             * @memberof rep.protos.ChaincodeDeploy
+             * @memberof rep.protos.ChaincodeSpec
              * @instance
              * @returns {Object.<string,*>} JSON object
              */
-            ChaincodeDeploy.prototype.toJSON = function toJSON() {
+            ChaincodeSpec.prototype.toJSON = function toJSON() {
                 return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
             };
 
             /**
              * CodeType enum.
-             * @name rep.protos.ChaincodeDeploy.CodeType
+             * @name rep.protos.ChaincodeSpec.CodeType
              * @enum {string}
              * @property {number} CODE_UNDEFINED=0 CODE_UNDEFINED value
              * @property {number} CODE_JAVASCRIPT=1 CODE_JAVASCRIPT value
              * @property {number} CODE_SCALA=2 CODE_SCALA value
              */
-            ChaincodeDeploy.CodeType = (function() {
+            ChaincodeSpec.CodeType = (function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "CODE_UNDEFINED"] = 0;
                 values[valuesById[1] = "CODE_JAVASCRIPT"] = 1;
@@ -2120,7 +1580,23 @@ export const rep = $root.rep = (() => {
                 return values;
             })();
 
-            return ChaincodeDeploy;
+            return ChaincodeSpec;
+        })();
+
+        /**
+         * ConfidentialityLevel enum.
+         * @name rep.protos.ConfidentialityLevel
+         * @enum {string}
+         * @property {number} LEVEL_UNDEFINED=0 LEVEL_UNDEFINED value
+         * @property {number} PUBLIC=1 PUBLIC value
+         * @property {number} CONFIDENTIAL=2 CONFIDENTIAL value
+         */
+        protos.ConfidentialityLevel = (function() {
+            const valuesById = {}, values = Object.create(valuesById);
+            values[valuesById[0] = "LEVEL_UNDEFINED"] = 0;
+            values[valuesById[1] = "PUBLIC"] = 1;
+            values[valuesById[2] = "CONFIDENTIAL"] = 2;
+            return values;
         })();
 
         protos.Transaction = (function() {
@@ -2129,13 +1605,18 @@ export const rep = $root.rep = (() => {
              * Properties of a Transaction.
              * @memberof rep.protos
              * @interface ITransaction
-             * @property {string|null} [id] Transaction id
              * @property {rep.protos.Transaction.Type|null} [type] Transaction type
-             * @property {rep.protos.IChaincodeId|null} [cid] Transaction cid
-             * @property {rep.protos.IChaincodeDeploy|null} [spec] Transaction spec
-             * @property {rep.protos.IChaincodeInput|null} [ipt] Transaction ipt
-             * @property {boolean|null} [state] Transaction state
-             * @property {rep.protos.ISignature|null} [signature] Transaction signature
+             * @property {Uint8Array|null} [chaincodeID] Transaction chaincodeID
+             * @property {rep.protos.IChaincodeSpec|null} [payload] Transaction payload
+             * @property {Uint8Array|null} [metadata] Transaction metadata
+             * @property {string|null} [txid] Transaction txid
+             * @property {google.protobuf.ITimestamp|null} [timestamp] Transaction timestamp
+             * @property {rep.protos.ConfidentialityLevel|null} [confidentialityLevel] Transaction confidentialityLevel
+             * @property {string|null} [confidentialityProtocolVersion] Transaction confidentialityProtocolVersion
+             * @property {Uint8Array|null} [nonce] Transaction nonce
+             * @property {Uint8Array|null} [toValidators] Transaction toValidators
+             * @property {Uint8Array|null} [cert] Transaction cert
+             * @property {Uint8Array|null} [signature] Transaction signature
              */
 
             /**
@@ -2154,14 +1635,6 @@ export const rep = $root.rep = (() => {
             }
 
             /**
-             * Transaction id.
-             * @member {string} id
-             * @memberof rep.protos.Transaction
-             * @instance
-             */
-            Transaction.prototype.id = "";
-
-            /**
              * Transaction type.
              * @member {rep.protos.Transaction.Type} type
              * @memberof rep.protos.Transaction
@@ -2170,58 +1643,92 @@ export const rep = $root.rep = (() => {
             Transaction.prototype.type = 0;
 
             /**
-             * Transaction cid.
-             * @member {rep.protos.IChaincodeId|null|undefined} cid
+             * Transaction chaincodeID.
+             * @member {Uint8Array} chaincodeID
              * @memberof rep.protos.Transaction
              * @instance
              */
-            Transaction.prototype.cid = null;
+            Transaction.prototype.chaincodeID = $util.newBuffer([]);
 
             /**
-             * Transaction spec.
-             * @member {rep.protos.IChaincodeDeploy|null|undefined} spec
+             * Transaction payload.
+             * @member {rep.protos.IChaincodeSpec|null|undefined} payload
              * @memberof rep.protos.Transaction
              * @instance
              */
-            Transaction.prototype.spec = null;
+            Transaction.prototype.payload = null;
 
             /**
-             * Transaction ipt.
-             * @member {rep.protos.IChaincodeInput|null|undefined} ipt
+             * Transaction metadata.
+             * @member {Uint8Array} metadata
              * @memberof rep.protos.Transaction
              * @instance
              */
-            Transaction.prototype.ipt = null;
+            Transaction.prototype.metadata = $util.newBuffer([]);
 
             /**
-             * Transaction state.
-             * @member {boolean} state
+             * Transaction txid.
+             * @member {string} txid
              * @memberof rep.protos.Transaction
              * @instance
              */
-            Transaction.prototype.state = false;
+            Transaction.prototype.txid = "";
+
+            /**
+             * Transaction timestamp.
+             * @member {google.protobuf.ITimestamp|null|undefined} timestamp
+             * @memberof rep.protos.Transaction
+             * @instance
+             */
+            Transaction.prototype.timestamp = null;
+
+            /**
+             * Transaction confidentialityLevel.
+             * @member {rep.protos.ConfidentialityLevel} confidentialityLevel
+             * @memberof rep.protos.Transaction
+             * @instance
+             */
+            Transaction.prototype.confidentialityLevel = 0;
+
+            /**
+             * Transaction confidentialityProtocolVersion.
+             * @member {string} confidentialityProtocolVersion
+             * @memberof rep.protos.Transaction
+             * @instance
+             */
+            Transaction.prototype.confidentialityProtocolVersion = "";
+
+            /**
+             * Transaction nonce.
+             * @member {Uint8Array} nonce
+             * @memberof rep.protos.Transaction
+             * @instance
+             */
+            Transaction.prototype.nonce = $util.newBuffer([]);
+
+            /**
+             * Transaction toValidators.
+             * @member {Uint8Array} toValidators
+             * @memberof rep.protos.Transaction
+             * @instance
+             */
+            Transaction.prototype.toValidators = $util.newBuffer([]);
+
+            /**
+             * Transaction cert.
+             * @member {Uint8Array} cert
+             * @memberof rep.protos.Transaction
+             * @instance
+             */
+            Transaction.prototype.cert = $util.newBuffer([]);
 
             /**
              * Transaction signature.
-             * @member {rep.protos.ISignature|null|undefined} signature
+             * @member {Uint8Array} signature
              * @memberof rep.protos.Transaction
              * @instance
              */
-            Transaction.prototype.signature = null;
-
-            // OneOf field names bound to virtual getters and setters
-            let $oneOfFields;
-
-            /**
-             * Transaction para.
-             * @member {"spec"|"ipt"|"state"|undefined} para
-             * @memberof rep.protos.Transaction
-             * @instance
-             */
-            Object.defineProperty(Transaction.prototype, "para", {
-                get: $util.oneOfGetter($oneOfFields = ["spec", "ipt", "state"]),
-                set: $util.oneOfSetter($oneOfFields)
-            });
+            Transaction.prototype.signature = $util.newBuffer([]);
 
             /**
              * Creates a new Transaction instance using the specified properties.
@@ -2247,20 +1754,30 @@ export const rep = $root.rep = (() => {
             Transaction.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.id != null && message.hasOwnProperty("id"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
                 if (message.type != null && message.hasOwnProperty("type"))
-                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.type);
-                if (message.cid != null && message.hasOwnProperty("cid"))
-                    $root.rep.protos.ChaincodeId.encode(message.cid, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
-                if (message.spec != null && message.hasOwnProperty("spec"))
-                    $root.rep.protos.ChaincodeDeploy.encode(message.spec, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
-                if (message.ipt != null && message.hasOwnProperty("ipt"))
-                    $root.rep.protos.ChaincodeInput.encode(message.ipt, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
-                if (message.state != null && message.hasOwnProperty("state"))
-                    writer.uint32(/* id 6, wireType 0 =*/48).bool(message.state);
+                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.type);
+                if (message.chaincodeID != null && message.hasOwnProperty("chaincodeID"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).bytes(message.chaincodeID);
+                if (message.payload != null && message.hasOwnProperty("payload"))
+                    $root.rep.protos.ChaincodeSpec.encode(message.payload, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                if (message.metadata != null && message.hasOwnProperty("metadata"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).bytes(message.metadata);
+                if (message.txid != null && message.hasOwnProperty("txid"))
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.txid);
+                if (message.timestamp != null && message.hasOwnProperty("timestamp"))
+                    $root.google.protobuf.Timestamp.encode(message.timestamp, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                if (message.confidentialityLevel != null && message.hasOwnProperty("confidentialityLevel"))
+                    writer.uint32(/* id 7, wireType 0 =*/56).int32(message.confidentialityLevel);
+                if (message.confidentialityProtocolVersion != null && message.hasOwnProperty("confidentialityProtocolVersion"))
+                    writer.uint32(/* id 8, wireType 2 =*/66).string(message.confidentialityProtocolVersion);
+                if (message.nonce != null && message.hasOwnProperty("nonce"))
+                    writer.uint32(/* id 9, wireType 2 =*/74).bytes(message.nonce);
+                if (message.toValidators != null && message.hasOwnProperty("toValidators"))
+                    writer.uint32(/* id 10, wireType 2 =*/82).bytes(message.toValidators);
+                if (message.cert != null && message.hasOwnProperty("cert"))
+                    writer.uint32(/* id 11, wireType 2 =*/90).bytes(message.cert);
                 if (message.signature != null && message.hasOwnProperty("signature"))
-                    $root.rep.protos.Signature.encode(message.signature, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                    writer.uint32(/* id 12, wireType 2 =*/98).bytes(message.signature);
                 return writer;
             };
 
@@ -2296,25 +1813,40 @@ export const rep = $root.rep = (() => {
                     let tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.id = reader.string();
-                        break;
-                    case 2:
                         message.type = reader.int32();
                         break;
+                    case 2:
+                        message.chaincodeID = reader.bytes();
+                        break;
                     case 3:
-                        message.cid = $root.rep.protos.ChaincodeId.decode(reader, reader.uint32());
+                        message.payload = $root.rep.protos.ChaincodeSpec.decode(reader, reader.uint32());
                         break;
                     case 4:
-                        message.spec = $root.rep.protos.ChaincodeDeploy.decode(reader, reader.uint32());
+                        message.metadata = reader.bytes();
                         break;
                     case 5:
-                        message.ipt = $root.rep.protos.ChaincodeInput.decode(reader, reader.uint32());
+                        message.txid = reader.string();
                         break;
                     case 6:
-                        message.state = reader.bool();
+                        message.timestamp = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                         break;
                     case 7:
-                        message.signature = $root.rep.protos.Signature.decode(reader, reader.uint32());
+                        message.confidentialityLevel = reader.int32();
+                        break;
+                    case 8:
+                        message.confidentialityProtocolVersion = reader.string();
+                        break;
+                    case 9:
+                        message.nonce = reader.bytes();
+                        break;
+                    case 10:
+                        message.toValidators = reader.bytes();
+                        break;
+                    case 11:
+                        message.cert = reader.bytes();
+                        break;
+                    case 12:
+                        message.signature = reader.bytes();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -2351,10 +1883,6 @@ export const rep = $root.rep = (() => {
             Transaction.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                let properties = {};
-                if (message.id != null && message.hasOwnProperty("id"))
-                    if (!$util.isString(message.id))
-                        return "id: string expected";
                 if (message.type != null && message.hasOwnProperty("type"))
                     switch (message.type) {
                     default:
@@ -2363,43 +1891,52 @@ export const rep = $root.rep = (() => {
                     case 1:
                     case 2:
                     case 3:
+                    case 4:
                         break;
                     }
-                if (message.cid != null && message.hasOwnProperty("cid")) {
-                    let error = $root.rep.protos.ChaincodeId.verify(message.cid);
+                if (message.chaincodeID != null && message.hasOwnProperty("chaincodeID"))
+                    if (!(message.chaincodeID && typeof message.chaincodeID.length === "number" || $util.isString(message.chaincodeID)))
+                        return "chaincodeID: buffer expected";
+                if (message.payload != null && message.hasOwnProperty("payload")) {
+                    let error = $root.rep.protos.ChaincodeSpec.verify(message.payload);
                     if (error)
-                        return "cid." + error;
+                        return "payload." + error;
                 }
-                if (message.spec != null && message.hasOwnProperty("spec")) {
-                    properties.para = 1;
-                    {
-                        let error = $root.rep.protos.ChaincodeDeploy.verify(message.spec);
-                        if (error)
-                            return "spec." + error;
-                    }
-                }
-                if (message.ipt != null && message.hasOwnProperty("ipt")) {
-                    if (properties.para === 1)
-                        return "para: multiple values";
-                    properties.para = 1;
-                    {
-                        let error = $root.rep.protos.ChaincodeInput.verify(message.ipt);
-                        if (error)
-                            return "ipt." + error;
-                    }
-                }
-                if (message.state != null && message.hasOwnProperty("state")) {
-                    if (properties.para === 1)
-                        return "para: multiple values";
-                    properties.para = 1;
-                    if (typeof message.state !== "boolean")
-                        return "state: boolean expected";
-                }
-                if (message.signature != null && message.hasOwnProperty("signature")) {
-                    let error = $root.rep.protos.Signature.verify(message.signature);
+                if (message.metadata != null && message.hasOwnProperty("metadata"))
+                    if (!(message.metadata && typeof message.metadata.length === "number" || $util.isString(message.metadata)))
+                        return "metadata: buffer expected";
+                if (message.txid != null && message.hasOwnProperty("txid"))
+                    if (!$util.isString(message.txid))
+                        return "txid: string expected";
+                if (message.timestamp != null && message.hasOwnProperty("timestamp")) {
+                    let error = $root.google.protobuf.Timestamp.verify(message.timestamp);
                     if (error)
-                        return "signature." + error;
+                        return "timestamp." + error;
                 }
+                if (message.confidentialityLevel != null && message.hasOwnProperty("confidentialityLevel"))
+                    switch (message.confidentialityLevel) {
+                    default:
+                        return "confidentialityLevel: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                        break;
+                    }
+                if (message.confidentialityProtocolVersion != null && message.hasOwnProperty("confidentialityProtocolVersion"))
+                    if (!$util.isString(message.confidentialityProtocolVersion))
+                        return "confidentialityProtocolVersion: string expected";
+                if (message.nonce != null && message.hasOwnProperty("nonce"))
+                    if (!(message.nonce && typeof message.nonce.length === "number" || $util.isString(message.nonce)))
+                        return "nonce: buffer expected";
+                if (message.toValidators != null && message.hasOwnProperty("toValidators"))
+                    if (!(message.toValidators && typeof message.toValidators.length === "number" || $util.isString(message.toValidators)))
+                        return "toValidators: buffer expected";
+                if (message.cert != null && message.hasOwnProperty("cert"))
+                    if (!(message.cert && typeof message.cert.length === "number" || $util.isString(message.cert)))
+                        return "cert: buffer expected";
+                if (message.signature != null && message.hasOwnProperty("signature"))
+                    if (!(message.signature && typeof message.signature.length === "number" || $util.isString(message.signature)))
+                        return "signature: buffer expected";
                 return null;
             };
 
@@ -2415,8 +1952,6 @@ export const rep = $root.rep = (() => {
                 if (object instanceof $root.rep.protos.Transaction)
                     return object;
                 let message = new $root.rep.protos.Transaction();
-                if (object.id != null)
-                    message.id = String(object.id);
                 switch (object.type) {
                 case "UNDEFINED":
                 case 0:
@@ -2430,33 +1965,73 @@ export const rep = $root.rep = (() => {
                 case 2:
                     message.type = 2;
                     break;
-                case "CHAINCODE_SET_STATE":
+                case "CHAINCODE_QUERY":
                 case 3:
                     message.type = 3;
                     break;
+                case "CHAINCODE_TERMINATE":
+                case 4:
+                    message.type = 4;
+                    break;
                 }
-                if (object.cid != null) {
-                    if (typeof object.cid !== "object")
-                        throw TypeError(".rep.protos.Transaction.cid: object expected");
-                    message.cid = $root.rep.protos.ChaincodeId.fromObject(object.cid);
+                if (object.chaincodeID != null)
+                    if (typeof object.chaincodeID === "string")
+                        $util.base64.decode(object.chaincodeID, message.chaincodeID = $util.newBuffer($util.base64.length(object.chaincodeID)), 0);
+                    else if (object.chaincodeID.length)
+                        message.chaincodeID = object.chaincodeID;
+                if (object.payload != null) {
+                    if (typeof object.payload !== "object")
+                        throw TypeError(".rep.protos.Transaction.payload: object expected");
+                    message.payload = $root.rep.protos.ChaincodeSpec.fromObject(object.payload);
                 }
-                if (object.spec != null) {
-                    if (typeof object.spec !== "object")
-                        throw TypeError(".rep.protos.Transaction.spec: object expected");
-                    message.spec = $root.rep.protos.ChaincodeDeploy.fromObject(object.spec);
+                if (object.metadata != null)
+                    if (typeof object.metadata === "string")
+                        $util.base64.decode(object.metadata, message.metadata = $util.newBuffer($util.base64.length(object.metadata)), 0);
+                    else if (object.metadata.length)
+                        message.metadata = object.metadata;
+                if (object.txid != null)
+                    message.txid = String(object.txid);
+                if (object.timestamp != null) {
+                    if (typeof object.timestamp !== "object")
+                        throw TypeError(".rep.protos.Transaction.timestamp: object expected");
+                    message.timestamp = $root.google.protobuf.Timestamp.fromObject(object.timestamp);
                 }
-                if (object.ipt != null) {
-                    if (typeof object.ipt !== "object")
-                        throw TypeError(".rep.protos.Transaction.ipt: object expected");
-                    message.ipt = $root.rep.protos.ChaincodeInput.fromObject(object.ipt);
+                switch (object.confidentialityLevel) {
+                case "LEVEL_UNDEFINED":
+                case 0:
+                    message.confidentialityLevel = 0;
+                    break;
+                case "PUBLIC":
+                case 1:
+                    message.confidentialityLevel = 1;
+                    break;
+                case "CONFIDENTIAL":
+                case 2:
+                    message.confidentialityLevel = 2;
+                    break;
                 }
-                if (object.state != null)
-                    message.state = Boolean(object.state);
-                if (object.signature != null) {
-                    if (typeof object.signature !== "object")
-                        throw TypeError(".rep.protos.Transaction.signature: object expected");
-                    message.signature = $root.rep.protos.Signature.fromObject(object.signature);
-                }
+                if (object.confidentialityProtocolVersion != null)
+                    message.confidentialityProtocolVersion = String(object.confidentialityProtocolVersion);
+                if (object.nonce != null)
+                    if (typeof object.nonce === "string")
+                        $util.base64.decode(object.nonce, message.nonce = $util.newBuffer($util.base64.length(object.nonce)), 0);
+                    else if (object.nonce.length)
+                        message.nonce = object.nonce;
+                if (object.toValidators != null)
+                    if (typeof object.toValidators === "string")
+                        $util.base64.decode(object.toValidators, message.toValidators = $util.newBuffer($util.base64.length(object.toValidators)), 0);
+                    else if (object.toValidators.length)
+                        message.toValidators = object.toValidators;
+                if (object.cert != null)
+                    if (typeof object.cert === "string")
+                        $util.base64.decode(object.cert, message.cert = $util.newBuffer($util.base64.length(object.cert)), 0);
+                    else if (object.cert.length)
+                        message.cert = object.cert;
+                if (object.signature != null)
+                    if (typeof object.signature === "string")
+                        $util.base64.decode(object.signature, message.signature = $util.newBuffer($util.base64.length(object.signature)), 0);
+                    else if (object.signature.length)
+                        message.signature = object.signature;
                 return message;
             };
 
@@ -2474,34 +2049,79 @@ export const rep = $root.rep = (() => {
                     options = {};
                 let object = {};
                 if (options.defaults) {
-                    object.id = "";
                     object.type = options.enums === String ? "UNDEFINED" : 0;
-                    object.cid = null;
-                    object.signature = null;
+                    if (options.bytes === String)
+                        object.chaincodeID = "";
+                    else {
+                        object.chaincodeID = [];
+                        if (options.bytes !== Array)
+                            object.chaincodeID = $util.newBuffer(object.chaincodeID);
+                    }
+                    object.payload = null;
+                    if (options.bytes === String)
+                        object.metadata = "";
+                    else {
+                        object.metadata = [];
+                        if (options.bytes !== Array)
+                            object.metadata = $util.newBuffer(object.metadata);
+                    }
+                    object.txid = "";
+                    object.timestamp = null;
+                    object.confidentialityLevel = options.enums === String ? "LEVEL_UNDEFINED" : 0;
+                    object.confidentialityProtocolVersion = "";
+                    if (options.bytes === String)
+                        object.nonce = "";
+                    else {
+                        object.nonce = [];
+                        if (options.bytes !== Array)
+                            object.nonce = $util.newBuffer(object.nonce);
+                    }
+                    if (options.bytes === String)
+                        object.toValidators = "";
+                    else {
+                        object.toValidators = [];
+                        if (options.bytes !== Array)
+                            object.toValidators = $util.newBuffer(object.toValidators);
+                    }
+                    if (options.bytes === String)
+                        object.cert = "";
+                    else {
+                        object.cert = [];
+                        if (options.bytes !== Array)
+                            object.cert = $util.newBuffer(object.cert);
+                    }
+                    if (options.bytes === String)
+                        object.signature = "";
+                    else {
+                        object.signature = [];
+                        if (options.bytes !== Array)
+                            object.signature = $util.newBuffer(object.signature);
+                    }
                 }
-                if (message.id != null && message.hasOwnProperty("id"))
-                    object.id = message.id;
                 if (message.type != null && message.hasOwnProperty("type"))
                     object.type = options.enums === String ? $root.rep.protos.Transaction.Type[message.type] : message.type;
-                if (message.cid != null && message.hasOwnProperty("cid"))
-                    object.cid = $root.rep.protos.ChaincodeId.toObject(message.cid, options);
-                if (message.spec != null && message.hasOwnProperty("spec")) {
-                    object.spec = $root.rep.protos.ChaincodeDeploy.toObject(message.spec, options);
-                    if (options.oneofs)
-                        object.para = "spec";
-                }
-                if (message.ipt != null && message.hasOwnProperty("ipt")) {
-                    object.ipt = $root.rep.protos.ChaincodeInput.toObject(message.ipt, options);
-                    if (options.oneofs)
-                        object.para = "ipt";
-                }
-                if (message.state != null && message.hasOwnProperty("state")) {
-                    object.state = message.state;
-                    if (options.oneofs)
-                        object.para = "state";
-                }
+                if (message.chaincodeID != null && message.hasOwnProperty("chaincodeID"))
+                    object.chaincodeID = options.bytes === String ? $util.base64.encode(message.chaincodeID, 0, message.chaincodeID.length) : options.bytes === Array ? Array.prototype.slice.call(message.chaincodeID) : message.chaincodeID;
+                if (message.payload != null && message.hasOwnProperty("payload"))
+                    object.payload = $root.rep.protos.ChaincodeSpec.toObject(message.payload, options);
+                if (message.metadata != null && message.hasOwnProperty("metadata"))
+                    object.metadata = options.bytes === String ? $util.base64.encode(message.metadata, 0, message.metadata.length) : options.bytes === Array ? Array.prototype.slice.call(message.metadata) : message.metadata;
+                if (message.txid != null && message.hasOwnProperty("txid"))
+                    object.txid = message.txid;
+                if (message.timestamp != null && message.hasOwnProperty("timestamp"))
+                    object.timestamp = $root.google.protobuf.Timestamp.toObject(message.timestamp, options);
+                if (message.confidentialityLevel != null && message.hasOwnProperty("confidentialityLevel"))
+                    object.confidentialityLevel = options.enums === String ? $root.rep.protos.ConfidentialityLevel[message.confidentialityLevel] : message.confidentialityLevel;
+                if (message.confidentialityProtocolVersion != null && message.hasOwnProperty("confidentialityProtocolVersion"))
+                    object.confidentialityProtocolVersion = message.confidentialityProtocolVersion;
+                if (message.nonce != null && message.hasOwnProperty("nonce"))
+                    object.nonce = options.bytes === String ? $util.base64.encode(message.nonce, 0, message.nonce.length) : options.bytes === Array ? Array.prototype.slice.call(message.nonce) : message.nonce;
+                if (message.toValidators != null && message.hasOwnProperty("toValidators"))
+                    object.toValidators = options.bytes === String ? $util.base64.encode(message.toValidators, 0, message.toValidators.length) : options.bytes === Array ? Array.prototype.slice.call(message.toValidators) : message.toValidators;
+                if (message.cert != null && message.hasOwnProperty("cert"))
+                    object.cert = options.bytes === String ? $util.base64.encode(message.cert, 0, message.cert.length) : options.bytes === Array ? Array.prototype.slice.call(message.cert) : message.cert;
                 if (message.signature != null && message.hasOwnProperty("signature"))
-                    object.signature = $root.rep.protos.Signature.toObject(message.signature, options);
+                    object.signature = options.bytes === String ? $util.base64.encode(message.signature, 0, message.signature.length) : options.bytes === Array ? Array.prototype.slice.call(message.signature) : message.signature;
                 return object;
             };
 
@@ -2523,14 +2143,16 @@ export const rep = $root.rep = (() => {
              * @property {number} UNDEFINED=0 UNDEFINED value
              * @property {number} CHAINCODE_DEPLOY=1 CHAINCODE_DEPLOY value
              * @property {number} CHAINCODE_INVOKE=2 CHAINCODE_INVOKE value
-             * @property {number} CHAINCODE_SET_STATE=3 CHAINCODE_SET_STATE value
+             * @property {number} CHAINCODE_QUERY=3 CHAINCODE_QUERY value
+             * @property {number} CHAINCODE_TERMINATE=4 CHAINCODE_TERMINATE value
              */
             Transaction.Type = (function() {
                 const valuesById = {}, values = Object.create(valuesById);
                 values[valuesById[0] = "UNDEFINED"] = 0;
                 values[valuesById[1] = "CHAINCODE_DEPLOY"] = 1;
                 values[valuesById[2] = "CHAINCODE_INVOKE"] = 2;
-                values[valuesById[3] = "CHAINCODE_SET_STATE"] = 3;
+                values[valuesById[3] = "CHAINCODE_QUERY"] = 3;
+                values[valuesById[4] = "CHAINCODE_TERMINATE"] = 4;
                 return values;
             })();
 
@@ -2544,13 +2166,12 @@ export const rep = $root.rep = (() => {
              * @memberof rep.protos
              * @interface IBlock
              * @property {number|null} [version] Block version
-             * @property {number|Long|null} [height] Block height
+             * @property {google.protobuf.ITimestamp|null} [timestamp] Block timestamp
              * @property {Array.<rep.protos.ITransaction>|null} [transactions] Block transactions
-             * @property {Array.<rep.protos.ITransactionResult>|null} [transactionResults] Block transactionResults
-             * @property {Uint8Array|null} [hashOfBlock] Block hashOfBlock
-             * @property {Uint8Array|null} [previousBlockHash] Block previousBlockHash
-             * @property {Array.<rep.protos.ISignature>|null} [endorsements] Block endorsements
              * @property {Uint8Array|null} [stateHash] Block stateHash
+             * @property {Uint8Array|null} [previousBlockHash] Block previousBlockHash
+             * @property {Array.<rep.protos.IEndorsement>|null} [consensusMetadata] Block consensusMetadata
+             * @property {rep.protos.INonHashData|null} [nonHashData] Block nonHashData
              */
 
             /**
@@ -2563,8 +2184,7 @@ export const rep = $root.rep = (() => {
              */
             function Block(properties) {
                 this.transactions = [];
-                this.transactionResults = [];
-                this.endorsements = [];
+                this.consensusMetadata = [];
                 if (properties)
                     for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
@@ -2580,12 +2200,12 @@ export const rep = $root.rep = (() => {
             Block.prototype.version = 0;
 
             /**
-             * Block height.
-             * @member {number|Long} height
+             * Block timestamp.
+             * @member {google.protobuf.ITimestamp|null|undefined} timestamp
              * @memberof rep.protos.Block
              * @instance
              */
-            Block.prototype.height = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
+            Block.prototype.timestamp = null;
 
             /**
              * Block transactions.
@@ -2596,20 +2216,12 @@ export const rep = $root.rep = (() => {
             Block.prototype.transactions = $util.emptyArray;
 
             /**
-             * Block transactionResults.
-             * @member {Array.<rep.protos.ITransactionResult>} transactionResults
+             * Block stateHash.
+             * @member {Uint8Array} stateHash
              * @memberof rep.protos.Block
              * @instance
              */
-            Block.prototype.transactionResults = $util.emptyArray;
-
-            /**
-             * Block hashOfBlock.
-             * @member {Uint8Array} hashOfBlock
-             * @memberof rep.protos.Block
-             * @instance
-             */
-            Block.prototype.hashOfBlock = $util.newBuffer([]);
+            Block.prototype.stateHash = $util.newBuffer([]);
 
             /**
              * Block previousBlockHash.
@@ -2620,20 +2232,20 @@ export const rep = $root.rep = (() => {
             Block.prototype.previousBlockHash = $util.newBuffer([]);
 
             /**
-             * Block endorsements.
-             * @member {Array.<rep.protos.ISignature>} endorsements
+             * Block consensusMetadata.
+             * @member {Array.<rep.protos.IEndorsement>} consensusMetadata
              * @memberof rep.protos.Block
              * @instance
              */
-            Block.prototype.endorsements = $util.emptyArray;
+            Block.prototype.consensusMetadata = $util.emptyArray;
 
             /**
-             * Block stateHash.
-             * @member {Uint8Array} stateHash
+             * Block nonHashData.
+             * @member {rep.protos.INonHashData|null|undefined} nonHashData
              * @memberof rep.protos.Block
              * @instance
              */
-            Block.prototype.stateHash = $util.newBuffer([]);
+            Block.prototype.nonHashData = null;
 
             /**
              * Creates a new Block instance using the specified properties.
@@ -2661,23 +2273,20 @@ export const rep = $root.rep = (() => {
                     writer = $Writer.create();
                 if (message.version != null && message.hasOwnProperty("version"))
                     writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.version);
-                if (message.height != null && message.hasOwnProperty("height"))
-                    writer.uint32(/* id 2, wireType 0 =*/16).uint64(message.height);
+                if (message.timestamp != null && message.hasOwnProperty("timestamp"))
+                    $root.google.protobuf.Timestamp.encode(message.timestamp, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
                 if (message.transactions != null && message.transactions.length)
                     for (let i = 0; i < message.transactions.length; ++i)
                         $root.rep.protos.Transaction.encode(message.transactions[i], writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
-                if (message.transactionResults != null && message.transactionResults.length)
-                    for (let i = 0; i < message.transactionResults.length; ++i)
-                        $root.rep.protos.TransactionResult.encode(message.transactionResults[i], writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
-                if (message.hashOfBlock != null && message.hasOwnProperty("hashOfBlock"))
-                    writer.uint32(/* id 5, wireType 2 =*/42).bytes(message.hashOfBlock);
-                if (message.previousBlockHash != null && message.hasOwnProperty("previousBlockHash"))
-                    writer.uint32(/* id 6, wireType 2 =*/50).bytes(message.previousBlockHash);
-                if (message.endorsements != null && message.endorsements.length)
-                    for (let i = 0; i < message.endorsements.length; ++i)
-                        $root.rep.protos.Signature.encode(message.endorsements[i], writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
                 if (message.stateHash != null && message.hasOwnProperty("stateHash"))
-                    writer.uint32(/* id 8, wireType 2 =*/66).bytes(message.stateHash);
+                    writer.uint32(/* id 4, wireType 2 =*/34).bytes(message.stateHash);
+                if (message.previousBlockHash != null && message.hasOwnProperty("previousBlockHash"))
+                    writer.uint32(/* id 5, wireType 2 =*/42).bytes(message.previousBlockHash);
+                if (message.consensusMetadata != null && message.consensusMetadata.length)
+                    for (let i = 0; i < message.consensusMetadata.length; ++i)
+                        $root.rep.protos.Endorsement.encode(message.consensusMetadata[i], writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                if (message.nonHashData != null && message.hasOwnProperty("nonHashData"))
+                    $root.rep.protos.NonHashData.encode(message.nonHashData, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
                 return writer;
             };
 
@@ -2716,7 +2325,7 @@ export const rep = $root.rep = (() => {
                         message.version = reader.uint32();
                         break;
                     case 2:
-                        message.height = reader.uint64();
+                        message.timestamp = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                         break;
                     case 3:
                         if (!(message.transactions && message.transactions.length))
@@ -2724,23 +2333,18 @@ export const rep = $root.rep = (() => {
                         message.transactions.push($root.rep.protos.Transaction.decode(reader, reader.uint32()));
                         break;
                     case 4:
-                        if (!(message.transactionResults && message.transactionResults.length))
-                            message.transactionResults = [];
-                        message.transactionResults.push($root.rep.protos.TransactionResult.decode(reader, reader.uint32()));
+                        message.stateHash = reader.bytes();
                         break;
                     case 5:
-                        message.hashOfBlock = reader.bytes();
-                        break;
-                    case 6:
                         message.previousBlockHash = reader.bytes();
                         break;
-                    case 7:
-                        if (!(message.endorsements && message.endorsements.length))
-                            message.endorsements = [];
-                        message.endorsements.push($root.rep.protos.Signature.decode(reader, reader.uint32()));
+                    case 6:
+                        if (!(message.consensusMetadata && message.consensusMetadata.length))
+                            message.consensusMetadata = [];
+                        message.consensusMetadata.push($root.rep.protos.Endorsement.decode(reader, reader.uint32()));
                         break;
-                    case 8:
-                        message.stateHash = reader.bytes();
+                    case 7:
+                        message.nonHashData = $root.rep.protos.NonHashData.decode(reader, reader.uint32());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -2780,9 +2384,11 @@ export const rep = $root.rep = (() => {
                 if (message.version != null && message.hasOwnProperty("version"))
                     if (!$util.isInteger(message.version))
                         return "version: integer expected";
-                if (message.height != null && message.hasOwnProperty("height"))
-                    if (!$util.isInteger(message.height) && !(message.height && $util.isInteger(message.height.low) && $util.isInteger(message.height.high)))
-                        return "height: integer|Long expected";
+                if (message.timestamp != null && message.hasOwnProperty("timestamp")) {
+                    let error = $root.google.protobuf.Timestamp.verify(message.timestamp);
+                    if (error)
+                        return "timestamp." + error;
+                }
                 if (message.transactions != null && message.hasOwnProperty("transactions")) {
                     if (!Array.isArray(message.transactions))
                         return "transactions: array expected";
@@ -2792,33 +2398,26 @@ export const rep = $root.rep = (() => {
                             return "transactions." + error;
                     }
                 }
-                if (message.transactionResults != null && message.hasOwnProperty("transactionResults")) {
-                    if (!Array.isArray(message.transactionResults))
-                        return "transactionResults: array expected";
-                    for (let i = 0; i < message.transactionResults.length; ++i) {
-                        let error = $root.rep.protos.TransactionResult.verify(message.transactionResults[i]);
-                        if (error)
-                            return "transactionResults." + error;
-                    }
-                }
-                if (message.hashOfBlock != null && message.hasOwnProperty("hashOfBlock"))
-                    if (!(message.hashOfBlock && typeof message.hashOfBlock.length === "number" || $util.isString(message.hashOfBlock)))
-                        return "hashOfBlock: buffer expected";
-                if (message.previousBlockHash != null && message.hasOwnProperty("previousBlockHash"))
-                    if (!(message.previousBlockHash && typeof message.previousBlockHash.length === "number" || $util.isString(message.previousBlockHash)))
-                        return "previousBlockHash: buffer expected";
-                if (message.endorsements != null && message.hasOwnProperty("endorsements")) {
-                    if (!Array.isArray(message.endorsements))
-                        return "endorsements: array expected";
-                    for (let i = 0; i < message.endorsements.length; ++i) {
-                        let error = $root.rep.protos.Signature.verify(message.endorsements[i]);
-                        if (error)
-                            return "endorsements." + error;
-                    }
-                }
                 if (message.stateHash != null && message.hasOwnProperty("stateHash"))
                     if (!(message.stateHash && typeof message.stateHash.length === "number" || $util.isString(message.stateHash)))
                         return "stateHash: buffer expected";
+                if (message.previousBlockHash != null && message.hasOwnProperty("previousBlockHash"))
+                    if (!(message.previousBlockHash && typeof message.previousBlockHash.length === "number" || $util.isString(message.previousBlockHash)))
+                        return "previousBlockHash: buffer expected";
+                if (message.consensusMetadata != null && message.hasOwnProperty("consensusMetadata")) {
+                    if (!Array.isArray(message.consensusMetadata))
+                        return "consensusMetadata: array expected";
+                    for (let i = 0; i < message.consensusMetadata.length; ++i) {
+                        let error = $root.rep.protos.Endorsement.verify(message.consensusMetadata[i]);
+                        if (error)
+                            return "consensusMetadata." + error;
+                    }
+                }
+                if (message.nonHashData != null && message.hasOwnProperty("nonHashData")) {
+                    let error = $root.rep.protos.NonHashData.verify(message.nonHashData);
+                    if (error)
+                        return "nonHashData." + error;
+                }
                 return null;
             };
 
@@ -2836,15 +2435,11 @@ export const rep = $root.rep = (() => {
                 let message = new $root.rep.protos.Block();
                 if (object.version != null)
                     message.version = object.version >>> 0;
-                if (object.height != null)
-                    if ($util.Long)
-                        (message.height = $util.Long.fromValue(object.height)).unsigned = true;
-                    else if (typeof object.height === "string")
-                        message.height = parseInt(object.height, 10);
-                    else if (typeof object.height === "number")
-                        message.height = object.height;
-                    else if (typeof object.height === "object")
-                        message.height = new $util.LongBits(object.height.low >>> 0, object.height.high >>> 0).toNumber(true);
+                if (object.timestamp != null) {
+                    if (typeof object.timestamp !== "object")
+                        throw TypeError(".rep.protos.Block.timestamp: object expected");
+                    message.timestamp = $root.google.protobuf.Timestamp.fromObject(object.timestamp);
+                }
                 if (object.transactions) {
                     if (!Array.isArray(object.transactions))
                         throw TypeError(".rep.protos.Block.transactions: array expected");
@@ -2855,41 +2450,31 @@ export const rep = $root.rep = (() => {
                         message.transactions[i] = $root.rep.protos.Transaction.fromObject(object.transactions[i]);
                     }
                 }
-                if (object.transactionResults) {
-                    if (!Array.isArray(object.transactionResults))
-                        throw TypeError(".rep.protos.Block.transactionResults: array expected");
-                    message.transactionResults = [];
-                    for (let i = 0; i < object.transactionResults.length; ++i) {
-                        if (typeof object.transactionResults[i] !== "object")
-                            throw TypeError(".rep.protos.Block.transactionResults: object expected");
-                        message.transactionResults[i] = $root.rep.protos.TransactionResult.fromObject(object.transactionResults[i]);
-                    }
-                }
-                if (object.hashOfBlock != null)
-                    if (typeof object.hashOfBlock === "string")
-                        $util.base64.decode(object.hashOfBlock, message.hashOfBlock = $util.newBuffer($util.base64.length(object.hashOfBlock)), 0);
-                    else if (object.hashOfBlock.length)
-                        message.hashOfBlock = object.hashOfBlock;
-                if (object.previousBlockHash != null)
-                    if (typeof object.previousBlockHash === "string")
-                        $util.base64.decode(object.previousBlockHash, message.previousBlockHash = $util.newBuffer($util.base64.length(object.previousBlockHash)), 0);
-                    else if (object.previousBlockHash.length)
-                        message.previousBlockHash = object.previousBlockHash;
-                if (object.endorsements) {
-                    if (!Array.isArray(object.endorsements))
-                        throw TypeError(".rep.protos.Block.endorsements: array expected");
-                    message.endorsements = [];
-                    for (let i = 0; i < object.endorsements.length; ++i) {
-                        if (typeof object.endorsements[i] !== "object")
-                            throw TypeError(".rep.protos.Block.endorsements: object expected");
-                        message.endorsements[i] = $root.rep.protos.Signature.fromObject(object.endorsements[i]);
-                    }
-                }
                 if (object.stateHash != null)
                     if (typeof object.stateHash === "string")
                         $util.base64.decode(object.stateHash, message.stateHash = $util.newBuffer($util.base64.length(object.stateHash)), 0);
                     else if (object.stateHash.length)
                         message.stateHash = object.stateHash;
+                if (object.previousBlockHash != null)
+                    if (typeof object.previousBlockHash === "string")
+                        $util.base64.decode(object.previousBlockHash, message.previousBlockHash = $util.newBuffer($util.base64.length(object.previousBlockHash)), 0);
+                    else if (object.previousBlockHash.length)
+                        message.previousBlockHash = object.previousBlockHash;
+                if (object.consensusMetadata) {
+                    if (!Array.isArray(object.consensusMetadata))
+                        throw TypeError(".rep.protos.Block.consensusMetadata: array expected");
+                    message.consensusMetadata = [];
+                    for (let i = 0; i < object.consensusMetadata.length; ++i) {
+                        if (typeof object.consensusMetadata[i] !== "object")
+                            throw TypeError(".rep.protos.Block.consensusMetadata: object expected");
+                        message.consensusMetadata[i] = $root.rep.protos.Endorsement.fromObject(object.consensusMetadata[i]);
+                    }
+                }
+                if (object.nonHashData != null) {
+                    if (typeof object.nonHashData !== "object")
+                        throw TypeError(".rep.protos.Block.nonHashData: object expected");
+                    message.nonHashData = $root.rep.protos.NonHashData.fromObject(object.nonHashData);
+                }
                 return message;
             };
 
@@ -2908,22 +2493,17 @@ export const rep = $root.rep = (() => {
                 let object = {};
                 if (options.arrays || options.defaults) {
                     object.transactions = [];
-                    object.transactionResults = [];
-                    object.endorsements = [];
+                    object.consensusMetadata = [];
                 }
                 if (options.defaults) {
                     object.version = 0;
-                    if ($util.Long) {
-                        let long = new $util.Long(0, 0, true);
-                        object.height = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                    } else
-                        object.height = options.longs === String ? "0" : 0;
+                    object.timestamp = null;
                     if (options.bytes === String)
-                        object.hashOfBlock = "";
+                        object.stateHash = "";
                     else {
-                        object.hashOfBlock = [];
+                        object.stateHash = [];
                         if (options.bytes !== Array)
-                            object.hashOfBlock = $util.newBuffer(object.hashOfBlock);
+                            object.stateHash = $util.newBuffer(object.stateHash);
                     }
                     if (options.bytes === String)
                         object.previousBlockHash = "";
@@ -2932,42 +2512,28 @@ export const rep = $root.rep = (() => {
                         if (options.bytes !== Array)
                             object.previousBlockHash = $util.newBuffer(object.previousBlockHash);
                     }
-                    if (options.bytes === String)
-                        object.stateHash = "";
-                    else {
-                        object.stateHash = [];
-                        if (options.bytes !== Array)
-                            object.stateHash = $util.newBuffer(object.stateHash);
-                    }
+                    object.nonHashData = null;
                 }
                 if (message.version != null && message.hasOwnProperty("version"))
                     object.version = message.version;
-                if (message.height != null && message.hasOwnProperty("height"))
-                    if (typeof message.height === "number")
-                        object.height = options.longs === String ? String(message.height) : message.height;
-                    else
-                        object.height = options.longs === String ? $util.Long.prototype.toString.call(message.height) : options.longs === Number ? new $util.LongBits(message.height.low >>> 0, message.height.high >>> 0).toNumber(true) : message.height;
+                if (message.timestamp != null && message.hasOwnProperty("timestamp"))
+                    object.timestamp = $root.google.protobuf.Timestamp.toObject(message.timestamp, options);
                 if (message.transactions && message.transactions.length) {
                     object.transactions = [];
                     for (let j = 0; j < message.transactions.length; ++j)
                         object.transactions[j] = $root.rep.protos.Transaction.toObject(message.transactions[j], options);
                 }
-                if (message.transactionResults && message.transactionResults.length) {
-                    object.transactionResults = [];
-                    for (let j = 0; j < message.transactionResults.length; ++j)
-                        object.transactionResults[j] = $root.rep.protos.TransactionResult.toObject(message.transactionResults[j], options);
-                }
-                if (message.hashOfBlock != null && message.hasOwnProperty("hashOfBlock"))
-                    object.hashOfBlock = options.bytes === String ? $util.base64.encode(message.hashOfBlock, 0, message.hashOfBlock.length) : options.bytes === Array ? Array.prototype.slice.call(message.hashOfBlock) : message.hashOfBlock;
-                if (message.previousBlockHash != null && message.hasOwnProperty("previousBlockHash"))
-                    object.previousBlockHash = options.bytes === String ? $util.base64.encode(message.previousBlockHash, 0, message.previousBlockHash.length) : options.bytes === Array ? Array.prototype.slice.call(message.previousBlockHash) : message.previousBlockHash;
-                if (message.endorsements && message.endorsements.length) {
-                    object.endorsements = [];
-                    for (let j = 0; j < message.endorsements.length; ++j)
-                        object.endorsements[j] = $root.rep.protos.Signature.toObject(message.endorsements[j], options);
-                }
                 if (message.stateHash != null && message.hasOwnProperty("stateHash"))
                     object.stateHash = options.bytes === String ? $util.base64.encode(message.stateHash, 0, message.stateHash.length) : options.bytes === Array ? Array.prototype.slice.call(message.stateHash) : message.stateHash;
+                if (message.previousBlockHash != null && message.hasOwnProperty("previousBlockHash"))
+                    object.previousBlockHash = options.bytes === String ? $util.base64.encode(message.previousBlockHash, 0, message.previousBlockHash.length) : options.bytes === Array ? Array.prototype.slice.call(message.previousBlockHash) : message.previousBlockHash;
+                if (message.consensusMetadata && message.consensusMetadata.length) {
+                    object.consensusMetadata = [];
+                    for (let j = 0; j < message.consensusMetadata.length; ++j)
+                        object.consensusMetadata[j] = $root.rep.protos.Endorsement.toObject(message.consensusMetadata[j], options);
+                }
+                if (message.nonHashData != null && message.hasOwnProperty("nonHashData"))
+                    object.nonHashData = $root.rep.protos.NonHashData.toObject(message.nonHashData, options);
                 return object;
             };
 
@@ -2983,6 +2549,242 @@ export const rep = $root.rep = (() => {
             };
 
             return Block;
+        })();
+
+        protos.NonHashData = (function() {
+
+            /**
+             * Properties of a NonHashData.
+             * @memberof rep.protos
+             * @interface INonHashData
+             * @property {google.protobuf.ITimestamp|null} [localLedgerCommitTimestamp] NonHashData localLedgerCommitTimestamp
+             * @property {Array.<rep.protos.ITransactionResult>|null} [transactionResults] NonHashData transactionResults
+             */
+
+            /**
+             * Constructs a new NonHashData.
+             * @memberof rep.protos
+             * @classdesc Represents a NonHashData.
+             * @implements INonHashData
+             * @constructor
+             * @param {rep.protos.INonHashData=} [properties] Properties to set
+             */
+            function NonHashData(properties) {
+                this.transactionResults = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * NonHashData localLedgerCommitTimestamp.
+             * @member {google.protobuf.ITimestamp|null|undefined} localLedgerCommitTimestamp
+             * @memberof rep.protos.NonHashData
+             * @instance
+             */
+            NonHashData.prototype.localLedgerCommitTimestamp = null;
+
+            /**
+             * NonHashData transactionResults.
+             * @member {Array.<rep.protos.ITransactionResult>} transactionResults
+             * @memberof rep.protos.NonHashData
+             * @instance
+             */
+            NonHashData.prototype.transactionResults = $util.emptyArray;
+
+            /**
+             * Creates a new NonHashData instance using the specified properties.
+             * @function create
+             * @memberof rep.protos.NonHashData
+             * @static
+             * @param {rep.protos.INonHashData=} [properties] Properties to set
+             * @returns {rep.protos.NonHashData} NonHashData instance
+             */
+            NonHashData.create = function create(properties) {
+                return new NonHashData(properties);
+            };
+
+            /**
+             * Encodes the specified NonHashData message. Does not implicitly {@link rep.protos.NonHashData.verify|verify} messages.
+             * @function encode
+             * @memberof rep.protos.NonHashData
+             * @static
+             * @param {rep.protos.INonHashData} message NonHashData message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            NonHashData.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.localLedgerCommitTimestamp != null && message.hasOwnProperty("localLedgerCommitTimestamp"))
+                    $root.google.protobuf.Timestamp.encode(message.localLedgerCommitTimestamp, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.transactionResults != null && message.transactionResults.length)
+                    for (let i = 0; i < message.transactionResults.length; ++i)
+                        $root.rep.protos.TransactionResult.encode(message.transactionResults[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified NonHashData message, length delimited. Does not implicitly {@link rep.protos.NonHashData.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof rep.protos.NonHashData
+             * @static
+             * @param {rep.protos.INonHashData} message NonHashData message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            NonHashData.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a NonHashData message from the specified reader or buffer.
+             * @function decode
+             * @memberof rep.protos.NonHashData
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {rep.protos.NonHashData} NonHashData
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            NonHashData.decode = function decode(reader, length) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rep.protos.NonHashData();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    switch (tag >>> 3) {
+                    case 1:
+                        message.localLedgerCommitTimestamp = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                        break;
+                    case 2:
+                        if (!(message.transactionResults && message.transactionResults.length))
+                            message.transactionResults = [];
+                        message.transactionResults.push($root.rep.protos.TransactionResult.decode(reader, reader.uint32()));
+                        break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a NonHashData message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof rep.protos.NonHashData
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {rep.protos.NonHashData} NonHashData
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            NonHashData.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a NonHashData message.
+             * @function verify
+             * @memberof rep.protos.NonHashData
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            NonHashData.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.localLedgerCommitTimestamp != null && message.hasOwnProperty("localLedgerCommitTimestamp")) {
+                    let error = $root.google.protobuf.Timestamp.verify(message.localLedgerCommitTimestamp);
+                    if (error)
+                        return "localLedgerCommitTimestamp." + error;
+                }
+                if (message.transactionResults != null && message.hasOwnProperty("transactionResults")) {
+                    if (!Array.isArray(message.transactionResults))
+                        return "transactionResults: array expected";
+                    for (let i = 0; i < message.transactionResults.length; ++i) {
+                        let error = $root.rep.protos.TransactionResult.verify(message.transactionResults[i]);
+                        if (error)
+                            return "transactionResults." + error;
+                    }
+                }
+                return null;
+            };
+
+            /**
+             * Creates a NonHashData message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof rep.protos.NonHashData
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {rep.protos.NonHashData} NonHashData
+             */
+            NonHashData.fromObject = function fromObject(object) {
+                if (object instanceof $root.rep.protos.NonHashData)
+                    return object;
+                let message = new $root.rep.protos.NonHashData();
+                if (object.localLedgerCommitTimestamp != null) {
+                    if (typeof object.localLedgerCommitTimestamp !== "object")
+                        throw TypeError(".rep.protos.NonHashData.localLedgerCommitTimestamp: object expected");
+                    message.localLedgerCommitTimestamp = $root.google.protobuf.Timestamp.fromObject(object.localLedgerCommitTimestamp);
+                }
+                if (object.transactionResults) {
+                    if (!Array.isArray(object.transactionResults))
+                        throw TypeError(".rep.protos.NonHashData.transactionResults: array expected");
+                    message.transactionResults = [];
+                    for (let i = 0; i < object.transactionResults.length; ++i) {
+                        if (typeof object.transactionResults[i] !== "object")
+                            throw TypeError(".rep.protos.NonHashData.transactionResults: object expected");
+                        message.transactionResults[i] = $root.rep.protos.TransactionResult.fromObject(object.transactionResults[i]);
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a NonHashData message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof rep.protos.NonHashData
+             * @static
+             * @param {rep.protos.NonHashData} message NonHashData
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            NonHashData.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults)
+                    object.transactionResults = [];
+                if (options.defaults)
+                    object.localLedgerCommitTimestamp = null;
+                if (message.localLedgerCommitTimestamp != null && message.hasOwnProperty("localLedgerCommitTimestamp"))
+                    object.localLedgerCommitTimestamp = $root.google.protobuf.Timestamp.toObject(message.localLedgerCommitTimestamp, options);
+                if (message.transactionResults && message.transactionResults.length) {
+                    object.transactionResults = [];
+                    for (let j = 0; j < message.transactionResults.length; ++j)
+                        object.transactionResults[j] = $root.rep.protos.TransactionResult.toObject(message.transactionResults[j], options);
+                }
+                return object;
+            };
+
+            /**
+             * Converts this NonHashData to JSON.
+             * @function toJSON
+             * @memberof rep.protos.NonHashData
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            NonHashData.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            return NonHashData;
         })();
 
         protos.OperLog = (function() {
@@ -3235,225 +3037,16 @@ export const rep = $root.rep = (() => {
             return OperLog;
         })();
 
-        protos.ActionResult = (function() {
-
-            /**
-             * Properties of an ActionResult.
-             * @memberof rep.protos
-             * @interface IActionResult
-             * @property {number|null} [code] ActionResult code
-             * @property {string|null} [reason] ActionResult reason
-             */
-
-            /**
-             * Constructs a new ActionResult.
-             * @memberof rep.protos
-             * @classdesc Represents an ActionResult.
-             * @implements IActionResult
-             * @constructor
-             * @param {rep.protos.IActionResult=} [properties] Properties to set
-             */
-            function ActionResult(properties) {
-                if (properties)
-                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                        if (properties[keys[i]] != null)
-                            this[keys[i]] = properties[keys[i]];
-            }
-
-            /**
-             * ActionResult code.
-             * @member {number} code
-             * @memberof rep.protos.ActionResult
-             * @instance
-             */
-            ActionResult.prototype.code = 0;
-
-            /**
-             * ActionResult reason.
-             * @member {string} reason
-             * @memberof rep.protos.ActionResult
-             * @instance
-             */
-            ActionResult.prototype.reason = "";
-
-            /**
-             * Creates a new ActionResult instance using the specified properties.
-             * @function create
-             * @memberof rep.protos.ActionResult
-             * @static
-             * @param {rep.protos.IActionResult=} [properties] Properties to set
-             * @returns {rep.protos.ActionResult} ActionResult instance
-             */
-            ActionResult.create = function create(properties) {
-                return new ActionResult(properties);
-            };
-
-            /**
-             * Encodes the specified ActionResult message. Does not implicitly {@link rep.protos.ActionResult.verify|verify} messages.
-             * @function encode
-             * @memberof rep.protos.ActionResult
-             * @static
-             * @param {rep.protos.IActionResult} message ActionResult message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            ActionResult.encode = function encode(message, writer) {
-                if (!writer)
-                    writer = $Writer.create();
-                if (message.code != null && message.hasOwnProperty("code"))
-                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.code);
-                if (message.reason != null && message.hasOwnProperty("reason"))
-                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.reason);
-                return writer;
-            };
-
-            /**
-             * Encodes the specified ActionResult message, length delimited. Does not implicitly {@link rep.protos.ActionResult.verify|verify} messages.
-             * @function encodeDelimited
-             * @memberof rep.protos.ActionResult
-             * @static
-             * @param {rep.protos.IActionResult} message ActionResult message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            ActionResult.encodeDelimited = function encodeDelimited(message, writer) {
-                return this.encode(message, writer).ldelim();
-            };
-
-            /**
-             * Decodes an ActionResult message from the specified reader or buffer.
-             * @function decode
-             * @memberof rep.protos.ActionResult
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @param {number} [length] Message length if known beforehand
-             * @returns {rep.protos.ActionResult} ActionResult
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            ActionResult.decode = function decode(reader, length) {
-                if (!(reader instanceof $Reader))
-                    reader = $Reader.create(reader);
-                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rep.protos.ActionResult();
-                while (reader.pos < end) {
-                    let tag = reader.uint32();
-                    switch (tag >>> 3) {
-                    case 1:
-                        message.code = reader.int32();
-                        break;
-                    case 2:
-                        message.reason = reader.string();
-                        break;
-                    default:
-                        reader.skipType(tag & 7);
-                        break;
-                    }
-                }
-                return message;
-            };
-
-            /**
-             * Decodes an ActionResult message from the specified reader or buffer, length delimited.
-             * @function decodeDelimited
-             * @memberof rep.protos.ActionResult
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {rep.protos.ActionResult} ActionResult
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            ActionResult.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader))
-                    reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32());
-            };
-
-            /**
-             * Verifies an ActionResult message.
-             * @function verify
-             * @memberof rep.protos.ActionResult
-             * @static
-             * @param {Object.<string,*>} message Plain object to verify
-             * @returns {string|null} `null` if valid, otherwise the reason why it is not
-             */
-            ActionResult.verify = function verify(message) {
-                if (typeof message !== "object" || message === null)
-                    return "object expected";
-                if (message.code != null && message.hasOwnProperty("code"))
-                    if (!$util.isInteger(message.code))
-                        return "code: integer expected";
-                if (message.reason != null && message.hasOwnProperty("reason"))
-                    if (!$util.isString(message.reason))
-                        return "reason: string expected";
-                return null;
-            };
-
-            /**
-             * Creates an ActionResult message from a plain object. Also converts values to their respective internal types.
-             * @function fromObject
-             * @memberof rep.protos.ActionResult
-             * @static
-             * @param {Object.<string,*>} object Plain object
-             * @returns {rep.protos.ActionResult} ActionResult
-             */
-            ActionResult.fromObject = function fromObject(object) {
-                if (object instanceof $root.rep.protos.ActionResult)
-                    return object;
-                let message = new $root.rep.protos.ActionResult();
-                if (object.code != null)
-                    message.code = object.code | 0;
-                if (object.reason != null)
-                    message.reason = String(object.reason);
-                return message;
-            };
-
-            /**
-             * Creates a plain object from an ActionResult message. Also converts values to other types if specified.
-             * @function toObject
-             * @memberof rep.protos.ActionResult
-             * @static
-             * @param {rep.protos.ActionResult} message ActionResult
-             * @param {$protobuf.IConversionOptions} [options] Conversion options
-             * @returns {Object.<string,*>} Plain object
-             */
-            ActionResult.toObject = function toObject(message, options) {
-                if (!options)
-                    options = {};
-                let object = {};
-                if (options.defaults) {
-                    object.code = 0;
-                    object.reason = "";
-                }
-                if (message.code != null && message.hasOwnProperty("code"))
-                    object.code = message.code;
-                if (message.reason != null && message.hasOwnProperty("reason"))
-                    object.reason = message.reason;
-                return object;
-            };
-
-            /**
-             * Converts this ActionResult to JSON.
-             * @function toJSON
-             * @memberof rep.protos.ActionResult
-             * @instance
-             * @returns {Object.<string,*>} JSON object
-             */
-            ActionResult.prototype.toJSON = function toJSON() {
-                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-            };
-
-            return ActionResult;
-        })();
-
         protos.TransactionResult = (function() {
 
             /**
              * Properties of a TransactionResult.
              * @memberof rep.protos
              * @interface ITransactionResult
-             * @property {string|null} [txId] TransactionResult txId
+             * @property {string|null} [txid] TransactionResult txid
              * @property {Array.<rep.protos.IOperLog>|null} [ol] TransactionResult ol
-             * @property {rep.protos.IActionResult|null} [result] TransactionResult result
+             * @property {number|null} [errorCode] TransactionResult errorCode
+             * @property {string|null} [error] TransactionResult error
              */
 
             /**
@@ -3473,12 +3066,12 @@ export const rep = $root.rep = (() => {
             }
 
             /**
-             * TransactionResult txId.
-             * @member {string} txId
+             * TransactionResult txid.
+             * @member {string} txid
              * @memberof rep.protos.TransactionResult
              * @instance
              */
-            TransactionResult.prototype.txId = "";
+            TransactionResult.prototype.txid = "";
 
             /**
              * TransactionResult ol.
@@ -3489,12 +3082,20 @@ export const rep = $root.rep = (() => {
             TransactionResult.prototype.ol = $util.emptyArray;
 
             /**
-             * TransactionResult result.
-             * @member {rep.protos.IActionResult|null|undefined} result
+             * TransactionResult errorCode.
+             * @member {number} errorCode
              * @memberof rep.protos.TransactionResult
              * @instance
              */
-            TransactionResult.prototype.result = null;
+            TransactionResult.prototype.errorCode = 0;
+
+            /**
+             * TransactionResult error.
+             * @member {string} error
+             * @memberof rep.protos.TransactionResult
+             * @instance
+             */
+            TransactionResult.prototype.error = "";
 
             /**
              * Creates a new TransactionResult instance using the specified properties.
@@ -3520,13 +3121,15 @@ export const rep = $root.rep = (() => {
             TransactionResult.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.txId != null && message.hasOwnProperty("txId"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.txId);
+                if (message.txid != null && message.hasOwnProperty("txid"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.txid);
                 if (message.ol != null && message.ol.length)
                     for (let i = 0; i < message.ol.length; ++i)
                         $root.rep.protos.OperLog.encode(message.ol[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
-                if (message.result != null && message.hasOwnProperty("result"))
-                    $root.rep.protos.ActionResult.encode(message.result, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                if (message.errorCode != null && message.hasOwnProperty("errorCode"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).uint32(message.errorCode);
+                if (message.error != null && message.hasOwnProperty("error"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.error);
                 return writer;
             };
 
@@ -3562,7 +3165,7 @@ export const rep = $root.rep = (() => {
                     let tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.txId = reader.string();
+                        message.txid = reader.string();
                         break;
                     case 2:
                         if (!(message.ol && message.ol.length))
@@ -3570,7 +3173,10 @@ export const rep = $root.rep = (() => {
                         message.ol.push($root.rep.protos.OperLog.decode(reader, reader.uint32()));
                         break;
                     case 3:
-                        message.result = $root.rep.protos.ActionResult.decode(reader, reader.uint32());
+                        message.errorCode = reader.uint32();
+                        break;
+                    case 4:
+                        message.error = reader.string();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -3607,9 +3213,9 @@ export const rep = $root.rep = (() => {
             TransactionResult.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.txId != null && message.hasOwnProperty("txId"))
-                    if (!$util.isString(message.txId))
-                        return "txId: string expected";
+                if (message.txid != null && message.hasOwnProperty("txid"))
+                    if (!$util.isString(message.txid))
+                        return "txid: string expected";
                 if (message.ol != null && message.hasOwnProperty("ol")) {
                     if (!Array.isArray(message.ol))
                         return "ol: array expected";
@@ -3619,11 +3225,12 @@ export const rep = $root.rep = (() => {
                             return "ol." + error;
                     }
                 }
-                if (message.result != null && message.hasOwnProperty("result")) {
-                    let error = $root.rep.protos.ActionResult.verify(message.result);
-                    if (error)
-                        return "result." + error;
-                }
+                if (message.errorCode != null && message.hasOwnProperty("errorCode"))
+                    if (!$util.isInteger(message.errorCode))
+                        return "errorCode: integer expected";
+                if (message.error != null && message.hasOwnProperty("error"))
+                    if (!$util.isString(message.error))
+                        return "error: string expected";
                 return null;
             };
 
@@ -3639,8 +3246,8 @@ export const rep = $root.rep = (() => {
                 if (object instanceof $root.rep.protos.TransactionResult)
                     return object;
                 let message = new $root.rep.protos.TransactionResult();
-                if (object.txId != null)
-                    message.txId = String(object.txId);
+                if (object.txid != null)
+                    message.txid = String(object.txid);
                 if (object.ol) {
                     if (!Array.isArray(object.ol))
                         throw TypeError(".rep.protos.TransactionResult.ol: array expected");
@@ -3651,11 +3258,10 @@ export const rep = $root.rep = (() => {
                         message.ol[i] = $root.rep.protos.OperLog.fromObject(object.ol[i]);
                     }
                 }
-                if (object.result != null) {
-                    if (typeof object.result !== "object")
-                        throw TypeError(".rep.protos.TransactionResult.result: object expected");
-                    message.result = $root.rep.protos.ActionResult.fromObject(object.result);
-                }
+                if (object.errorCode != null)
+                    message.errorCode = object.errorCode >>> 0;
+                if (object.error != null)
+                    message.error = String(object.error);
                 return message;
             };
 
@@ -3675,18 +3281,21 @@ export const rep = $root.rep = (() => {
                 if (options.arrays || options.defaults)
                     object.ol = [];
                 if (options.defaults) {
-                    object.txId = "";
-                    object.result = null;
+                    object.txid = "";
+                    object.errorCode = 0;
+                    object.error = "";
                 }
-                if (message.txId != null && message.hasOwnProperty("txId"))
-                    object.txId = message.txId;
+                if (message.txid != null && message.hasOwnProperty("txid"))
+                    object.txid = message.txid;
                 if (message.ol && message.ol.length) {
                     object.ol = [];
                     for (let j = 0; j < message.ol.length; ++j)
                         object.ol[j] = $root.rep.protos.OperLog.toObject(message.ol[j], options);
                 }
-                if (message.result != null && message.hasOwnProperty("result"))
-                    object.result = $root.rep.protos.ActionResult.toObject(message.result, options);
+                if (message.errorCode != null && message.hasOwnProperty("errorCode"))
+                    object.errorCode = message.errorCode;
+                if (message.error != null && message.hasOwnProperty("error"))
+                    object.error = message.error;
                 return object;
             };
 
@@ -3704,6 +3313,214 @@ export const rep = $root.rep = (() => {
             return TransactionResult;
         })();
 
+        protos.BlockChain = (function() {
+
+            /**
+             * Properties of a BlockChain.
+             * @memberof rep.protos
+             * @interface IBlockChain
+             * @property {Array.<rep.protos.IBlock>|null} [block] BlockChain block
+             */
+
+            /**
+             * Constructs a new BlockChain.
+             * @memberof rep.protos
+             * @classdesc Represents a BlockChain.
+             * @implements IBlockChain
+             * @constructor
+             * @param {rep.protos.IBlockChain=} [properties] Properties to set
+             */
+            function BlockChain(properties) {
+                this.block = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * BlockChain block.
+             * @member {Array.<rep.protos.IBlock>} block
+             * @memberof rep.protos.BlockChain
+             * @instance
+             */
+            BlockChain.prototype.block = $util.emptyArray;
+
+            /**
+             * Creates a new BlockChain instance using the specified properties.
+             * @function create
+             * @memberof rep.protos.BlockChain
+             * @static
+             * @param {rep.protos.IBlockChain=} [properties] Properties to set
+             * @returns {rep.protos.BlockChain} BlockChain instance
+             */
+            BlockChain.create = function create(properties) {
+                return new BlockChain(properties);
+            };
+
+            /**
+             * Encodes the specified BlockChain message. Does not implicitly {@link rep.protos.BlockChain.verify|verify} messages.
+             * @function encode
+             * @memberof rep.protos.BlockChain
+             * @static
+             * @param {rep.protos.IBlockChain} message BlockChain message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            BlockChain.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.block != null && message.block.length)
+                    for (let i = 0; i < message.block.length; ++i)
+                        $root.rep.protos.Block.encode(message.block[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified BlockChain message, length delimited. Does not implicitly {@link rep.protos.BlockChain.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof rep.protos.BlockChain
+             * @static
+             * @param {rep.protos.IBlockChain} message BlockChain message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            BlockChain.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a BlockChain message from the specified reader or buffer.
+             * @function decode
+             * @memberof rep.protos.BlockChain
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {rep.protos.BlockChain} BlockChain
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            BlockChain.decode = function decode(reader, length) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.rep.protos.BlockChain();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    switch (tag >>> 3) {
+                    case 1:
+                        if (!(message.block && message.block.length))
+                            message.block = [];
+                        message.block.push($root.rep.protos.Block.decode(reader, reader.uint32()));
+                        break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a BlockChain message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof rep.protos.BlockChain
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {rep.protos.BlockChain} BlockChain
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            BlockChain.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a BlockChain message.
+             * @function verify
+             * @memberof rep.protos.BlockChain
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            BlockChain.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.block != null && message.hasOwnProperty("block")) {
+                    if (!Array.isArray(message.block))
+                        return "block: array expected";
+                    for (let i = 0; i < message.block.length; ++i) {
+                        let error = $root.rep.protos.Block.verify(message.block[i]);
+                        if (error)
+                            return "block." + error;
+                    }
+                }
+                return null;
+            };
+
+            /**
+             * Creates a BlockChain message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof rep.protos.BlockChain
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {rep.protos.BlockChain} BlockChain
+             */
+            BlockChain.fromObject = function fromObject(object) {
+                if (object instanceof $root.rep.protos.BlockChain)
+                    return object;
+                let message = new $root.rep.protos.BlockChain();
+                if (object.block) {
+                    if (!Array.isArray(object.block))
+                        throw TypeError(".rep.protos.BlockChain.block: array expected");
+                    message.block = [];
+                    for (let i = 0; i < object.block.length; ++i) {
+                        if (typeof object.block[i] !== "object")
+                            throw TypeError(".rep.protos.BlockChain.block: object expected");
+                        message.block[i] = $root.rep.protos.Block.fromObject(object.block[i]);
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a BlockChain message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof rep.protos.BlockChain
+             * @static
+             * @param {rep.protos.BlockChain} message BlockChain
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            BlockChain.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults)
+                    object.block = [];
+                if (message.block && message.block.length) {
+                    object.block = [];
+                    for (let j = 0; j < message.block.length; ++j)
+                        object.block[j] = $root.rep.protos.Block.toObject(message.block[j], options);
+                }
+                return object;
+            };
+
+            /**
+             * Converts this BlockChain to JSON.
+             * @function toJSON
+             * @memberof rep.protos.BlockChain
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            BlockChain.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            return BlockChain;
+        })();
+
         protos.BlockchainInfo = (function() {
 
             /**
@@ -3714,7 +3531,7 @@ export const rep = $root.rep = (() => {
              * @property {number|Long|null} [totalTransactions] BlockchainInfo totalTransactions
              * @property {Uint8Array|null} [currentBlockHash] BlockchainInfo currentBlockHash
              * @property {Uint8Array|null} [previousBlockHash] BlockchainInfo previousBlockHash
-             * @property {Uint8Array|null} [currentStateHash] BlockchainInfo currentStateHash
+             * @property {Uint8Array|null} [currentWorldStateHash] BlockchainInfo currentWorldStateHash
              */
 
             /**
@@ -3765,12 +3582,12 @@ export const rep = $root.rep = (() => {
             BlockchainInfo.prototype.previousBlockHash = $util.newBuffer([]);
 
             /**
-             * BlockchainInfo currentStateHash.
-             * @member {Uint8Array} currentStateHash
+             * BlockchainInfo currentWorldStateHash.
+             * @member {Uint8Array} currentWorldStateHash
              * @memberof rep.protos.BlockchainInfo
              * @instance
              */
-            BlockchainInfo.prototype.currentStateHash = $util.newBuffer([]);
+            BlockchainInfo.prototype.currentWorldStateHash = $util.newBuffer([]);
 
             /**
              * Creates a new BlockchainInfo instance using the specified properties.
@@ -3804,8 +3621,8 @@ export const rep = $root.rep = (() => {
                     writer.uint32(/* id 3, wireType 2 =*/26).bytes(message.currentBlockHash);
                 if (message.previousBlockHash != null && message.hasOwnProperty("previousBlockHash"))
                     writer.uint32(/* id 4, wireType 2 =*/34).bytes(message.previousBlockHash);
-                if (message.currentStateHash != null && message.hasOwnProperty("currentStateHash"))
-                    writer.uint32(/* id 5, wireType 2 =*/42).bytes(message.currentStateHash);
+                if (message.currentWorldStateHash != null && message.hasOwnProperty("currentWorldStateHash"))
+                    writer.uint32(/* id 5, wireType 2 =*/42).bytes(message.currentWorldStateHash);
                 return writer;
             };
 
@@ -3853,7 +3670,7 @@ export const rep = $root.rep = (() => {
                         message.previousBlockHash = reader.bytes();
                         break;
                     case 5:
-                        message.currentStateHash = reader.bytes();
+                        message.currentWorldStateHash = reader.bytes();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -3902,9 +3719,9 @@ export const rep = $root.rep = (() => {
                 if (message.previousBlockHash != null && message.hasOwnProperty("previousBlockHash"))
                     if (!(message.previousBlockHash && typeof message.previousBlockHash.length === "number" || $util.isString(message.previousBlockHash)))
                         return "previousBlockHash: buffer expected";
-                if (message.currentStateHash != null && message.hasOwnProperty("currentStateHash"))
-                    if (!(message.currentStateHash && typeof message.currentStateHash.length === "number" || $util.isString(message.currentStateHash)))
-                        return "currentStateHash: buffer expected";
+                if (message.currentWorldStateHash != null && message.hasOwnProperty("currentWorldStateHash"))
+                    if (!(message.currentWorldStateHash && typeof message.currentWorldStateHash.length === "number" || $util.isString(message.currentWorldStateHash)))
+                        return "currentWorldStateHash: buffer expected";
                 return null;
             };
 
@@ -3948,11 +3765,11 @@ export const rep = $root.rep = (() => {
                         $util.base64.decode(object.previousBlockHash, message.previousBlockHash = $util.newBuffer($util.base64.length(object.previousBlockHash)), 0);
                     else if (object.previousBlockHash.length)
                         message.previousBlockHash = object.previousBlockHash;
-                if (object.currentStateHash != null)
-                    if (typeof object.currentStateHash === "string")
-                        $util.base64.decode(object.currentStateHash, message.currentStateHash = $util.newBuffer($util.base64.length(object.currentStateHash)), 0);
-                    else if (object.currentStateHash.length)
-                        message.currentStateHash = object.currentStateHash;
+                if (object.currentWorldStateHash != null)
+                    if (typeof object.currentWorldStateHash === "string")
+                        $util.base64.decode(object.currentWorldStateHash, message.currentWorldStateHash = $util.newBuffer($util.base64.length(object.currentWorldStateHash)), 0);
+                    else if (object.currentWorldStateHash.length)
+                        message.currentWorldStateHash = object.currentWorldStateHash;
                 return message;
             };
 
@@ -3995,11 +3812,11 @@ export const rep = $root.rep = (() => {
                             object.previousBlockHash = $util.newBuffer(object.previousBlockHash);
                     }
                     if (options.bytes === String)
-                        object.currentStateHash = "";
+                        object.currentWorldStateHash = "";
                     else {
-                        object.currentStateHash = [];
+                        object.currentWorldStateHash = [];
                         if (options.bytes !== Array)
-                            object.currentStateHash = $util.newBuffer(object.currentStateHash);
+                            object.currentWorldStateHash = $util.newBuffer(object.currentWorldStateHash);
                     }
                 }
                 if (message.height != null && message.hasOwnProperty("height"))
@@ -4016,8 +3833,8 @@ export const rep = $root.rep = (() => {
                     object.currentBlockHash = options.bytes === String ? $util.base64.encode(message.currentBlockHash, 0, message.currentBlockHash.length) : options.bytes === Array ? Array.prototype.slice.call(message.currentBlockHash) : message.currentBlockHash;
                 if (message.previousBlockHash != null && message.hasOwnProperty("previousBlockHash"))
                     object.previousBlockHash = options.bytes === String ? $util.base64.encode(message.previousBlockHash, 0, message.previousBlockHash.length) : options.bytes === Array ? Array.prototype.slice.call(message.previousBlockHash) : message.previousBlockHash;
-                if (message.currentStateHash != null && message.hasOwnProperty("currentStateHash"))
-                    object.currentStateHash = options.bytes === String ? $util.base64.encode(message.currentStateHash, 0, message.currentStateHash.length) : options.bytes === Array ? Array.prototype.slice.call(message.currentStateHash) : message.currentStateHash;
+                if (message.currentWorldStateHash != null && message.hasOwnProperty("currentWorldStateHash"))
+                    object.currentWorldStateHash = options.bytes === String ? $util.base64.encode(message.currentWorldStateHash, 0, message.currentWorldStateHash.length) : options.bytes === Array ? Array.prototype.slice.call(message.currentWorldStateHash) : message.currentWorldStateHash;
                 return object;
             };
 
