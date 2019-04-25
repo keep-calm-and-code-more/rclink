@@ -88,7 +88,7 @@ const ImportKey = (keyorCertPEM, passWord) => {
 
 /**
  * 获得PEM格式的私钥或公钥信息
- * @param {String} keyObj prvKeyObj或pubKeyObj
+ * @param {Object} keyObj prvKeyObj或pubKeyObj
  * @param {String} passWord 私钥保护密码，当需要生成加密私钥信息时需提供该参数, 目前是由jsrsasign使用PBKDF2/HmacSHA1/3DES算法对私钥进行加密
  * @returns {String} keyPEM 符合PKCS#8标准的密钥信息
  */
@@ -96,10 +96,10 @@ const GetKeyPEM = (keyObj, passWord) => {
     let keyPEM;
     const key = keyObj;
     if (key.isPrivate) {
-        // 当keyObj为私钥且其pubKeyHex信息为Undefined时（如从其它加密工具导入）则getPEM会报错，这里设置为null
-        if (key.isPrivate && key.pubKeyHex === undefined) { key.pubKeyHex = null; }
         keyPEM = KEYUTIL.getPEM(keyObj, "PKCS8PRV", passWord);
-    } else { keyPEM = KEYUTIL.getPEM(keyObj); }
+    } else { 
+        keyPEM = KEYUTIL.getPEM(keyObj); 
+    }
     return keyPEM;
 };
 

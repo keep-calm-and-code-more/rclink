@@ -154,7 +154,7 @@ describe("签名及签名验证测试", () => {
     const prvk3pem = "-----BEGIN PRIVATE KEY-----\nMIGNAgEAMBAGByqGSM49AgEGBSuBBAAKBHYwdAIBAQQgOUm2PF8apyaK1bXjKH5j\njCld/I6ExpefemRGsS0C4+WgBwYFK4EEAAqhRANCAAT6VLE/eF9+sK1ROn8n6x7h\nKsBxehW42qf1IB8quBn5OrQD3x2H4yZVDwPgcEUCjH8PcFgswdtbo8JL/7f66yEC\n-----END PRIVATE KEY-----";
     const pubk3pem = "-----BEGIN PUBLIC KEY-----\nMFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+lSxP3hffrCtUTp/J+se4SrAcXoVuNqn\n9SAfKrgZ+Tq0A98dh+MmVQ8D4HBFAox/D3BYLMHbW6PCS/+3+ushAg==\n-----END PUBLIC KEY-----";
 
-    test.only("使用pem格式私钥参数以及jsrsasign提供者参数签名，应能成功", () => {
+    test("使用pem格式私钥参数以及jsrsasign提供者参数签名，应能成功", () => {
         const s = Sign(prvk3pem, ct1, "SHA1withECDSA", "jsrsasign");
         expect(s).toBeDefined();
     });

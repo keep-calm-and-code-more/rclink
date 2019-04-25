@@ -165,7 +165,8 @@ class Transaction {
     /**
      * 对新创建的交易实例进行签名
      * @param {Object} signArgs - 签名所需参数
-     * @param {string} signArgs.prvKey - 签名者使用的pem格式私钥
+     * @param {string} signArgs.prvKey - 签名者的pem格式私钥
+     * @param {string} signArgs.pubKey - 签名者的pem格式公钥
      * @param {string} signArgs.alg - 使用的签名算法名称
      * @param {string} [signArgs.pass] - 私钥解密密码，如果prvKey为已加密的pem格式私钥，则需要提供此解密密码
      * @param {string} signArgs.creditCode - 签名者的信用代码
@@ -173,9 +174,10 @@ class Transaction {
      * @returns {Buffer} - 已签名交易数据
      */
     sign({
-        prvKey, alg, pass, creditCode, certName, 
+        prvKey, pubKey, alg, pass, creditCode, certName, 
     }) {
         if (!_.isString(prvKey)) throw new Error("The prvKey field should be a string");
+        if (!_.isString(pubKey)) throw new Error("The pubKey field should be a string");
         if (!_.isString(alg)) throw new Error("The alg field should be a string");
         if (pass && !_.isString(pass)) throw new Error("The pass field should be a string");
         if (!_.isString(creditCode)) throw new Error("The creditCode field should be a string");
@@ -189,11 +191,12 @@ class Transaction {
         // 签名
         let txBuffer = Buffer.from(txMsgType.encode(msg).finish());
         const prvKeyObj = ImportKey(prvKey, pass); // 私钥解密
+        if (prvKeyObj.pubKeyHex === undefined) {
+            // 当使用ImportKey方法从pem格式转object格式时，若其pubKeyHex为undefined则需在该object中补充pubKeyHex
+            // 否则签名将出错
+            prvKeyObj.pubKeyHex = ImportKey(pubKey).pubKeyHex;
+        }
         const prvkeyPEM = GetKeyPEM(prvKeyObj);
-        // if (prvK.pubKeyHex === undefined) {
-        //     // 当使用从pem格式转object格式的私钥签名时，若其pubKeyHex为undefined则需在该object中补充pubKeyHex
-        //     prvK.pubKeyHex = "0";
-        // }
         const signature = Sign(prvkeyPEM, txBuffer, alg);
         const signatureJsonObj = {
             cert_id: {

@@ -42,18 +42,21 @@ describe("测试交易生成功能", () => {
     const txToSetState = new Transaction(txToSetStateConsArgs);
     const txSignedBytes = txToDeploy.sign({
         prvKey: GetKeyPEM(kp1.prvKeyObj),
+        pubKey: GetKeyPEM(kp1.pubKeyObj),
         alg: "ecdsa-with-SHA1",
         creditCode: "121000005l35120456",
         certName: "node1",
     });
     txToInvoke.sign({
         prvKey: GetKeyPEM(kp1.prvKeyObj),
+        pubKey: GetKeyPEM(kp1.pubKeyObj),
         alg: "ecdsa-with-SHA1",
         creditCode: "121000005l35120456",
         certName: "node1",
     });
     txToSetState.sign({
         prvKey: GetKeyPEM(kp1.prvKeyObj),
+        pubKey: GetKeyPEM(kp1.pubKeyObj),
         alg: "ecdsa-with-SHA1",
         creditCode: "121000005l35120456",
         certName: "node1",
@@ -85,6 +88,7 @@ describe("测试交易生成功能", () => {
         expect(() => {
             txFromSignedBytes.sign({
                 prvKey: GetKeyPEM(kp1.prvKeyObj),
+                pubKey: GetKeyPEM(kp1.pubKeyObj),
                 alg: signAlg,
                 creditCode: "121000005l35120456",
                 certName: "node1",
@@ -103,6 +107,7 @@ describe("测试交易生成功能", () => {
         const prvKeyEncrypted = GetKeyPEM(kp1.prvKeyObj, pass);
         txToDeploy.sign({
             prvKey: prvKeyEncrypted,
+            pubKey: GetKeyPEM(kp1.pubKeyObj),
             alg: signAlg,
             pass, 
             creditCode: "121000005l35120456",
@@ -117,6 +122,7 @@ describe("测试交易生成功能", () => {
         expect(() => {
             txToDeploy.sign({
                 prvKey: prvKeyEncrypted,
+                pubKey: GetKeyPEM(kp1.pubKeyObj),
                 alg: signAlg,
                 pass: "456", 
                 creditCode: "121000005l35120456",
@@ -126,6 +132,7 @@ describe("测试交易生成功能", () => {
         expect(() => {
             txToDeploy.sign({
                 prvKey: prvKeyEncrypted,
+                pubKey: GetKeyPEM(kp1.pubKeyObj),
                 alg: signAlg,
                 creditCode: "121000005l35120456",
                 certName: "node1",
