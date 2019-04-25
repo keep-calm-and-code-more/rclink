@@ -1,14 +1,18 @@
-// import protobuf from "protobufjs";
 import Long from "long";
+import _ from "lodash";
 import { rep } from "../protos/peer"; // use generated static js code
 import {
-    GetHashVal, CalculateAddr, ImportKey, Sign, VerifySign, 
+    GetHashVal, ImportKey, Sign, VerifySign, GetKeyPEM, 
 } from "./crypto";
 
-// Implement private properties
-const txMsgCollection = new WeakMap();
-const txMsgType = rep.protos.Transaction; // static private property
+const txEnumTypes = ["CHAINCODE_DEPLOY", "CHAINCODE_INVOKE", "CHAINCODE_SET_STATE"];
+const chaincodeLanguageEnumTypes = ["CODE_SCALA", "CODE_JAVASCRIPT"];
 
+// Private properties
+const txMsgCollection = new WeakMap();
+const txMsgType = rep.protos.Transaction;
+const signatureMsgType = rep.protos.Signature;
+// Private methods
 const getTimestamp = (millis) => {
     const timestampMillis = millis || Date.now();
     const timestampJsonObj = {
@@ -18,118 +22,140 @@ const getTimestamp = (millis) => {
     return timestampJsonObj;
 };
 
-const getNonce = (nonce) => {
-    if (nonce) { return Buffer.from(nonce); }
-    return Buffer.from("nonce");
-};
-const getValidators = (toValidators) => {
-    if (toValidators) { return Buffer.from(toValidators); }
-    return Buffer.from("toValidators");
-};
-
-const getAccountAddr = pubKeyPEM => CalculateAddr(pubKeyPEM);
-
 class Transaction {
     /**
-     *
-     * @param {Object | Buffer | Uint8Array } consArgs 交易对象构造参数，可为Json Object或Buffer/Uint8Array
-     * 当使用Json Object时，consArgs应具有以下属性：
-     * - type, {Number}, 需与RepChain的交易类型定义一致，1表示CHAINCODE_DEPLOY，2表示CHAINCODE_INVOKE
-     * - pubKeyPEM, {String} 交易发起者的PEM格式公钥信息，或符合X.509标准的pem格式证书信息
-     * - name, {String}, 交易调用的合约名字即合约ID
-     * - function, {String}, 交易调用的合约方法名
-     * - args, {Array[String]}, 传递给交易所调用合约方法的参数
+     * 构建RepChain交易对象
+     * @param {Object} consArgs - 交易对象实例构造参数
+     * @param {Buffer|Uint8Array} [consArgs.txBytes] - 二进制交易数据，当使用该参数时，将忽略其他参数
+     * @param {string} consArgs.type - 交易类型，需与RepChain的交易类型定义一致，可为CHAINCODE_DEPLOY，
+     * CHAINCODE_INVOKE, CHAINCODE_SET_STATE
+     * @param {string} consArgs.chaincodeName - 目标合约的名称
+     * @param {number} consArgs.chaincodeVersion - 目标合约的版本号
+     * @param {Object} consArgs.chaincodeDeployParams - 部署合约时(即type为CHAINCODE_DEPLOY)所需参数
+     * @param {number} consArgs.chaincodeDeployParams.timeout
+     * @param {string} consArgs.chaincodeDeployParams.codePackage - 待部署合约的代码内容
+     * @param {string} consArgs.chaincodeDeployParams.legalProse - 待部署合约的法律文本
+     * @param {string} consArgs.chaincodeDeployParams.codeLanguageType - 待部署合约代码语言类型，
+     * 目前只支持CODE_SCALA和CODE_JAVASCRIPT
+     * @param {Object} consArgs.chaincodeInvokeParams - 调用合约时(即type为CHAINCODE_INVOKE)所需参数
+     * @param {string} consArgs.chaincodeInvokeParams.chaincodeFunction - 待被调用的合约方法名
+     * @param {array[String]} consArgs.chaincodeInvokeParams.chaincodeFunctionArgs - 给待调用的合约方法的参数
+     * @param {Object} consArgs.chaincodeSetStateParams - 设置合约状态时(即type为CHAINCODE_SET_STATE)所需参数
+     * @param {boolean} consArgs.chaincodeSetStateParams.state - 目标合约的新状态，当值为false时表示使该合约无效
      */
-    constructor(consArgs) {
-        if (!txMsgType) { // 调用构造函数之前必须先完成setTxMsgType方法
-            throw new Error("Can not be called before setTxMsgType function completed");
-        }
-
-        // 根据参数类型构造属性txMsg
-        if (Buffer.isBuffer(consArgs) || consArgs.constructor.name === "Uint8Array") { // 已签名的序列化交易数据
-            try {
-                const msg = txMsgType.decode(consArgs);
-                txMsgCollection.set(this, msg);
-            } catch (e) {
-                throw e;
+    constructor({
+        txBytes, type, chaincodeName, chaincodeVersion,
+        chaincodeDeployParams: { 
+            timeout, codePackage, legalProse, codeLanguageType,
+        } = {},
+        chaincodeInvokeParams: { chaincodeFunction, chaincodeFunctionArgs } = {},
+        chaincodeSetStateParams: { state } = {},
+    }) {
+        if (txBytes) { // 此时直接使用该参数构造交易对象
+            if (Buffer.isBuffer(txBytes) || txBytes.constructor.name === "Uint8Array") {
+                try {
+                    const msg = txMsgType.decode(txBytes);
+                    txMsgCollection.set(this, msg);
+                } catch (e) {
+                    throw e;
+                }
+            } else {
+                throw new TypeError("The txBytes field should be a Buffer or Uint8array");
+            } 
+        } else { 
+            if (_.indexOf(txEnumTypes, type) === -1) {
+                throw new Error(`The type field should be one of ${txEnumTypes}`);
             }
-        } else if (consArgs.constructor.name === "Object") { // 描述交易的Json Object对象
-            const txType = consArgs.type;
-            const txChaincodeID = { path: consArgs.path, name: consArgs.name };
-            const txChaincodeInput = { function: consArgs.function, args: consArgs.args };
-            const txChaincodeSpec = {
-                chaincodeID: txChaincodeID,
-                ctorMsg: txChaincodeInput,
-                timeout: consArgs.timeout || 1000,
-                secureContext: consArgs.secureContext,
-                code_package: consArgs.codePackage,
-                ctype: consArgs.codeType || 2,
-            };
-            const txMetaData = consArgs.metaData;
-            const txid = "";
-            const txTimestamp = getTimestamp(consArgs.timestampMillis);
-            const txConfidentialityLevel = consArgs.confidentialityLevel || 1;
-            const txConfidentialityProtocolVersion = consArgs.confidentialityProtocolVersion;
-            const txNonce = getNonce(consArgs.nonce);
-            const txToValidators = getValidators(consArgs.toValidators);
-            const txAccountAdr = getAccountAddr(consArgs.pubKeyPEM);
-            const txSignature = null;
-
-            const chaincodeIDStr = `path: "${txChaincodeID.path}"\nname: "${txChaincodeID.name}"\n`;
+            if (!_.isString(chaincodeName)) {
+                throw new TypeError("The chaincodeID field should be a string");
+            }
+            if (!_.isInteger(chaincodeVersion)) {
+                throw new TypeError("The chaincodeversion field should be an integer");
+            }
             const txJsonObj = {
-                type: txType,
-                chaincodeID: Buffer.from(chaincodeIDStr),
-                payload: txChaincodeSpec,
-                metadata: txMetaData,
-                txid,
-                timestamp: txTimestamp,
-                confidentialityLevel: txConfidentialityLevel,
-                confidentialityProtocolVersion: txConfidentialityProtocolVersion,
-                nonce: txNonce,
-                toValidators: txToValidators,
-                cert: txAccountAdr,
-                signature: txSignature,
+                id: "",
+                cid: {
+                    chaincodeName,
+                    version: chaincodeVersion,
+                },
+                signature: null,
             };
-
+            switch (type) {
+                case "CHAINCODE_DEPLOY": {
+                    if (!_.isInteger(timeout)) {
+                        throw new TypeError("The timeout field should be an integer");
+                    }
+                    if (!_.isString(codePackage)) {
+                        throw new TypeError("The codePackage field should be a string");
+                    }
+                    if (!_.isString(legalProse)) {
+                        throw new TypeError("The legalProse field should be a string");
+                    }
+                    if (_.indexOf(chaincodeLanguageEnumTypes, codeLanguageType) === -1) {
+                        throw new Error(`The codeLanguageType field should be one of ${chaincodeLanguageEnumTypes}`);
+                    }
+                    txJsonObj.type = 1;
+                    txJsonObj.spec = {
+                        timeout,
+                        code_package: codePackage,
+                        legal_prose: legalProse,
+                    };
+                    switch (codeLanguageType) {
+                        case "CODE_JAVASCRIPT":
+                            txJsonObj.spec.ctype = 1;
+                            break;
+                        case "CODE_SCALA":
+                            txJsonObj.spec.ctype = 2;
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                }
+                case "CHAINCODE_INVOKE": {
+                    if (!_.isString(chaincodeFunction)) {
+                        throw new TypeError("The chaincodeFunction field should be a string");
+                    }
+                    if (!_.isArray(chaincodeFunctionArgs)) {
+                        throw new TypeError("The chaincodeFunctionArgs field should be an Array<string>");
+                    }
+                    for (let i = 0; i < chaincodeFunctionArgs.length; i++) {
+                        if (!_.isString(chaincodeFunctionArgs[i])) {
+                            throw new TypeError("The chaincodeFunctionArgs field should be an Array<string>");
+                        }
+                    }
+                    txJsonObj.type = 2;
+                    txJsonObj.ipt = {
+                        function: chaincodeFunction,
+                        args: chaincodeFunctionArgs,
+                    };
+                    break;
+                }
+                case "CHAINCODE_SET_STATE": {
+                    if (!_.isBoolean(state)) {
+                        throw new TypeError("The state field should be a Boolean");
+                    }
+                    txJsonObj.type = 3;
+                    txJsonObj.state = state;
+                    break;
+                }
+                default:
+                    throw new Error("Wrong Transaction type");
+            }
+            
             const err = txMsgType.verify(txJsonObj);
-            if (err) { throw err; }
+            if (err) throw err;
 
             // 计算txid
             const msg = txMsgType.create(txJsonObj);
             // 在Browser环境下protobufjs中的encode().finish()返回原始的Uint8Array，
             // 为了屏蔽其与Buffer经browserify或webpack转译后的Uint8Array的差异，这里需转为Buffer
             const txBuffer = Buffer.from(txMsgType.encode(msg).finish());
-            msg.txid = GetHashVal(txBuffer, "sha256").toString("hex");
-
-            this.pubKeyPEM = consArgs.pubKeyPEM;
+            msg.id = GetHashVal(txBuffer, "sha256").toString("hex");
 
             txMsgCollection.set(this, msg);
-        } else {
-            throw new TypeError("Bad consArgs type to construct an instance of Transaction, need Object or Buffer/Uint8Array");
-        }
+        } 
     }
-
-    // // 必须调用此方法，才能构造Transaction实例
-    // /**
-    //  * 复用txMsgType实例
-    //  */
-    // static setTxMsgType() {
-    //     if (txMsgType) { return txMsgType; }
-    //     // if (txMsgType) { return new Promise(resolve => (resolve(true))); }
-    //     // return protobuf.load("protos/peer.proto").then((root) => {
-    //     //     txMsgType = root.lookupType("rep.protos.Transaction");
-    //     //     return txMsgType;
-    //     // });
-
-    //     // const root = await protobuf.load("protos/peer.proto");
-    //     // txMsgType = root.lookupType("rep.protos.Transaction");
-    //     txMsgType = rep.protos.Transaction;
-    //     return txMsgType;
-    // }
-
-    // static getTxMsgType() {
-    //     return txMsgType;
-    // }
 
     getTxMsg() {
         return txMsgCollection.get(this);
@@ -137,51 +163,67 @@ class Transaction {
 
     /**
      * 对新创建的交易实例进行签名
-     * @param {String | Object} prvKey 支持使用pem格式的私钥或jsrsasign提供的prvkeyObj对象
-     * @param {String} alg 使用的签名算法名称
-     * @param {String} pass 私钥解密密码，如果prvKey为已加密的pem格式私钥，则需要提供此解密密码
-     * @returns {Buffer} txBuffer 已签名交易
+     * @param {Object} signArgs - 签名所需参数
+     * @param {string} signArgs.prvKey - 签名者使用的pem格式私钥
+     * @param {string} signArgs.alg - 使用的签名算法名称
+     * @param {string} [signArgs.pass] - 私钥解密密码，如果prvKey为已加密的pem格式私钥，则需要提供此解密密码
+     * @param {string} signArgs.creditCode - 签名者的信用代码
+     * @param {string} signArgs.certName - 代表签名者的证书名
+     * @returns {Buffer} - 已签名交易数据
      */
-    createSignedTransaction(prvKey, alg, pass) {
+    sign({
+        prvKey, alg, pass, creditCode, certName, 
+    }) {
+        if (!_.isString(prvKey)) throw new Error("The prvKey field should be a string");
+        if (!_.isString(alg)) throw new Error("The alg field should be a string");
+        if (pass && !_.isString(pass)) throw new Error("The pass field should be a string");
+        if (!_.isString(creditCode)) throw new Error("The creditCode field should be a string");
+        if (!_.isString(certName)) throw new Error("The certName field should be a string");
+
         const msg = txMsgCollection.get(this);
-        if (msg.signature && msg.signature.toString() !== "") { throw new Error("The transaction has been signed already"); }
+        if (msg.signature && msg.signature.signature) { 
+            throw new Error("The transaction has been signed already"); 
+        }
 
         // 签名
         let txBuffer = Buffer.from(txMsgType.encode(msg).finish());
-        // const txBufferHash = GetHashVal(txBuffer);
-        let prvK = prvKey;
-        if (typeof prvK === "string") {
-            prvK = ImportKey(prvK, pass);
-            if (prvK.pubKeyHex === undefined) {
-                // 当使用从pem格式转object格式的私钥签名时，若其pubKeyHex为undefined则需在该object中补充pubKeyHex
-                prvK.pubKeyHex = ImportKey(this.pubKeyPEM).pubKeyHex;
-            }
-        }
-        const signature = Sign(prvK, txBuffer, alg);
-        msg.signature = signature;
+        const prvKeyObj = ImportKey(prvKey, pass); // 私钥解密
+        const prvkeyPEM = GetKeyPEM(prvKeyObj);
+        // if (prvK.pubKeyHex === undefined) {
+        //     // 当使用从pem格式转object格式的私钥签名时，若其pubKeyHex为undefined则需在该object中补充pubKeyHex
+        //     prvK.pubKeyHex = "0";
+        // }
+        const signature = Sign(prvkeyPEM, txBuffer, alg);
+        const signatureJsonObj = {
+            cert_id: {
+                credit_code: creditCode,
+                cert_name: certName,
+            },
+            tm_local: getTimestamp(),
+            signature,
+        };
+        const err = signatureMsgType.verify(signatureJsonObj);
+        if (err) throw err;
+        msg.signature = signatureMsgType.create(signatureJsonObj);
         txBuffer = Buffer.from(txMsgType.encode(msg).finish());
         return txBuffer;
     }
 
     /**
-     * 对已签名的交易对象进行验签
-     * @param {String | Object} pubKey pem格式的公钥或者jsrsasign提供的pubKeyObj对象
+     * 对已签名的交易对象进行签名验证
+     * @param {String} pubKey pem格式的公钥
      * @param {String} alg 使用的签名算法
      */
-    verifySignedTransaction(pubKey, alg) {
-        // 深拷贝（相对于"=")
-        // 实际上使用Object.assign()只能保证第一级属性的深拷贝
-        // 是满足这里的需求的
-        const msg = Object.assign({}, txMsgCollection.get(this));
-        // 使用JSON.parse与JSON.stringify不能复制function等非object的属性
-        // let msg = JSON.parse(JSON.stringify(txMsgCollection.get(this)))
-        msg.metadata = null;
-        const { signature } = msg;
-        if (!signature || signature.toString() === "") { throw new Error("The transaction has not been signed yet"); }
+    verifySignature(pubKey, alg) {
+        const msg = _.cloneDeep(txMsgCollection.get(this));
+        const signature = _.cloneDeep(msg.signature);
+        if (!signature || !signature.signature) {
+            throw new Error("The transaction has not been signed yet");
+        }
         msg.signature = null;
         const msgBuffer = Buffer.from(txMsgType.encode(msg).finish());
-        const isValid = VerifySign(pubKey, signature, msgBuffer, alg);
-        return isValid;
+        const valid = VerifySign(pubKey, signature.signature, msgBuffer, alg);
+        return valid;
     }
 }
 
