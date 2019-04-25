@@ -39,9 +39,10 @@ class Transaction {
      * 目前只支持CODE_SCALA和CODE_JAVASCRIPT
      * @param {Object} consArgs.chaincodeInvokeParams - 调用合约时(即type为CHAINCODE_INVOKE)所需参数
      * @param {string} consArgs.chaincodeInvokeParams.chaincodeFunction - 待被调用的合约方法名
-     * @param {array[String]} consArgs.chaincodeInvokeParams.chaincodeFunctionArgs - 给待调用的合约方法的参数
+     * @param {Array.<string>} consArgs.chaincodeInvokeParams.chaincodeFunctionArgs - 给待调用的合约方法的参数
      * @param {Object} consArgs.chaincodeSetStateParams - 设置合约状态时(即type为CHAINCODE_SET_STATE)所需参数
      * @param {boolean} consArgs.chaincodeSetStateParams.state - 目标合约的新状态，当值为false时表示使该合约无效
+     * @returns {Transaction} Transaction对象实例
      */
     constructor({
         txBytes, type, chaincodeName, chaincodeVersion,
@@ -213,6 +214,7 @@ class Transaction {
      * 对已签名的交易对象进行签名验证
      * @param {String} pubKey pem格式的公钥
      * @param {String} alg 使用的签名算法
+     * @returns {boolean} 验签是否成功
      */
     verifySignature(pubKey, alg) {
         const msg = _.cloneDeep(txMsgCollection.get(this));
