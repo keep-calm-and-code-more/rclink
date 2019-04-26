@@ -22,9 +22,9 @@ class RestAPI {
      * 
      * @typedef {Object} ChainInfo 
      * @property {number} height - 最新区块高度
-     * @property {Buffer} currentBlockHash - 最新区块哈希值
-     * @property {Buffer} previousBlockHash - 最新区块的父区块哈希值
-     * @property {Buffer} currentStateHash - 世界状态哈希值
+     * @property {string} currentBlockHash - 最新区块哈希值(base64编码字符串)
+     * @property {string} previousBlockHash - 最新区块的父区块哈希值(base64编码字符串)
+     * @property {string} currentStateHash - 世界状态哈希值(base64编码字符串)
      * @property {number} totalTransactions - 交易总量
      * @memberof RestAPI
      */
@@ -40,7 +40,12 @@ class RestAPI {
             method: "GET",
             uri: url,
             json: true,
-        }).then(chainInfo => chainInfo.result);
+        }).then((chainInfo) => {
+            const r = chainInfo.result;
+            r.height = parseInt(r.height, 10);
+            r.totalTransactions = parseInt(r.totalTransactions, 10);
+            return r;
+        });
     }
 
     /**
@@ -49,37 +54,37 @@ class RestAPI {
      * @memberof RestAPI
      */
     chainHeight() {
-        return this.chainInfo().then(chainInfo => parseInt(chainInfo.height, 10));
+        return this.chainInfo().then(chainInfo => chainInfo.height);
     }
 
     /**
      * 获取最新区块哈希值
      *
-     * @returns {Promise<Buffer>} 区块哈希值
+     * @returns {Promise<string>} 区块哈希值(base64编码字符串)
      * @memberof RestAPI
      */
     chainCurrentBlockHash() {
-        return this.chainInfo().then(chainInfo => Buffer.from(chainInfo.currentBlockHash));
+        return this.chainInfo().then(chainInfo => chainInfo.currentBlockHash);
     }
 
     /**
      * 获取最新区块的父区块哈希值
      *
-     * @returns {Promise<Buffer>} 最新区块的父区块哈希值
+     * @returns {Promise<string>} 最新区块的父区块哈希值(base64编码字符串)
      * @memberof RestAPI
      */
     chainPreviousBlockHash() {
-        return this.chainInfo().then(chainInfo => Buffer.from(chainInfo.previousBlockHash));
+        return this.chainInfo().then(chainInfo => chainInfo.previousBlockHash);
     }
 
     /**
      * 获取当前的世界状态哈希值
      *
-     * @returns {Promise<Buffer>} 世界状态哈希值
+     * @returns {Promise<string>} 世界状态哈希值(base64编码字符串)
      * @memberof RestAPI
      */
     chainCurrentStateHash() {
-        return this.chainInfo().then(chainInfo => Buffer.from(chainInfo.currentStateHash));
+        return this.chainInfo().then(chainInfo => chainInfo.currentStateHash);
     }
 
     /**
@@ -89,7 +94,7 @@ class RestAPI {
      * @memberof RestAPI
      */
     chainTotalTransactions() {
-        return this.chainInfo().then(chainInfo => parseInt(chainInfo.totalTransactions, 10));
+        return this.chainInfo().then(chainInfo => chainInfo.totalTransactions);
     }
 
     /**
