@@ -3,45 +3,11 @@ import _ from "lodash";
 import { rep } from "../protos/peer";
 import RestAPI from "../src/rest";
 import Transaction from "../src/transaction";
+import { CreateKeypair } from "../src/crypto";
+import { GetKeyPEM } from "../lib/crypto";
 
 describe("Restful API验证", () => {
     const ra = new RestAPI("http://localhost:8081");
-
-    const { Block } = rep.protos;
-        
-    const prvKeyPEM = "-----BEGIN PRIVATE KEY-----\nMIGNAgEAMBAGByqGSM49AgEGBSuBBAAKBHYwdAIBAQQgOUm2PF8apyaK1bXjKH5j\njCld/I6ExpefemRGsS0C4+WgBwYFK4EEAAqhRANCAAT6VLE/eF9+sK1ROn8n6x7h\nKsBxehW42qf1IB8quBn5OrQD3x2H4yZVDwPgcEUCjH8PcFgswdtbo8JL/7f66yEC\n-----END PRIVATE KEY-----";
-    const pubKeyPEM = "-----BEGIN PUBLIC KEY-----\nMFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+lSxP3hffrCtUTp/J+se4SrAcXoVuNqn\n9SAfKrgZ+Tq0A98dh+MmVQ8D4HBFAox/D3BYLMHbW6PCS/+3+ushAg==\n-----END PUBLIC KEY-----";
-    const txToInvokeConsArgs = {
-        type: "CHAINCODE_INVOKE",
-        chaincodeName: "ContractAssetsTPL",
-        chaincodeVersion: 2,
-        chaincodeInvokeParams: {
-            chaincodeFunction: "transfer",
-            chaincodeFunctionArgs: [`{
-                "from" : "121000005l35120456",
-                "to" : "12110107bi45jh675g",
-                "amount" : 5
-            }`],
-        },
-    };
-
-    const tx1 = new Transaction(txToInvokeConsArgs);
-    const txSignedBuffer1 = tx1.sign({
-        prvKey: prvKeyPEM,
-        pubKey: pubKeyPEM,
-        alg: "ecdsa-with-SHA1",
-        creditCode: "121000005l35120456",
-        certName: "node1",
-    });
-
-    const tx2 = new Transaction(txToInvokeConsArgs);
-    const txSignedBuffer2 = tx2.sign({
-        prvKey: prvKeyPEM,
-        pubKey: pubKeyPEM,
-        alg: "ecdsa-with-SHA1",
-        creditCode: "121000005l35120456",
-        certName: "node1",
-    });
 
     describe("chainInfo相关方法测试", () => {
         test("使用chainInfo方法, 应能得到区块链的当前概要信息", (done) => {
@@ -97,6 +63,7 @@ describe("Restful API验证", () => {
     });
 
     describe("block相关方法测试", () => {
+        const { Block } = rep.protos;
         test("使用block方法, 根据区块高度可以获取json格式的区块数据", async () => {
             // default blockFormat
             await ra.block(1).then((blk) => {
@@ -156,38 +123,95 @@ describe("Restful API验证", () => {
         //         expect(blkObj.transactions.length).toBeGreaterThan(0);
         //     });
         // });
+        test("使用block方法，通过相同区块id获取的json格式与stream格式区块数据应等价", async () => {
+            const height = await ra.chainHeight(); 
+            const blockJson = await ra.block(height);
+            const blockStream = await ra.block(height, "STREAM");
+            const blockObj = Block.decode(blockStream);
+            expect(blockObj.hashOfBlock.toString("base64")).toBe(blockJson.hashOfBlock);
+        });
     });
 
     describe("transaction相关方法测试", () => {
+        const prvKeyPEM = `-----BEGIN PRIVATE KEY-----
+            MIGNAgEAMBAGByqGSM49AgEGBSuBBAAKBHYwdAIBAQQgPtHT816wJBatnif8laVo
+            yW0R5NqtMiMkmECOYEAIzSWgBwYFK4EEAAqhRANCAASlh+oDBPdwHEkpQT4/g4RX
+            9ubP7jMM2QodiFtsnv+ObQ3dxfQN/S515ePssn3HjPCwfzR3S1KY4O9vFtH1Jql9
+            -----END PRIVATE KEY-----`;
+        const pubKeyPEM = `-----BEGIN PUBLIC KEY-----
+            MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEpYfqAwT3cBxJKUE+P4OEV/bmz+4zDNkK
+            HYhbbJ7/jm0N3cX0Df0udeXj7LJ9x4zwsH80d0tSmODvbxbR9SapfQ==
+            -----END PUBLIC KEY-----`;
+        const txToInvokeConsArgs = {
+            type: "CHAINCODE_INVOKE",
+            chaincodeName: "ContractAssetsTPL",
+            chaincodeVersion: 1,
+            chaincodeInvokeParams: {
+                chaincodeFunction: "transfer",
+                chaincodeFunctionArgs: [`{
+                "from" : "121000005l35120456",
+                "to" : "12110107bi45jh675g",
+                "amount" : 5
+            }`],
+            },
+        };
+
+        const tx1 = new Transaction(txToInvokeConsArgs);
+        const txSignedBuffer1 = tx1.sign({
+            prvKey: prvKeyPEM,
+            pubKey: pubKeyPEM,
+            alg: "ecdsa-with-SHA1",
+            creditCode: "121000005l35120456",
+            certName: "node1",
+        });
+
+        const tx2 = new Transaction(txToInvokeConsArgs);
+        const kp = CreateKeypair();
+        const txSignedBuffer2 = tx2.sign({
+            prvKey: GetKeyPEM(kp.prvKeyObj),
+            pubKey: GetKeyPEM(kp.prvKeyObj),
+            alg: "ecdsa-with-SHA1",
+            creditCode: "121000005l35120456",
+            certName: "node1",
+        });
+
+        const tx3 = new Transaction(txToInvokeConsArgs);
+        const txSignedBuffer3 = tx3.sign({
+            prvKey: prvKeyPEM,
+            pubKey: pubKeyPEM,
+            alg: "ecdsa-with-SHA1",
+            creditCode: "121000005l35120456",
+            certName: "node1",
+        });
+
+        test.only("使用sendTransaction方法，以hex字符串形式提交正确的签名交易，应能返回成功信息", async () => {
+            const result = await ra.sendTransaction(txSignedBuffer1.toString("hex"));
+            console.log(result);
+            expect(result.txid).toBe(tx1.getTxMsg().id);
+            expect(result.err).toBeUndefined();
+        });
+        test.only("使用sendTransaction方法，以非hex编码的字符串形式提交交易，应返回交易解析错误信息", async () => {
+            let result = await ra.sendTransaction(txSignedBuffer1.toString("base64"));
+            expect(result.err).toMatch("transaction parser error");
+            result = await ra.sendTransaction(txSignedBuffer1.toString("utf8"));
+            expect(result.err).toMatch("transaction parser error");
+        });
+        test.only("使用sendTransaction方法，以hex字符串形式提交错误私钥签名的交易，应返回验签错误信息", async () => {
+            const result = await ra.sendTransaction(txSignedBuffer2.toString("hex"));
+            expect(result.err).toBe("验证签名出错");
+        });
+        test.only("使用sendTransaction方法，以二进制形式提交正确的签名交易，应能返回成功信息", async () => {
+            const result = await ra.sendTransaction(txSignedBuffer3);
+            console.log(result);
+            expect(result.txid).toBe(tx3.getTxMsg().id);
+            expect(result.err).toBeUndefined();
+        });
         
+        // test("以字节流格式向RepChain节点提交交易数据，应能返回接收信息并验证通过", async () => {
+        //     const result = await ra.sendTX(txSignedBuffer2);
+        //     // console.log(result);
+        //     expect(result.txid).toBe(tx2.getTxMsg().txid);
+        //     expect(/^验证签名出错/.test(result.err)).toBeFalsy();
+        // });    
     });
-    // test("json方式获得的区块内容与字节流反序列化获得区块内容一致", (done) => {
-    //     async function awaitDemo() {
-    //         let h;
-    //         let blk1; let
-    //             blk2;
-    //         await ra.chainInfo().then((ci) => { h = parseInt(ci.height, 10); });
-    //         await ra.block(h).then((blk) => { blk1 = blk; });
-    //         await ra.blockStream(h).then((res) => {
-    //             const buf = res;
-    //             blk2 = Block.decode(buf);
-    //         });
-    //         expect(blk1.previousBlockHash).toBe(blk2.previousBlockHash.toString("base64"));
-    //         expect(blk1.transactions.length).toBe(blk2.transactions.length);
-    //         done();
-    //     }
-    //     awaitDemo();
-    // });
-    // test("以hex格式字符串向RepChain节点提交交易数据，应能返回接收信息并验签通过", async () => {
-    //     const result = await ra.sendTX(txSignedBuffer1.toString("hex"));
-    //     // console.log(result);
-    //     expect(result.txid).toBe(tx1.getTxMsg().txid);
-    //     expect(/^验证签名出错/.test(result.err)).toBeFalsy();
-    // });
-    // test("以字节流格式向RepChain节点提交交易数据，应能返回接收信息并验证通过", async () => {
-    //     const result = await ra.sendTX(txSignedBuffer2);
-    //     // console.log(result);
-    //     expect(result.txid).toBe(tx2.getTxMsg().txid);
-    //     expect(/^验证签名出错/.test(result.err)).toBeFalsy();
-    // });
 });

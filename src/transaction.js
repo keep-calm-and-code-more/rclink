@@ -1,8 +1,9 @@
 import Long from "long";
 import _ from "lodash";
+import uuidv1 from "uuid/v1";
 import { rep } from "../protos/peer"; // use generated static js code
 import {
-    GetHashVal, ImportKey, Sign, VerifySign, GetKeyPEM, 
+    ImportKey, Sign, VerifySign, GetKeyPEM, 
 } from "./crypto";
 
 const txEnumTypes = ["CHAINCODE_DEPLOY", "CHAINCODE_INVOKE", "CHAINCODE_SET_STATE"];
@@ -79,7 +80,6 @@ class Transaction {
                     chaincodeName,
                     version: chaincodeVersion,
                 },
-                signature: null,
             };
             switch (type) {
                 case "CHAINCODE_DEPLOY": {
@@ -98,8 +98,8 @@ class Transaction {
                     txJsonObj.type = 1;
                     txJsonObj.spec = {
                         timeout,
-                        code_package: codePackage,
-                        legal_prose: legalProse,
+                        codePackage,
+                        legalProse,
                     };
                     switch (codeLanguageType) {
                         case "CODE_JAVASCRIPT":
@@ -151,8 +151,9 @@ class Transaction {
             const msg = txMsgType.create(txJsonObj);
             // 在Browser环境下protobufjs中的encode().finish()返回原始的Uint8Array，
             // 为了屏蔽其与Buffer经browserify或webpack转译后的Uint8Array的差异，这里需转为Buffer
-            const txBuffer = Buffer.from(txMsgType.encode(msg).finish());
-            msg.id = GetHashVal(txBuffer, "sha256").toString("hex");
+            // const txBuffer = Buffer.from(txMsgType.encode(msg).finish());
+            // msg.id = GetHashVal(txBuffer, "sha256").toString("hex");
+            msg.id = uuidv1();
 
             txMsgCollection.set(this, msg);
         } 
@@ -199,11 +200,11 @@ class Transaction {
         const prvkeyPEM = GetKeyPEM(prvKeyObj);
         const signature = Sign(prvkeyPEM, txBuffer, alg);
         const signatureJsonObj = {
-            cert_id: {
-                credit_code: creditCode,
-                cert_name: certName,
+            certId: {
+                creditCode,
+                certName,
             },
-            tm_local: getTimestamp(),
+            tmLocal: getTimestamp(),
             signature,
         };
         const err = signatureMsgType.verify(signatureJsonObj);

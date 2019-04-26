@@ -178,7 +178,7 @@ class RestAPI {
      * 发送签名交易
      * 
      * @param {Buffer | String} tx 待发送的已签名交易数据，支持使用Buffer类型数据或其hex编码的String数据
-     * @returns {Promise} 接收交易后RepChain节点的返回信息
+     * @returns {Promise<{txid: string}> | Promise<{err: string}>} 接收交易后RepChain节点的返回信息
      */
     sendTransaction(tx) {
         return restSendTX({ tx, address: this._address });
