@@ -1,32 +1,19 @@
-import protobuf from "protobufjs";
-import EventTube from "../lib/events";
+import EventTube from "../src/events";
+import { rep } from "../protos/peer";
 
 
 describe("事件订阅与数据获取", () => {
-    let Message;
-    // let Block;
-    beforeAll((done) => {
-        protobuf.load("protos/peer.proto", (err, root) => {
-            if (err) {
-                throw err;
-            }
-            Message = root.lookupType("rep.protos.Event");
-            // Block = root.lookupType('rep.protos.Block');
-            done();
-        });
-    });
+    const eventMsgType = rep.protos.Event;
+    const blockMsgType = rep.protos.Block;
 
-    test("订阅RepChain事件", (done) => {
-        let cout = 0;
+    test("订阅RepChain区块相关事件，获得区块数据后可以主动关闭", (done) => {
         const et = new EventTube("ws://localhost:8081/event", ((evt) => {
-            // console.log("Received info from websocket service:\n", evt);
             const ed = Buffer.from(evt.data);
-            const msg = Message.decode(ed);
-            console.log(msg);
+            const msg = eventMsgType.decode(ed);
             expect(msg.action).toBeGreaterThan(0);
             expect(msg.action).toBeLessThan(12);
-            cout++;
-            if (cout > 2) {
+            if (msg.blk) {
+                expect(msg.blk).toBeInstanceOf(blockMsgType);
                 et.close("works done");
                 done();
             }
