@@ -2,7 +2,7 @@ import {
     GetHashVal, CreateKeypair, GetKeyPEM, ImportKey, CalculateAddr,
     Sign, VerifySign, CreateCertificate, CreateSelfSignedCertificate,
     VerifyCertificateSignature, ImportCertificate,
-} from "../lib/crypto";
+} from "../src/crypto";
 
 describe("密码学哈希值生成测试", () => {
     // 欲计算哈希值的数据
@@ -12,34 +12,34 @@ describe("密码学哈希值生成测试", () => {
     const bytes2bch2 = Buffer.from(str2bch2);
 
     test("对给定数据计算哈希值，应获得字节流类型的哈希值", () => {
-        const h1 = GetHashVal(str2bch1);
-        const h2 = GetHashVal(bytes2bch2);
+        const h1 = GetHashVal({ data: str2bch1 });
+        const h2 = GetHashVal({ data: bytes2bch2 });
         expect(h1).toBeInstanceOf(Buffer);
         expect(h2).toBeInstanceOf(Buffer);
     });
     test("对相同数据使用相同哈希算法进行哈希值计算，获得的结果应相同", () => {
-        const h1 = GetHashVal(str2bch1, "sha1");
-        const h2 = GetHashVal(str2bch1, "sha1");
+        const h1 = GetHashVal({ data: str2bch1, alg: "sha1" });
+        const h2 = GetHashVal({ data: str2bch1, alg: "sha1" });
         expect(h1).toEqual(h2);
     });
     test("对相同数据使用不同哈希算法进行哈希值计算，获得的结果应不同", () => {
-        const h1 = GetHashVal(str2bch1, "MD5");
-        const h2 = GetHashVal(str2bch1, "RIPEMD160");
+        const h1 = GetHashVal({ data: str2bch1, alg: "MD5" });
+        const h2 = GetHashVal({ data: str2bch1, alg: "RIPEMD160" });
         expect(h1).not.toEqual(h2);
     });
     test("对不同数据使用相同哈希算法进行哈希值计算，获得的结果应不同", () => {
-        const h1 = GetHashVal(str2bch1, "sha256");
-        const h2 = GetHashVal(str2bch2, "sha256");
+        const h1 = GetHashVal({ data: str2bch1, alg: "sha256" });
+        const h2 = GetHashVal({ data: str2bch2, alg: "sha256" });
         expect(h1).not.toEqual(h2);
     });
     test("对不同数据使用不同哈希算法进行哈希值计算，获得的结果应不同", () => {
-        const h1 = GetHashVal(str2bch1, "sha256");
-        const h2 = GetHashVal(str2bch2, "MD4");
+        const h1 = GetHashVal({ data: str2bch1, alg: "sha256" });
+        const h2 = GetHashVal({ data: str2bch2, alg: "MD4" });
         expect(h1).not.toEqual(h2);
     });
     test("对相同数据的字符串和字节流使用相同哈希算法进行哈希值计算，获得的结果应相同", () => {
-        const h1 = GetHashVal(str2bch1);
-        const h2 = GetHashVal(bytes2bch1);
+        const h1 = GetHashVal({ data: str2bch1 });
+        const h2 = GetHashVal({ data: bytes2bch1 });
         expect(h1).toEqual(h2);
     });
 });

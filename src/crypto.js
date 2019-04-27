@@ -2,31 +2,53 @@ import crypto from "crypto";
 import { KEYUTIL, KJUR, X509 } from "jsrsasign";
 import moment from "moment";
 import CoinString from "coinstring";
+import _ from "lodash";
 import GMCryptoUtils from "./gmCryptoUtils";
 
 const gmCUs = new GMCryptoUtils("wss://localhost:9003");
 
 /**
+ * @callback gmGetHashCallback 
+ * @param {string} sm3HashVal hex格式的国密算法哈希值
+ */
+/**
  * 根据指定的密码学哈希算法为给定数据计算哈希值
- * @param {Buffer | String} data 待对其计算哈希值的原数据
- * @param {String} alg 密码学哈希算法，默认使用sha256
- * @param {String} prov 密码学哈希算法的提供者provider，支持使用nodecrypto、jsrsasign以及gm
- * - nodecrypto，NodeJS内建的crypto工具，默认使用该provider，支持openssl提供的hash算法，
+ * 
+ * @param {Object} getHashParams 计算哈希值所需参数
+ * @param {Buffer | string} getHashParams.data 待对其计算哈希值的原数据
+ * @param {string} getHashParams.alg 待使用的密码学哈希算法，默认为sha256
+ * @param {string} getHashParams.provider 密码学哈希算法的提供者，支持nodecrypto、jsrsasign以及gm
+ * <li>nodecrypto，NodeJS内建的crypto工具，默认使用该provider，支持openssl提供的hash算法，
  *   可在终端使用命令`openssl list-message-digest-algorithms`(1.0.2版)
  *   或`openssl list -digest-algorithms`(1.1.0版)查看支持的哈希算法
- * - jsrsasign，由kjur开源的nodejs加密工具(https://kjur.github.io/jsrsasign),
- *   支持的哈希算法如https://kjur.github.io/jsrsasign/api/symbols/KJUR.crypto.MessageDigest.html 所示
- * - gm，国密算法加密工具，支持sm3哈希算法
- * @param {Function} cb 这里使用的sm3计算服务为异步实现，当使用sm3时需提供回调方法cb，其形式为cb = (sm3HashVal) => {......}
+ * </li>
+ * <li>jsrsasign，开源js加密工具(https://kjur.github.io/jsrsasign),
+ *   支持的哈希算法如<a href=https://kjur.github.io/jsrsasign/api/symbols/KJUR.crypto.MessageDigest.html>
+ * https://kjur.github.io/jsrsasign/api/symbols/KJUR.crypto.MessageDigest.html<a/>所示
+ * </li>
+ * <li>gm，国密算法加密工具，支持sm3哈希算法
+ * </li>
+ * @param {gmGetHashCallback} getHashParams.cb sm3计算服务为异步实现，当使用sm3时需提供回调方法
  * @returns {Buffer} digest 结果哈希值，若使用sm3将返回undefined
  */
-const GetHashVal = (data, alg = "sha256", prov = "nodecrypto", cb) => {
+const GetHashVal = ({ 
+    data, alg = "sha256", provider = "nodecrypto", cb, 
+}) => {
+    if (!_.isBuffer(data) && !_.isString(data)) {
+        throw new TypeError("The data field should be a Buffer or string");
+    }
+    if (!_.isString(alg)) throw new TypeError("The alg field should be a string");
+    const providerEnumVals = ["nodecrypto", "jsrsasign", "gm"];
+    if (_.indexOf(providerEnumVals, provider)) {
+        throw new RangeError(`The provider field should be one of ${providerEnumVals}`);
+    }
+
     let hash;
     let digest;
-    if (alg === "sm3" && prov !== "gm") { throw new Error("必须指定provider为gm，即prov='gm'"); }
-    if (alg !== "sm3" && prov === "gm") { throw new Error("该provider只支持sm3算法"); }
+    if (alg === "sm3" && provider !== "gm") throw new Error("必须指定provider为gm");
+    if (alg !== "sm3" && provider === "gm") throw new Error("gm provider只支持sm3算法");
 
-    switch (prov) {
+    switch (provider) {
         case "nodecrypto":
             // 使用NodeJS自带crypto工具计算哈希值
             // 支持的哈希算法更多
@@ -186,8 +208,8 @@ const VerifySign = (pubKey, sigValue, data, alg = "ecdsa-with-SHA1", prov = "nod
  */
 const CalculateAddr = (pubKeyPEM) => {
     // Todo: 支持其它非对称算法公钥的地址计算
-    const pubKeySha256 = GetHashVal(Buffer.from(ImportKey(pubKeyPEM).pubKeyHex, "hex"), "sha256");
-    const pubKeyRmd160 = GetHashVal(pubKeySha256, "rmd160");
+    const pubKeySha256 = GetHashVal({ data: Buffer.from(ImportKey(pubKeyPEM).pubKeyHex, "hex"), alg: "sha256" });
+    const pubKeyRmd160 = GetHashVal({ data: pubKeySha256, alg: "rmd160" });
     const addr = CoinString.encode(pubKeyRmd160, 0x00);
     return Buffer.from(addr);
 };

@@ -7,9 +7,14 @@ const {
 
 $("button#get-sm3-hash-val-test").on("click", () => {
     const sm3PlainData = $("#sm3-plaindata").val();
-    GetHashVal(sm3PlainData, "sm3", "gm", (sm3HashVal) => {
-        console.log(`got sm3 hash value: ${sm3HashVal} for plain data: ${sm3PlainData}`);
-        $("#sm3-hash-val").val(sm3HashVal);
+    GetHashVal({ 
+        data: sm3PlainData,
+        alg: "sm3",
+        provider: "gm",
+        cb: (sm3HashVal) => {
+            console.log(`got sm3 hash value: ${sm3HashVal} for plain data: ${sm3PlainData}`);
+            $("#sm3-hash-val").val(sm3HashVal);
+        }, 
     });
 });
 

@@ -154,7 +154,7 @@ class Transaction {
             const timeStampBuffer = Buffer.from(new Date().toISOString());
             const dataBuffer = Buffer.concat([txBuffer, timeStampBuffer], 
                 txBuffer.length + timeStampBuffer.length);
-            msg.id = GetHashVal(dataBuffer, "sha256").toString("hex");
+            msg.id = GetHashVal({ data: dataBuffer, alg: "sha256" }).toString("hex");
 
             txMsgCollection.set(this, msg);
         } 
