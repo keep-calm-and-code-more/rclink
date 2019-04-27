@@ -1,9 +1,8 @@
 import Long from "long";
 import _ from "lodash";
-import uuidv1 from "uuid/v1";
 import { rep } from "../protos/peer"; // use generated static js code
 import {
-    ImportKey, Sign, VerifySign, GetKeyPEM, 
+    GetHashVal, ImportKey, Sign, VerifySign, GetKeyPEM, 
 } from "./crypto";
 
 const txEnumTypes = ["CHAINCODE_DEPLOY", "CHAINCODE_INVOKE", "CHAINCODE_SET_STATE"];
@@ -151,9 +150,11 @@ class Transaction {
             const msg = txMsgType.create(txJsonObj);
             // 在Browser环境下protobufjs中的encode().finish()返回原始的Uint8Array，
             // 为了屏蔽其与Buffer经browserify或webpack转译后的Uint8Array的差异，这里需转为Buffer
-            // const txBuffer = Buffer.from(txMsgType.encode(msg).finish());
-            // msg.id = GetHashVal(txBuffer, "sha256").toString("hex");
-            msg.id = uuidv1();
+            const txBuffer = Buffer.from(txMsgType.encode(msg).finish());
+            const timeStampBuffer = Buffer.from(new Date().toISOString());
+            const dataBuffer = Buffer.concat([txBuffer, timeStampBuffer], 
+                txBuffer.length + timeStampBuffer.length);
+            msg.id = GetHashVal(dataBuffer, "sha256").toString("hex");
 
             txMsgCollection.set(this, msg);
         } 

@@ -186,7 +186,6 @@ describe("Restful API验证", () => {
 
         test.only("使用sendTransaction方法，以hex字符串形式提交正确的签名交易，应能返回成功信息", async () => {
             const result = await ra.sendTransaction(txSignedBuffer1.toString("hex"));
-            console.log(result);
             expect(result.txid).toBe(tx1.getTxMsg().id);
             expect(result.err).toBeUndefined();
         });
@@ -202,16 +201,8 @@ describe("Restful API验证", () => {
         });
         test.only("使用sendTransaction方法，以二进制形式提交正确的签名交易，应能返回成功信息", async () => {
             const result = await ra.sendTransaction(txSignedBuffer3);
-            console.log(result);
             expect(result.txid).toBe(tx3.getTxMsg().id);
             expect(result.err).toBeUndefined();
         });
-        
-        // test("以字节流格式向RepChain节点提交交易数据，应能返回接收信息并验证通过", async () => {
-        //     const result = await ra.sendTX(txSignedBuffer2);
-        //     // console.log(result);
-        //     expect(result.txid).toBe(tx2.getTxMsg().txid);
-        //     expect(/^验证签名出错/.test(result.err)).toBeFalsy();
-        // });    
     });
 });
