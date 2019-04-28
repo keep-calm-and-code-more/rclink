@@ -1,7 +1,7 @@
 // 在package.json中的browser属性中设置{lib/rest.js : lib/browser/rest.js}以使用相应环境下的实现
-import rp from "request-promise";
 import _ from "lodash";
 import restSendTX from "./restSendTX";
+import restGet from "./restGet";
 
 class RestAPI {
     /**
@@ -36,12 +36,8 @@ class RestAPI {
      */
     chainInfo() {
         const url = `${this._address}/chaininfo`;
-        return rp({
-            method: "GET",
-            uri: url,
-            json: true,
-        }).then((chainInfo) => {
-            const r = chainInfo.result;
+        return restGet(url).then((chainInfo) => {
+            const r = chainInfo;
             r.height = parseInt(r.height, 10);
             r.totalTransactions = parseInt(r.totalTransactions, 10);
             return r;
@@ -125,18 +121,7 @@ class RestAPI {
         }
         url = `${url}/${blockID}`;
 
-        if (blockFormat === "JSON") {
-            return rp({
-                method: "GET",
-                uri: url,
-                json: true,
-            }).then(block => block.result);
-        } 
-        return rp({
-            method: "GET",
-            uri: url,
-            encoding: null,
-        }).then(block => Buffer.from(block));
+        return restGet(url);
     }
 
     /**
@@ -160,18 +145,7 @@ class RestAPI {
         }
         url = `${url}/${id}`;
 
-        if (txFormat === "JSON") {
-            return rp({
-                method: "GET",
-                uri: url,
-                json: true,
-            }).then(tx => tx.result);
-        }
-        return rp({
-            method: "GET",
-            uri: url,
-            encoding: null,
-        }).then(tx => Buffer.from(tx)); 
+        return restGet(url);
     }
 
     /**
@@ -181,7 +155,7 @@ class RestAPI {
      * @returns {Promise<{txid: string}> | Promise<{err: string}>} 接收交易后RepChain节点的返回信息
      */
     sendTransaction(tx) {
-        return restSendTX({ tx, address: this._address });
+        return restSendTX(tx, this._address);
     }
 }
 

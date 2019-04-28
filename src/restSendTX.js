@@ -7,12 +7,13 @@ import { GetHashVal } from "./crypto";
 /**
  * 实现在Node端通过RestAPI向RepChain节点提交已签名的交易数据
  *
- * @param {Object} transactionParam 签名交易参数
- * @param {Buffer | string} transactionParam.tx 待提交的已签名交易数据，可为Buffer类型或hex编码的String类型
- * @param {String} transactionParam.address RepChain节点的所提供的Restful API网络地址
+ * @param {Buffer | string} tx 待提交的已签名交易数据，可为Buffer类型或hex编码的String类型
+ * @param {String} address RepChain节点的所提供的Restful API网络地址
  * @returns {Promise<Object>} RepChain节点的反馈信息
+ * @memberof RestAPI
+ * @private
  */
-const restSendTX = ({ tx, address }) => {
+const restSendTX = (tx, address) => {
     if (!_.isBuffer(tx) && !_.isString(tx)) {
         throw new TypeError("The tx field should be a Buffer or string");
     }
