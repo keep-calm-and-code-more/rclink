@@ -155,14 +155,16 @@ describe("签名及签名验证测试", () => {
     const pubk3pem = "-----BEGIN PUBLIC KEY-----\nMFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE+lSxP3hffrCtUTp/J+se4SrAcXoVuNqn\n9SAfKrgZ+Tq0A98dh+MmVQ8D4HBFAox/D3BYLMHbW6PCS/+3+ushAg==\n-----END PUBLIC KEY-----";
 
     test("使用pem格式私钥参数以及jsrsasign提供者参数签名，应能成功", () => {
-        const s = Sign(prvk3pem, ct1, "SHA1withECDSA", "jsrsasign");
+        const s = Sign({ 
+            prvKey: prvk3pem, data: ct1, alg: "SHA1withECDSA", provider: "jsrsasign", 
+        });
         expect(s).toBeDefined();
     });
     // Sign
     test("对数据进行签名，应获得字节流格式的签名结果", () => {
-        const s1 = Sign(kp1.prvKeyObj, ct1, alg);
-        const s2 = Sign(kp2.prvKeyObj, ct2, alg);
-        const s3 = Sign(prvk3pem, ct3bytes, alg);
+        const s1 = Sign({ prvKey: kp1.prvKeyObj, data: ct1, alg });
+        const s2 = Sign({ prvKey: kp2.prvKeyObj, data: ct2, alg });
+        const s3 = Sign({ prvKey: prvk3pem, data: ct3bytes, alg });
         expect(s1).toBeInstanceOf(Buffer);
         expect(s2).toBeInstanceOf(Buffer);
         expect(s3).toBeInstanceOf(Buffer);
@@ -170,53 +172,61 @@ describe("签名及签名验证测试", () => {
 
     // Sign and VerifySign
     test("同一对密钥对相同内容的签名验证可以通过", () => {
-        const s1 = Sign(kp1.prvKeyObj, ct1);
-        const r1 = VerifySign(kp1.pubKeyObj, s1, ct1);
-        const s2 = Sign(kp2.prvKeyObj, ct2bytes);
-        const r2 = VerifySign(kp2.pubKeyObj, s2, ct2bytes);
+        const s1 = Sign({ prvKey: kp1.prvKeyObj, data: ct1 });
+        const r1 = VerifySign({ pubKey: kp1.pubKeyObj, sigValue: s1, data: ct1 });
+        const s2 = Sign({ prvKey: kp2.prvKeyObj, data: ct2bytes });
+        const r2 = VerifySign({ pubKey: kp2.pubKeyObj, sigValue: s2, data: ct2bytes });
         expect(r1).toBeTruthy();
         expect(r2).toBeTruthy();
     });
     test("同一对密钥对不同内容的签名验证不应通过", () => {
-        const s1 = Sign(kp1.prvKeyObj, ct1);
-        const r1 = VerifySign(kp1.pubKeyObj, s1, ct2);
-        const s2 = Sign(kp2.prvKeyObj, ct2bytes);
-        const r2 = VerifySign(kp1.pubKeyObj, s2, ct2bytes);
+        const s1 = Sign({ prvKey: kp1.prvKeyObj, data: ct1 });
+        const r1 = VerifySign({ pubKey: kp1.pubKeyObj, sigValue: s1, data: ct2 });
+        const s2 = Sign({ prvKey: kp2.prvKeyObj, data: ct2bytes });
+        const r2 = VerifySign({ pubKey: kp1.pubKeyObj, sigValue: s2, data: ct2bytes });
         expect(r1).toBeFalsy();
         expect(r2).toBeFalsy();
     });
     test("不同的密钥对相同内容的签名验证不应通过", () => {
-        const s = Sign(kp1.prvKeyObj, ct1);
-        const r = VerifySign(kp2.pubKeyObj, s, ct1);
+        const s = Sign({ prvKey: kp1.prvKeyObj, data: ct1 });
+        const r = VerifySign({ pubKey: kp2.pubKeyObj, sigValue: s, data: ct1 });
         expect(r).toBeFalsy();
     });
     test("不同的密钥对不同内容的签名验证不应通过", () => {
-        const s = Sign(kp1.prvKeyObj, ct1);
-        const r = VerifySign(kp2.pubKeyObj, s, ct2);
+        const s = Sign({ prvKey: kp1.prvKeyObj, data: ct1 });
+        const r = VerifySign({ pubKey: kp2.pubKeyObj, sigValue: s, data: ct2 });
         expect(r).toBeFalsy();
     });
     test("不同时刻对同一内容签名所得结果应不相同", () => {
-        const r1 = Sign(kp1.prvKeyObj, ct1);
-        const r2 = Sign(kp1.prvKeyObj, ct1);
+        const r1 = Sign({ prvKey: kp1.prvKeyObj, data: ct1 });
+        const r2 = Sign({ prvKey: kp1.prvKeyObj, data: ct1 });
         expect(r1 === r2).toBeFalsy();
     });
     test("对字符串进行签名得到的签名结果,应能被原字符串的字节流验证通过", () => {
-        const s = Sign(prvk3pem, ct3);
-        const r = VerifySign(pubk3pem, s, ct3bytes);
+        const s = Sign({ prvKey: prvk3pem, data: ct3 });
+        const r = VerifySign({ pubKey: pubk3pem, sigValue: s, data: ct3bytes });
         expect(r).toBeTruthy();
     });
     test("对字符串的字节流进行签名得到的签名结果,应能被原字符串验证通过", () => {
-        const s = Sign(prvk3pem, ct3bytes);
-        const r = VerifySign(pubk3pem, s, ct3);
+        const s = Sign({ prvKey: prvk3pem, data: ct3bytes });
+        const r = VerifySign({ pubKey: pubk3pem, sigValue: s, data: ct3 });
         expect(r).toBeTruthy();
     });
     test("使用特定哈希方法的签名算法的签名结果，不应被使用不同哈希方法的签名算法验证通过", () => {
-        const s1 = Sign(prvk3pem, ct3, "SHA256");
-        const r11 = VerifySign(pubk3pem, s1, ct3, "SHA1");
-        const r12 = VerifySign(pubk3pem, s1, ct3, "MD5");
-        const s2 = Sign(prvk3pem, ct3, "SHA1");
-        const r21 = VerifySign(pubk3pem, s2, ct3, "SHA256");
-        const r22 = VerifySign(pubk3pem, s2, ct3, "MD4");
+        const s1 = Sign({ prvKey: prvk3pem, data: ct3, alg: "SHA256" });
+        const r11 = VerifySign({ 
+            pubKey: pubk3pem, sigValue: s1, data: ct3, alg: "SHA1", 
+        });
+        const r12 = VerifySign({ 
+            pubKey: pubk3pem, sigValue: s1, data: ct3, alg: "MD5", 
+        });
+        const s2 = Sign({ prvKey: prvk3pem, data: ct3, alg: "SHA1" });
+        const r21 = VerifySign({ 
+            pubKey: pubk3pem, sigValue: s2, data: ct3, alg: "SHA256", 
+        });
+        const r22 = VerifySign({ 
+            pubKey: pubk3pem, sigValue: s2, data: ct3, alg: "MD4", 
+        });
         expect(r11).toBeFalsy();
         expect(r12).toBeFalsy();
         expect(r21).toBeFalsy();

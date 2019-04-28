@@ -199,7 +199,7 @@ class Transaction {
             prvKeyObj.pubKeyHex = ImportKey(pubKey).pubKeyHex;
         }
         const prvkeyPEM = GetKeyPEM(prvKeyObj);
-        const signature = Sign(prvkeyPEM, txBuffer, alg);
+        const signature = Sign({ prvKey: prvkeyPEM, data: txBuffer, alg });
         const signatureJsonObj = {
             certId: {
                 creditCode,
@@ -229,7 +229,9 @@ class Transaction {
         }
         msg.signature = null;
         const msgBuffer = Buffer.from(txMsgType.encode(msg).finish());
-        const valid = VerifySign(pubKey, signature.signature, msgBuffer, alg);
+        const valid = VerifySign({ 
+            pubKey, sigValue: signature.signature, data: msgBuffer, alg, 
+        });
         return valid;
     }
 }

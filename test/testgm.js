@@ -40,8 +40,15 @@ $("button#get-gm-cert-test").on("click", () => {
 $("button#get-gm-signature-test").on("click", () => {
     const userID = $("#userid-get-gm-signature").val();
     const plainData = $("#plaindata-get-gm-signature").val();
-    Sign(null, plainData, "sm2-with-SM3", "gm", userID, (signature) => {
-        console.log(`got gmSignature: ${signature} for plainData: ${plainData} with userID: ${userID}`);
-        $("#gm-signature").val(signature);
+    Sign({
+        prvKey: null, 
+        data: plainData, 
+        alg: "sm2-with-SM3", 
+        provider: "gm", 
+        gmUserID: userID, 
+        cb: (signature) => {
+            console.log(`got gmSignature: ${signature} for plainData: ${plainData} with userID: ${userID}`);
+            $("#gm-signature").val(signature);
+        },
     });
 });

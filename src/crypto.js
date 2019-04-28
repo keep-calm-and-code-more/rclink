@@ -14,10 +14,10 @@ const gmCUs = new GMCryptoUtils("wss://localhost:9003");
 /**
  * 根据指定的密码学哈希算法为给定数据计算哈希值
  * 
- * @param {Object} getHashParams 计算哈希值所需参数
+ * @param {!Object} getHashParams 计算哈希值所需参数
  * @param {Buffer | string} getHashParams.data 待对其计算哈希值的原数据
- * @param {string} getHashParams.alg 待使用的密码学哈希算法，默认为sha256
- * @param {string} getHashParams.provider 密码学哈希算法的提供者，支持nodecrypto、jsrsasign以及gm
+ * @param {string} [getHashParams.alg] 待使用的密码学哈希算法，默认为sha256
+ * @param {string} [getHashParams.provider] 密码学哈希算法的提供者，支持nodecrypto、jsrsasign以及gm
  * <li>nodecrypto，NodeJS内建的crypto工具，默认使用该provider，支持openssl提供的hash算法，
  *   可在终端使用命令`openssl list-message-digest-algorithms`(1.0.2版)
  *   或`openssl list -digest-algorithms`(1.1.0版)查看支持的哈希算法
@@ -28,7 +28,7 @@ const gmCUs = new GMCryptoUtils("wss://localhost:9003");
  * </li>
  * <li>gm，国密算法加密工具，支持sm3哈希算法
  * </li>
- * @param {gmGetHashCallback} getHashParams.cb sm3计算服务为异步实现，当使用sm3时需提供回调方法
+ * @param {gmGetHashCallback} [getHashParams.cb] sm3计算服务为异步实现，当使用sm3时需提供回调方法
  * @returns {Buffer} digest 结果哈希值，若使用sm3将返回undefined
  */
 const GetHashVal = ({ 
@@ -39,13 +39,13 @@ const GetHashVal = ({
     }
     if (!_.isString(alg)) throw new TypeError("The alg field should be a string");
     const providerEnumVals = ["nodecrypto", "jsrsasign", "gm"];
-    if (_.indexOf(providerEnumVals, provider)) {
+    if (_.indexOf(providerEnumVals, provider) === -1) {
         throw new RangeError(`The provider field should be one of ${providerEnumVals}`);
     }
 
     let hash;
     let digest;
-    if (alg === "sm3" && provider !== "gm") throw new Error("必须指定provider为gm");
+    if (alg === "sm3" && provider !== "gm") throw new Error("当使用sm3时，必须指定provider为gm");
     if (alg !== "sm3" && provider === "gm") throw new Error("gm provider只支持sm3算法");
 
     switch (provider) {
@@ -77,44 +77,64 @@ const GetHashVal = ({
 
 /**
  * 创建非对称密钥对，支持RSA与EC密钥对生成
- * @param {String} alg 密钥对生成算法，RSA或EC，默认使用EC
- * @param {keylenOrCurve} keylenOrCurve 指定密钥长度（针对RSA）或曲线名（针对EC），
+ * 
+ * @param {string} [alg] 密钥对生成算法，RSA或EC，默认使用EC
+ * @param {string | number} [keyLenOrCurve] 指定密钥长度（针对RSA）或曲线名（针对EC），
  * 默认使用EC secp256k1曲线
  * @returns {Object} keypair 含有jsrsasign提供的prvKeyObj与pubKeyObj对象
  */
-const CreateKeypair = (alg = "EC", keylenOrCurve = "secp256k1") => {
-    const keypair = KEYUTIL.generateKeypair(alg, keylenOrCurve);
+const CreateKeypair = (alg = "EC", keyLenOrCurve = "secp256k1") => {
+    const algEnumTypes = ["EC", "RSA"];
+    if (_.indexOf(algEnumTypes, alg) === -1) {
+        throw new RangeError(`The alg param should be one of ${algEnumTypes}`);
+    }
+    if (alg === "EC" && !_.isString(keyLenOrCurve)) {
+        throw new TypeError("The keyLenOrCurve param should be a string when use EC alg");
+    }
+    if (alg === "RSA" && !_.isInteger(keyLenOrCurve)) {
+        throw new TypeError("The keyLenOrCurve param should be an integer when use RSA alg");
+    }
+
+    const keypair = KEYUTIL.generateKeypair(alg, keyLenOrCurve);
     return keypair;
 };
 
 /**
  * 导入已有非对称密钥
- * @param {String} keyPEM 使用符合PKCS#8标准的pem格式私钥信息获取私钥对象，支持导入使用PBKDF2/HmacSHA1/3DES加密的pem格式私钥信息
+ * 
+ * @param {string} keyPEM 使用符合PKCS#8标准的pem格式私钥信息获取私钥对象，支持导入使用PBKDF2_HmacSHA1_3DES加密的pem格式私钥信息
  * 使用符合PKCS#8标准的pem格式公钥信息或符合X.509标准的pem格式证书信息获取公钥对象
- * @param {String} passWord 私钥保护密码, 当导入已加密私钥时，需要提供该参数
- * @returns {Object} keyObj 密钥对象，prvkeyObj或pubKeyObj
+ * @param {string} [passWord] 私钥保护密码, 当导入已加密私钥时，需要提供该参数
+ * @returns {Object} keyObj密钥对象，prvkeyObj或pubKeyObj
  */
-const ImportKey = (keyorCertPEM, passWord) => {
+const ImportKey = (keyPEM, passWord) => {
+    if (!_.isString(keyPEM)) throw new TypeError("The keyPEM param should be a string");
+    if (passWord && !_.isString(keyPEM)) throw new TypeError("The passWord param should be a string");
+
     let keyObj;
     try {
-        keyObj = KEYUTIL.getKey(keyorCertPEM, passWord);
+        keyObj = KEYUTIL.getKey(keyPEM, passWord);
     } catch (e) {
         if (e === "malformed plain PKCS8 private key(code:001)"
             || e.message === "Cannot read property 'sigBytes' of undefined"
             || e.message === "Cannot read property 'sigBytes' of null") {
             throw new Error("提供的私钥信息无效或解密密码无效");
-        } else { throw e; }
+        } else throw e;
     }
     return keyObj;
 };
 
 /**
  * 获得PEM格式的私钥或公钥信息
+ * 
  * @param {Object} keyObj prvKeyObj或pubKeyObj
- * @param {String} passWord 私钥保护密码，当需要生成加密私钥信息时需提供该参数, 目前是由jsrsasign使用PBKDF2/HmacSHA1/3DES算法对私钥进行加密
- * @returns {String} keyPEM 符合PKCS#8标准的密钥信息
+ * @param {string} [passWord] 私钥保护密码，当需要生成加密私钥信息时需提供该参数, 
+ * 目前是由jsrsasign使用PBKDF2_HmacSHA1_3DES算法对私钥进行加密
+ * @returns {string} keyPEM 符合PKCS#8标准的密钥信息
  */
 const GetKeyPEM = (keyObj, passWord) => {
+    if (passWord && !_.isString(passWord)) throw new TypeError("The passWord param should be a string");
+
     let keyPEM;
     const key = keyObj;
     if (key.isPrivate) {
@@ -126,20 +146,40 @@ const GetKeyPEM = (keyObj, passWord) => {
 };
 
 /**
- * 根据指定签名算法和私钥，对给定数据进行签名
- * @param {Object | String} prvKey 私钥信息，支持使用jsrsasign提供的私钥对象，
+ * 
+ * @callback gmSignCallback
+ * @param {string} signature hex格式签名信息
+ */
+/**
+ * 根据指定私钥和签名算法，对给定数据进行签名
+ * 
+ * @param {Object} signParams 签名所需参数
+ * @param {Object | string} signParams.prvKey 私钥信息，支持使用jsrsasign提供的私钥对象，
  * 或直接使用符合PKCS#5的未加密pem格式DSA/RSA私钥，符合PKCS#8的未加密pem格式RSA/ECDSA私钥，当使用gm签名算法时该参数应为null
- * @param {String | Buffer} data 待被签名的数据
- * @param {String} alg 签名算法，默认使用ecdsa-with-SHA1，国密签名算法为sm2-with-SM3
- * @param {String} prov 签名算法的提供者，支持使用jsrsasign或node内建的crypto(默认使用)，以及gm国密签名算法工具
- * @param {String} gmUserID 国密签名算法需要的用户标识，该标识是到gm websocket server查找到其对应国密私钥的唯一标识
- * @param {Function} cb 国密签名算法支持为异步实现，当使用国密签名算法时，需要使用该回调方法，其形式为cb = (signature) => {......}
+ * @param {string | Buffer} signParams.data 待被签名的数据
+ * @param {string} [signParams.alg] 签名算法，默认使用ecdsa-with-SHA1，国密签名算法为sm2-with-SM3
+ * @param {string} [signParams.provider] 签名算法的提供者，支持使用jsrsasign或node内建的crypto(默认使用)，以及gm国密签名算法工具
+ * @param {string} [signParams.gmUserID] 国密签名算法需要的用户标识，该标识是到gm websocket server查找到其对应国密私钥的唯一标识
+ * @param {gmSignCallback} [signParams.cb] 国密签名算法支持为异步实现，当使用国密签名算法时，需要使用该回调方法
  * @returns {Buffer} signature 签名结果值，当使用非国密签名时，会返回该结果
  */
-const Sign = (prvKey, data, alg = "ecdsa-with-SHA1", prov = "nodecrypto", gmUserID, cb) => {
+const Sign = ({ 
+    prvKey, data, alg = "ecdsa-with-SHA1", provider = "nodecrypto", gmUserID, cb, 
+}) => {
+    if (!_.isBuffer(data) && !_.isString(data)) {
+        throw new TypeError("The data field should be a Buffer or string");
+    }
+    if (!_.isString(alg)) throw new TypeError("The alg field should be a string");
+    const providerEnumVals = ["nodecrypto", "jsrsasign", "gm"];
+    if (_.indexOf(providerEnumVals, provider) === -1) {
+        throw new RangeError(`The provider field should be one of ${providerEnumVals}`);
+    }
+    if (gmUserID && !_.isString(gmUserID)) throw new TypeError("The gmUserID should be a string");
+
+
     let sig;
     let signature;
-    switch (prov) {
+    switch (provider) {
         case "nodecrypto":
             // 使用Node自带的crypto包进行签名
             // ps: 发现jsrsasign提供的签名工具包有bug:
@@ -171,17 +211,34 @@ const Sign = (prvKey, data, alg = "ecdsa-with-SHA1", prov = "nodecrypto", gmUser
 
 /**
  * 验证签名
- * @param {Object | String} pubKey 公钥信息，支持使用jsrsasign提供的公钥对象，
+ * 
+ * @param {Object} verifySignatureParams 验证签名所需参数
+ * @param {Object | string} verifySignatureParams.pubKey 公钥信息，支持使用jsrsasign提供的公钥对象，
  * 或直接使用符合PKCS#8的pem格式DSA/RSA/ECDSA公钥，符合X.509的PEM格式包含公钥信息的证书
- * @param {Buffer} sigValue 签名结果
- * @param {String | Buffer} data 被签名的原数据
- * @param {String} alg 签名算法，默认使用ecdsa-with-SHA1
- * @param {String} prov 签名算法的提供者，支持使用jsrsasign或node内建的crypto(默认使用)，待支持使用国密算法提供者
- * @returns {Boolean} isValid 签名真实性鉴定结果
+ * @param {Buffer} verifySignatureParams.sigValue 签名结果
+ * @param {string | Buffer} verifySignatureParams.data 被签名的原数据
+ * @param {string} [verifySignatureParams.alg] 签名算法，默认使用ecdsa-with-SHA1
+ * @param {string} [verifySignatureParams.provider] 签名算法的提供者，
+ * 支持使用jsrsasign或node内建的crypto(默认使用)，待支持使用国密算法提供者
+ * @returns {boolean} isValid 签名真实性鉴定结果
  */
-const VerifySign = (pubKey, sigValue, data, alg = "ecdsa-with-SHA1", prov = "nodecrypto") => {
+const VerifySign = ({ 
+    pubKey, sigValue, data, alg = "ecdsa-with-SHA1", provider = "nodecrypto", 
+}) => {
+    if (!_.isBuffer(sigValue)) {
+        throw new TypeError("The sigValue field should be a Buffer");
+    }
+    if (!_.isBuffer(data) && !_.isString(data)) {
+        throw new TypeError("The data field should be a Buffer or string");
+    }
+    if (!_.isString(alg)) throw new TypeError("The alg field should be a string");
+    const providerEnumVals = ["nodecrypto", "jsrsasign"];
+    if (_.indexOf(providerEnumVals, provider) === -1) {
+        throw new RangeError(`The provider field should be one of ${providerEnumVals}`);
+    }
+
     let isValid;
-    switch (prov) {
+    switch (provider) {
         case "nodecrypto":
             isValid = crypto.createVerify(alg)
                 .update(data)
@@ -203,11 +260,15 @@ const VerifySign = (pubKey, sigValue, data, alg = "ecdsa-with-SHA1", prov = "nod
 
 /**
  * 根据公钥信息计算其bitcoin地址
- * @param {String} pubKeyPEM 符合PKCS#8标准的pem格式公钥信息，或符合X.509标准的公钥证书信息，目前只支持EC-secp256k1曲线
+ * 
+ * @param {!string} pubKeyPEM 符合PKCS#8标准的pem格式公钥信息，或符合X.509标准的公钥证书信息，目前只支持EC-secp256k1曲线
  * @returns {Buffer} bitcoin地址的Buffer数据
  */
 const CalculateAddr = (pubKeyPEM) => {
-    // Todo: 支持其它非对称算法公钥的地址计算
+    // TODO: 支持其它非对称算法公钥的地址计算
+
+    if (!_.isString(pubKeyPEM)) throw new TypeError("The pubKeyPEM param should be a string");
+
     const pubKeySha256 = GetHashVal({ data: Buffer.from(ImportKey(pubKeyPEM).pubKeyHex, "hex"), alg: "sha256" });
     const pubKeyRmd160 = GetHashVal({ data: pubKeySha256, alg: "rmd160" });
     const addr = CoinString.encode(pubKeyRmd160, 0x00);
@@ -215,23 +276,26 @@ const CalculateAddr = (pubKeyPEM) => {
 };
 
 /**
+ * @callback gmCertificateCallback
+ * @param {string} certPEM pem格式证书
+ */
+/**
  * 生成符合X.509标准的证书信息
+ * 
  * @param {Object} certFields 证书的具体信息，
- * 当creator为jsrsasign时所需信息包括:
- * - {Number} serialNumber 证书序列号
- * - {String} sigAlg 签发证书时使用的签名算法
- * - {String} issuerDN 符合X500标准的代表证书发行方身份标识的Distinguished Name
- * - {String} subjectDN 符合X500标准的代表证书拥有方标识的Distinguished Name
- * - {Number} notBefore 代表证书有效性起始时间的unix时间戳（秒）
- * - {Number} notAfter 代表证书有效性终止时间的unix时间戳（秒）
- * - {Object} subjectPubKey 证书拥有方的公钥对象，使用jsrsasign提供的pubKeyObj
- * - {Object} issuerPrvKey 证书发行方的私钥对象，使用jsrsasign提供的prvKeyObj
- *
- * 当creator为gm时，所需信息为:
- * - {String} gmUserID，证书拥有者的id标识
- * @param {String} creator 证书生成者，支持使用jsrsasign或gm(即国密)，默认使用jsrsasign
- * @param {Function} cb 回调函数，gm证书生成实现是异步的，所以当creator为gm时，需要提供该参数，其形式为cb = (certPEM) => {......}
- * @returns {String} certPEM pem格式的证书信息，当creator为jsrsasign时，将返回该信息
+ * @param {number} certFields.serialNumber 证书序列号
+ * @param {string} certFields.sigAlg 签发证书时使用的签名算法
+ * @param {string} certFields.issuerDN 符合X500标准的代表证书发行方身份标识的Distinguished Name
+ * @param {string} certFields.subjectDN 符合X500标准的代表证书拥有方标识的Distinguished Name
+ * @param {number} certFields.notBefore 代表证书有效性起始时间的unix时间戳（秒）
+ * @param {number} certFields.notAfter 代表证书有效性终止时间的unix时间戳（秒）
+ * @param {Object} certFields.subjectPubKey 证书拥有方的公钥对象，使用jsrsasign提供的pubKeyObj
+ * @param {Object} certFields.issuerPrvKey 证书发行方的私钥对象，使用jsrsasign提供的prvKeyObj
+ * @param {string} [certFields.gmUserID] 证书拥有者的id标识, 当creator为gm时，需要该属性，并且不需要其他属性；
+ * 当creator为jsrsasign时，不需要该属性
+ * @param {string} [creator] 证书生成者，支持使用jsrsasign或gm(即国密)，默认使用jsrsasign
+ * @param {gmCertificateCallback} [cb] 回调函数，gm证书生成实现是异步的，所以当creator为gm时，需要提供该参数
+ * @returns {string} certPEM pem格式的证书信息，当creator为jsrsasign时，将返回该信息
  */
 const CreateCertificate = (certFields, creator = "jsrsasign", cb) => {
     const tbs = new KJUR.asn1.x509.TBSCertificate();
@@ -261,14 +325,15 @@ const CreateCertificate = (certFields, creator = "jsrsasign", cb) => {
 
 /**
  * 生成符合X.509标准的自签名证书信息
- * @param {Object} certFields 证书具体信息，包括:
- * - {Number} serialNumber 证书序列号
- * - {String} sigAlg 证书签名算法
- * - {String} DN 符合X500标准的代表证书所有者身份标识的Distinguished Name
- * - {Number} notBefore 代表证书有效性起始时间的unix时间戳
- * - {Number} notAfter 代表证书有效性终止时间的unix时间戳
- * - {Object} keypair 证书拥有方的密钥对，含有jsrsasign提供的prvKeyObj和pubKeyObj对象
- * @returns {String} certPEM pem格式的自签名证书信息
+ * 
+ * @param {Object} certFields 证书具体信息
+ * @param {number} certFields.serialNumber 证书序列号
+ * @param {string} certFields.sigAlg 证书签名算法
+ * @param {string} certFields.DN 符合X500标准的代表证书所有者身份标识的Distinguished Name
+ * @param {number} certFields.notBefore 代表证书有效性起始时间的unix时间戳
+ * @param {number} certFields.notAfter 代表证书有效性终止时间的unix时间戳
+ * @param {Object} certFields.keypair 证书拥有方的密钥对，含有jsrsasign提供的prvKeyObj和pubKeyObj对象
+ * @returns {string} certPEM pem格式的自签名证书信息
  */
 const CreateSelfSignedCertificate = (certFields) => {
     const certFieldsCoverted = {
@@ -286,8 +351,9 @@ const CreateSelfSignedCertificate = (certFields) => {
 };
 
 /**
- *
- * @param {String} certPEM 符合X.509标准的公钥证书信息
+ * 导入已有的公钥证书信息
+ * 
+ * @param {string} certPEM 符合X.509标准的公钥证书信息
  * @returns {Object} x509 jsrsasign提供的X509对象实例
  */
 const ImportCertificate = (certPEM) => {
@@ -307,10 +373,11 @@ const ImportCertificate = (certPEM) => {
 };
 
 /**
- *
- * @param {String} certPEM 符合X509标准的公钥证书信息
+ * 验证证书签名信息
+ * 
+ * @param {string} certPEM 符合X509标准的公钥证书信息
  * @param {Object} pubKey 证书签发者的公钥对象
- * @returns {isValid} 证书签名验证结果，true or false
+ * @returns {boolean} 证书签名验证结果
  */
 const VerifyCertificateSignature = (certPEM, pubKey) => {
     const x509 = ImportCertificate(certPEM);
