@@ -1,9 +1,15 @@
+import testEnv from "./testEnvConfig";
+
+const rclink = testEnv === "production"
+    ? require("../lib")
+    : require("../src");
+
 const {
     GetHashVal,
     CreateCertificate,
     Sign,
     ImportCertificate,
-} = require("../src/crypto");
+} = rclink.Crypto;
 
 $("button#get-sm3-hash-val-test").on("click", () => {
     const sm3PlainData = $("#sm3-plaindata").val();

@@ -1,8 +1,14 @@
-import {
+import testEnv from "./testEnvConfig";
+
+const rclink = testEnv === "production"
+    ? require("../lib")
+    : require("../src");
+
+const {
     GetHashVal, CreateKeypair, GetKeyPEM, ImportKey, CalculateAddr,
     Sign, VerifySign, CreateCertificate, CreateSelfSignedCertificate,
     VerifyCertificateSignature, ImportCertificate,
-} from "../src/crypto";
+} = rclink.Crypto;
 
 
 describe("密码学哈希值生成测试", () => {

@@ -1,9 +1,15 @@
 import validator from "validator";
 import _ from "lodash";
+import testEnv from "./testEnvConfig";
 import { rep } from "../protos/peer";
-import RestAPI from "../src/rest";
-import Transaction from "../src/transaction";
-import { CreateKeypair, GetKeyPEM } from "../src/crypto";
+
+const rclink = testEnv === "production"
+    ? require("../lib")
+    : require("../src");
+
+
+const { RestAPI, Transaction, Crypto } = rclink;
+const { CreateKeypair, GetKeyPEM } = Crypto;
 
 describe("Restful API验证", () => {
     const ra = new RestAPI("http://localhost:8081");

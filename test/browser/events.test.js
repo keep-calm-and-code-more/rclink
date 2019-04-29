@@ -1,6 +1,9 @@
-import EventTube from "../../src/events";
+import testEnv from "../testEnvConfig";
 import { rep } from "../../protos/peer";
 
+const { EventTube } = testEnv === "production" 
+    ? require("../../lib")
+    : require("../../src");
 
 describe("事件订阅与数据获取", () => {
     const eventMsgType = rep.protos.Event;

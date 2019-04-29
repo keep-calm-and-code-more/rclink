@@ -1,5 +1,11 @@
-import Transaction from "../src/transaction";
-import { CreateKeypair, GetKeyPEM } from "../src/crypto";
+import testEnv from "./testEnvConfig";
+
+const rclink = testEnv === "production"
+    ? require("../lib")
+    : require("../src");
+
+const { Transaction, Crypto } = rclink;
+const { CreateKeypair, GetKeyPEM } = Crypto;
 
 describe("测试交易生成功能", () => {
     const kp1 = CreateKeypair("EC", "secp256k1");
