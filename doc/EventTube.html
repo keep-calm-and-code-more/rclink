@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>EventTube<span class="signature">(address, protocols, cb)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>EventTube<span class="signature">(address, cb, timeout)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -41,12 +41,16 @@
     
 
     
-    <h4 class="name" id="EventTube"><span class="type-signature"></span>new EventTube<span class="signature">(address, protocols, cb)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="EventTube"><span class="type-signature"></span>new EventTube<span class="signature">(address, cb, timeout)</span><span class="type-signature"></span></h4>
     
 
     
 
 
+
+<div class="description">
+    构建事件订阅对象实例
+</div>
 
 
 
@@ -87,7 +91,7 @@
             <td class="type">
             
                 
-<span class="param-type">*</span>
+<span class="param-type">string</span>
 
 
             
@@ -97,30 +101,7 @@
 
             
 
-            <td class="description last">服务地址</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>protocols</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">协议</td>
+            <td class="description last">websocket服务地址</td>
         </tr>
 
     
@@ -133,7 +114,7 @@
             <td class="type">
             
                 
-<span class="param-type">*</span>
+<span class="param-type"><a href="global.html#websocketCallback">websocketCallback</a></span>
 
 
             
@@ -143,7 +124,30 @@
 
             
 
-            <td class="description last">回调函数</td>
+            <td class="description last">处理返回信息的回调函数</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>timeout</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">重连的时间间隔</td>
         </tr>
 
     
@@ -184,7 +188,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="events.js.html">events.js</a>, <a href="events.js.html#line10">line 10</a>
+        <a href="events.js.html">events.js</a>, <a href="events.js.html#line16">line 16</a>
     </li></ul></dd>
     
 
@@ -230,6 +234,145 @@
     
 
     
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="close"><span class="type-signature"></span>close<span class="signature">(reason)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    主动关闭websocket连接
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>reason</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">解释主动关闭连接的原因，不超过123字节</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="events.js.html">events.js</a>, <a href="events.js.html#line66">line 66</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
 
     
 
@@ -244,13 +387,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="EventTube.html">EventTube</a></li><li><a href="RestAPI.html">RestAPI</a></li><li><a href="Transaction.html">Transaction</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CreateCertificate">CreateCertificate</a></li><li><a href="global.html#CreateKeypair">CreateKeypair</a></li><li><a href="global.html#CreateSelfSignedCertificate">CreateSelfSignedCertificate</a></li><li><a href="global.html#GetHashVal">GetHashVal</a></li><li><a href="global.html#GetKeyPEM">GetKeyPEM</a></li><li><a href="global.html#ImportCertificate">ImportCertificate</a></li><li><a href="global.html#ImportKey">ImportKey</a></li><li><a href="global.html#Sign">Sign</a></li><li><a href="global.html#VerifyCertificateSignature">VerifyCertificateSignature</a></li><li><a href="global.html#VerifySign">VerifySign</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="EventTube.html">EventTube</a></li><li><a href="RestAPI.html">RestAPI</a></li><li><a href="Transaction.html">Transaction</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CalculateAddr">CalculateAddr</a></li><li><a href="global.html#CreateCertificate">CreateCertificate</a></li><li><a href="global.html#CreateKeypair">CreateKeypair</a></li><li><a href="global.html#CreateSelfSignedCertificate">CreateSelfSignedCertificate</a></li><li><a href="global.html#GetHashVal">GetHashVal</a></li><li><a href="global.html#GetKeyPEM">GetKeyPEM</a></li><li><a href="global.html#ImportCertificate">ImportCertificate</a></li><li><a href="global.html#ImportKey">ImportKey</a></li><li><a href="global.html#Sign">Sign</a></li><li><a href="global.html#VerifyCertificateSignature">VerifyCertificateSignature</a></li><li><a href="global.html#VerifySign">VerifySign</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Nov 19 2018 11:54:38 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Apr 29 2019 17:34:06 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

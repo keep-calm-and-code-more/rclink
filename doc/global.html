@@ -104,7 +104,7 @@
     
 
     
-    <h4 class="name" id="CreateCertificate"><span class="type-signature"></span>CreateCertificate<span class="signature">(certFields, creator, cb)</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id="CalculateAddr"><span class="type-signature"></span>CalculateAddr<span class="signature">(pubKeyPEM<span class="signature-attributes">non-null</span>)</span><span class="type-signature"> &rarr; {Buffer}</span></h4>
     
 
     
@@ -112,7 +112,7 @@
 
 
 <div class="description">
-    生成符合X.509标准的证书信息
+    根据公钥信息计算其bitcoin地址
 </div>
 
 
@@ -138,8 +138,6 @@
         
 
         
-        <th>Default</th>
-        
 
         <th class="last">Description</th>
     </tr>
@@ -150,13 +148,13 @@
 
         <tr>
             
-                <td class="name"><code>certFields</code></td>
+                <td class="name"><code>pubKeyPEM</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">string</span>
 
 
             
@@ -165,80 +163,8 @@
             
 
             
-                <td class="default">
-                
-                </td>
-            
 
-            <td class="description last">证书的具体信息，
-当creator为jsrsasign时所需信息包括:
-- {Number} serialNumber 证书序列号
-- {String} sigAlg 签发证书时使用的签名算法
-- {String} issuerDN 符合X500标准的代表证书发行方身份标识的Distinguished Name
-- {String} subjectDN 符合X500标准的代表证书拥有方标识的Distinguished Name
-- {Number} notBefore 代表证书有效性起始时间的unix时间戳（秒）
-- {Number} notAfter 代表证书有效性终止时间的unix时间戳（秒）
-- {Object} subjectPubKey 证书拥有方的公钥对象，使用jsrsasign提供的pubKeyObj
-- {Object} issuerPrvKey 证书发行方的私钥对象，使用jsrsasign提供的prvKeyObj
-
-当creator为gm时，所需信息为:
-- {String} gmUserID，证书拥有者的id标识</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>creator</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-                <td class="default">
-                
-                    jsrsasign
-                
-                </td>
-            
-
-            <td class="description last">证书生成者，支持使用jsrsasign或gm(即国密)，默认使用jsrsasign</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>cb</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">回调函数，gm证书生成实现是异步的，所以当creator为gm时，需要提供该参数，其形式为cb = (certPEM) => {......}</td>
+            <td class="description last">符合PKCS#8标准的pem格式公钥信息，或符合X.509标准的公钥证书信息，目前只支持EC-secp256k1曲线</td>
         </tr>
 
     
@@ -279,7 +205,550 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line195">line 195</a>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line267">line 267</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    bitcoin地址的Buffer数据
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Buffer</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="CreateCertificate"><span class="type-signature"></span>CreateCertificate<span class="signature">(certFields, creator<span class="signature-attributes">opt</span>, cb<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {string}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    生成符合X.509标准的证书信息
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>certFields</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">证书的具体信息，
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>serialNumber</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">证书序列号</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sigAlg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">签发证书时使用的签名算法</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>issuerDN</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">符合X500标准的代表证书发行方身份标识的Distinguished Name</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>subjectDN</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">符合X500标准的代表证书拥有方标识的Distinguished Name</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>notBefore</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">代表证书有效性起始时间的unix时间戳（秒）</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>notAfter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">代表证书有效性终止时间的unix时间戳（秒）</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>subjectPubKey</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">证书拥有方的公钥对象，使用jsrsasign提供的pubKeyObj</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>issuerPrvKey</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">证书发行方的私钥对象，使用jsrsasign提供的prvKeyObj</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>gmUserID</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">证书拥有者的id标识, 当creator为gm时，需要该属性，并且不需要其他属性；
+当creator为jsrsasign时，不需要该属性</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>creator</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">证书生成者，支持使用jsrsasign或gm(即国密)，默认使用jsrsasign</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>cb</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#gmCertificateCallback">gmCertificateCallback</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">回调函数，gm证书生成实现是异步的，所以当creator为gm时，需要提供该参数</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line300">line 300</a>
     </li></ul></dd>
     
 
@@ -317,7 +786,7 @@
     </dt>
     <dd>
         
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
     </dd>
@@ -335,7 +804,7 @@
     
 
     
-    <h4 class="name" id="CreateKeypair"><span class="type-signature"></span>CreateKeypair<span class="signature">(alg, keylenOrCurve)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id="CreateKeypair"><span class="type-signature"></span>CreateKeypair<span class="signature">(alg<span class="signature-attributes">opt</span>, keyLenOrCurve<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
 
     
@@ -367,6 +836,8 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
         <th>Default</th>
@@ -387,12 +858,22 @@
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
             </td>
 
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -410,18 +891,31 @@
 
         <tr>
             
-                <td class="name"><code>keylenOrCurve</code></td>
+                <td class="name"><code>keyLenOrCurve</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">keylenOrCurve</span>
+<span class="param-type">string</span>
+|
+
+<span class="param-type">number</span>
 
 
             
             </td>
 
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -474,7 +968,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line144">line 144</a>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line86">line 86</a>
     </li></ul></dd>
     
 
@@ -530,7 +1024,7 @@
     
 
     
-    <h4 class="name" id="CreateSelfSignedCertificate"><span class="type-signature"></span>CreateSelfSignedCertificate<span class="signature">(certFields)</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id="CreateSelfSignedCertificate"><span class="type-signature"></span>CreateSelfSignedCertificate<span class="signature">(certFields)</span><span class="type-signature"> &rarr; {string}</span></h4>
     
 
     
@@ -590,13 +1084,171 @@
 
             
 
-            <td class="description last">证书具体信息，包括:
-- {Number} serialNumber 证书序列号
-- {String} sigAlg 证书签名算法
-- {String} DN 符合X500标准的代表证书所有者身份标识的Distinguished Name 
-- {Number} notBefore 代表证书有效性起始时间的unix时间戳
-- {Number} notAfter 代表证书有效性终止时间的unix时间戳
-- {Object} keypair 证书拥有方的密钥对，含有jsrsasign提供的prvKeyObj和pubKeyObj对象</td>
+            <td class="description last">证书具体信息
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>serialNumber</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">证书序列号</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sigAlg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">证书签名算法</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>DN</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">符合X500标准的代表证书所有者身份标识的Distinguished Name</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>notBefore</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">代表证书有效性起始时间的unix时间戳</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>notAfter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">代表证书有效性终止时间的unix时间戳</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>keypair</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">证书拥有方的密钥对，含有jsrsasign提供的prvKeyObj和pubKeyObj对象</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -637,7 +1289,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line231">line 231</a>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line338">line 338</a>
     </li></ul></dd>
     
 
@@ -675,7 +1327,7 @@
     </dt>
     <dd>
         
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
     </dd>
@@ -693,7 +1345,7 @@
     
 
     
-    <h4 class="name" id="GetHashVal"><span class="type-signature"></span>GetHashVal<span class="signature">(data, alg, prov, cb)</span><span class="type-signature"> &rarr; {Buffer}</span></h4>
+    <h4 class="name" id="GetHashVal"><span class="type-signature"></span>GetHashVal<span class="signature">(getHashParams<span class="signature-attributes">non-null</span>)</span><span class="type-signature"> &rarr; {Buffer}</span></h4>
     
 
     
@@ -727,7 +1379,49 @@
         
 
         
-        <th>Default</th>
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>getHashParams</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">计算哈希值所需参数
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
         
 
         <th class="last">Description</th>
@@ -748,18 +1442,22 @@
 <span class="param-type">Buffer</span>
 |
 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
 
-            
-                <td class="default">
+                
+
                 
                 </td>
+            
+
             
 
             <td class="description last">待对其计算哈希值的原数据</td>
@@ -775,57 +1473,70 @@
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
             </td>
 
             
-
-            
-                <td class="default">
+                <td class="attributes">
                 
-                    sha256
+                    &lt;optional><br>
+                
+
+                
+
                 
                 </td>
             
 
-            <td class="description last">密码学哈希算法，默认使用sha256</td>
+            
+
+            <td class="description last">待使用的密码学哈希算法，默认为sha256</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>prov</code></td>
+                <td class="name"><code>provider</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
             </td>
 
             
-
-            
-                <td class="default">
+                <td class="attributes">
                 
-                    nodecrypto
+                    &lt;optional><br>
+                
+
+                
+
                 
                 </td>
             
 
-            <td class="description last">密码学哈希算法的提供者provider，支持使用nodecrypto、jsrsasign以及gm
-- nodecrypto，NodeJS内建的crypto工具，默认使用该provider，支持openssl提供的hash算法，
-  可在终端使用命令`openssl list-message-digest-algorithms`(1.0.2版)或`openssl list -digest-algorithms`(1.1.0版)查看支持的哈希算法
-- jsrsasign，由kjur开源的nodejs加密工具(https://kjur.github.io/jsrsasign),
-  支持的哈希算法如https://kjur.github.io/jsrsasign/api/symbols/KJUR.crypto.MessageDigest.html 所示 
-- gm，国密算法加密工具，支持sm3哈希算法</td>
+            
+
+            <td class="description last">密码学哈希算法的提供者，支持nodecrypto、jsrsasign以及gm
+<li>nodecrypto，NodeJS内建的crypto工具，默认使用该provider，支持openssl提供的hash算法，
+  可在终端使用命令`openssl list-message-digest-algorithms`(1.0.2版)
+  或`openssl list -digest-algorithms`(1.1.0版)查看支持的哈希算法
+</li>
+<li>jsrsasign，开源js加密工具(https://kjur.github.io/jsrsasign),
+  支持的哈希算法如<a href=https://kjur.github.io/jsrsasign/api/symbols/KJUR.crypto.MessageDigest.html>
+https://kjur.github.io/jsrsasign/api/symbols/KJUR.crypto.MessageDigest.html<a/>所示
+</li>
+<li>gm，国密算法加密工具，支持sm3哈希算法
+</li></td>
         </tr>
 
     
@@ -838,21 +1549,34 @@
             <td class="type">
             
                 
-<span class="param-type">function</span>
+<span class="param-type"><a href="global.html#gmGetHashCallback">gmGetHashCallback</a></span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
-            
-                <td class="default">
+                
+
                 
                 </td>
             
 
-            <td class="description last">这里使用的sm3计算服务为异步实现，当使用sm3时需提供回调方法cb，其形式为cb = (sm3HashVal) => {......}</td>
+            
+
+            <td class="description last">sm3计算服务为异步实现，当使用sm3时需提供回调方法</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -893,7 +1617,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line24">line 24</a>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line34">line 34</a>
     </li></ul></dd>
     
 
@@ -949,7 +1673,7 @@
     
 
     
-    <h4 class="name" id="GetKeyPEM"><span class="type-signature"></span>GetKeyPEM<span class="signature">(keyObj, passWord)</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id="GetKeyPEM"><span class="type-signature"></span>GetKeyPEM<span class="signature">(keyObj, passWord<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {string}</span></h4>
     
 
     
@@ -981,6 +1705,8 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -999,12 +1725,20 @@
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">Object</span>
 
 
             
             </td>
 
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -1022,17 +1756,28 @@
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">私钥保护密码，当需要生成加密私钥信息时需提供该参数, 目前是由jsrsasign使用PBKDF2/HmacSHA1/3DES算法对私钥进行加密</td>
+            <td class="description last">私钥保护密码，当需要生成加密私钥信息时需提供该参数, 
+目前是由jsrsasign使用PBKDF2_HmacSHA1_3DES算法对私钥进行加密</td>
         </tr>
 
     
@@ -1073,7 +1818,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line167">line 167</a>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line135">line 135</a>
     </li></ul></dd>
     
 
@@ -1111,7 +1856,7 @@
     </dt>
     <dd>
         
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
     </dd>
@@ -1135,6 +1880,10 @@
     
 
 
+
+<div class="description">
+    导入已有的公钥证书信息
+</div>
 
 
 
@@ -1175,7 +1924,7 @@
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
@@ -1226,7 +1975,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line264">line 264</a>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line359">line 359</a>
     </li></ul></dd>
     
 
@@ -1282,7 +2031,7 @@
     
 
     
-    <h4 class="name" id="ImportKey"><span class="type-signature"></span>ImportKey<span class="signature">(keyPEM, passWord)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id="ImportKey"><span class="type-signature"></span>ImportKey<span class="signature">(keyPEM, passWord<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
 
     
@@ -1314,6 +2063,8 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -1332,17 +2083,25 @@
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">使用符合PKCS#8标准的pem格式私钥信息获取私钥对象，支持导入使用PBKDF2/HmacSHA1/3DES加密的pem格式私钥信息
+            <td class="description last">使用符合PKCS#8标准的pem格式私钥信息获取私钥对象，支持导入使用PBKDF2_HmacSHA1_3DES加密的pem格式私钥信息
 使用符合PKCS#8标准的pem格式公钥信息或符合X.509标准的pem格式证书信息获取公钥对象</td>
         </tr>
 
@@ -1356,12 +2115,22 @@
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
             </td>
 
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -1407,7 +2176,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line156">line 156</a>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line110">line 110</a>
     </li></ul></dd>
     
 
@@ -1434,7 +2203,7 @@
 
         
 <div class="param-desc">
-    keyObj 密钥对象，prvkeyObj或pubKeyObj
+    keyObj密钥对象，prvkeyObj或pubKeyObj
 </div>
 
 
@@ -1463,7 +2232,7 @@
     
 
     
-    <h4 class="name" id="Sign"><span class="type-signature"></span>Sign<span class="signature">(prvKey, data, alg, prov, gmUserID, cb)</span><span class="type-signature"> &rarr; {Buffer}</span></h4>
+    <h4 class="name" id="Sign"><span class="type-signature"></span>Sign<span class="signature">(signParams)</span><span class="type-signature"> &rarr; {Buffer}</span></h4>
     
 
     
@@ -1471,7 +2240,7 @@
 
 
 <div class="description">
-    根据指定签名算法和私钥，对给定数据进行签名
+    根据指定私钥和签名算法，对给定数据进行签名
 </div>
 
 
@@ -1497,7 +2266,49 @@
         
 
         
-        <th>Default</th>
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>signParams</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">签名所需参数
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
         
 
         <th class="last">Description</th>
@@ -1518,18 +2329,22 @@
 <span class="param-type">Object</span>
 |
 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
 
-            
-                <td class="default">
+                
+
                 
                 </td>
+            
+
             
 
             <td class="description last">私钥信息，支持使用jsrsasign提供的私钥对象，
@@ -1546,7 +2361,7 @@
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 |
 
 <span class="param-type">Buffer</span>
@@ -1556,11 +2371,15 @@
             </td>
 
             
+                <td class="attributes">
+                
 
-            
-                <td class="default">
+                
+
                 
                 </td>
+            
+
             
 
             <td class="description last">待被签名的数据</td>
@@ -1576,20 +2395,24 @@
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
             </td>
 
             
-
-            
-                <td class="default">
+                <td class="attributes">
                 
-                    ecdsa-with-SHA1
+                    &lt;optional><br>
+                
+
+                
+
                 
                 </td>
+            
+
             
 
             <td class="description last">签名算法，默认使用ecdsa-with-SHA1，国密签名算法为sm2-with-SM3</td>
@@ -1599,26 +2422,30 @@
 
         <tr>
             
-                <td class="name"><code>prov</code></td>
+                <td class="name"><code>provider</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
             </td>
 
             
-
-            
-                <td class="default">
+                <td class="attributes">
                 
-                    nodecrypto
+                    &lt;optional><br>
+                
+
+                
+
                 
                 </td>
+            
+
             
 
             <td class="description last">签名算法的提供者，支持使用jsrsasign或node内建的crypto(默认使用)，以及gm国密签名算法工具</td>
@@ -1634,18 +2461,24 @@
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
-            
-                <td class="default">
+                
+
                 
                 </td>
+            
+
             
 
             <td class="description last">国密签名算法需要的用户标识，该标识是到gm websocket server查找到其对应国密私钥的唯一标识</td>
@@ -1661,21 +2494,34 @@
             <td class="type">
             
                 
-<span class="param-type">function</span>
+<span class="param-type"><a href="global.html#gmSignCallback">gmSignCallback</a></span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
-            
-                <td class="default">
+                
+
                 
                 </td>
             
 
-            <td class="description last">国密签名算法支持为异步实现，当使用国密签名算法时，需要使用该回调方法，其形式为cb = (signature) => {......}</td>
+            
+
+            <td class="description last">国密签名算法支持为异步实现，当使用国密签名算法时，需要使用该回调方法</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -1716,7 +2562,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line67">line 67</a>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line166">line 166</a>
     </li></ul></dd>
     
 
@@ -1772,12 +2618,16 @@
     
 
     
-    <h4 class="name" id="VerifyCertificateSignature"><span class="type-signature"></span>VerifyCertificateSignature<span class="signature">(certPEM, pubKey)</span><span class="type-signature"> &rarr; {isValid}</span></h4>
+    <h4 class="name" id="VerifyCertificateSignature"><span class="type-signature"></span>VerifyCertificateSignature<span class="signature">(certPEM, pubKey)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
     
 
     
 
 
+
+<div class="description">
+    验证证书签名信息
+</div>
 
 
 
@@ -1818,7 +2668,7 @@
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
@@ -1892,7 +2742,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line252">line 252</a>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line382">line 382</a>
     </li></ul></dd>
     
 
@@ -1919,7 +2769,7 @@
 
         
 <div class="param-desc">
-    证书签名验证结果，true or false
+    证书签名验证结果
 </div>
 
 
@@ -1930,7 +2780,7 @@
     </dt>
     <dd>
         
-<span class="param-type">isValid</span>
+<span class="param-type">boolean</span>
 
 
     </dd>
@@ -1948,7 +2798,7 @@
     
 
     
-    <h4 class="name" id="VerifySign"><span class="type-signature"></span>VerifySign<span class="signature">(pubKey, sigValue, data, alg, prov)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    <h4 class="name" id="VerifySign"><span class="type-signature"></span>VerifySign<span class="signature">(verifySignatureParams)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
     
 
     
@@ -1982,7 +2832,49 @@
         
 
         
-        <th>Default</th>
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>verifySignatureParams</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">验证签名所需参数
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
         
 
         <th class="last">Description</th>
@@ -2003,18 +2895,22 @@
 <span class="param-type">Object</span>
 |
 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
 
-            
-                <td class="default">
+                
+
                 
                 </td>
+            
+
             
 
             <td class="description last">公钥信息，支持使用jsrsasign提供的公钥对象，
@@ -2038,11 +2934,15 @@
             </td>
 
             
+                <td class="attributes">
+                
 
-            
-                <td class="default">
+                
+
                 
                 </td>
+            
+
             
 
             <td class="description last">签名结果</td>
@@ -2058,7 +2958,7 @@
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 |
 
 <span class="param-type">Buffer</span>
@@ -2068,11 +2968,15 @@
             </td>
 
             
+                <td class="attributes">
+                
 
-            
-                <td class="default">
+                
+
                 
                 </td>
+            
+
             
 
             <td class="description last">被签名的原数据</td>
@@ -2088,20 +2992,24 @@
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
             </td>
 
             
-
-            
-                <td class="default">
+                <td class="attributes">
                 
-                    ecdsa-with-SHA1
+                    &lt;optional><br>
+                
+
+                
+
                 
                 </td>
+            
+
             
 
             <td class="description last">签名算法，默认使用ecdsa-with-SHA1</td>
@@ -2111,29 +3019,41 @@
 
         <tr>
             
-                <td class="name"><code>prov</code></td>
+                <td class="name"><code>provider</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
             </td>
 
             
-
-            
-                <td class="default">
+                <td class="attributes">
                 
-                    nodecrypto
+                    &lt;optional><br>
+                
+
+                
+
                 
                 </td>
             
 
-            <td class="description last">签名算法的提供者，支持使用jsrsasign或node内建的crypto(默认使用)，待支持使用国密算法提供者</td>
+            
+
+            <td class="description last">签名算法的提供者，
+支持使用jsrsasign或node内建的crypto(默认使用)，待支持使用国密算法提供者</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -2174,7 +3094,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line108">line 108</a>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line225">line 225</a>
     </li></ul></dd>
     
 
@@ -2212,7 +3132,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Boolean</span>
+<span class="param-type">boolean</span>
 
 
     </dd>
@@ -2228,6 +3148,534 @@
     
 
     
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        
+                
+
+    
+
+    
+    <h4 class="name" id="gmCertificateCallback"><span class="type-signature"></span>gmCertificateCallback<span class="signature">(certPEM)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>certPEM</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">pem格式证书</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line278">line 278</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+                
+
+    
+
+    
+    <h4 class="name" id="gmGetHashCallback"><span class="type-signature"></span>gmGetHashCallback<span class="signature">(sm3HashVal)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sm3HashVal</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">hex格式的国密算法哈希值</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line10">line 10</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+                
+
+    
+
+    
+    <h4 class="name" id="gmSignCallback"><span class="type-signature"></span>gmSignCallback<span class="signature">(signature)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>signature</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">hex格式签名信息</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line148">line 148</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+                
+
+    
+
+    
+    <h4 class="name" id="websocketCallback"><span class="type-signature"></span>websocketCallback<span class="signature">(eventMessage)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>eventMessage</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="events.js.html">events.js</a>, <a href="events.js.html#line5">line 5</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+    
 
     
 </article>
@@ -2240,13 +3688,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="EventTube.html">EventTube</a></li><li><a href="RestAPI.html">RestAPI</a></li><li><a href="Transaction.html">Transaction</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CreateCertificate">CreateCertificate</a></li><li><a href="global.html#CreateKeypair">CreateKeypair</a></li><li><a href="global.html#CreateSelfSignedCertificate">CreateSelfSignedCertificate</a></li><li><a href="global.html#GetHashVal">GetHashVal</a></li><li><a href="global.html#GetKeyPEM">GetKeyPEM</a></li><li><a href="global.html#ImportCertificate">ImportCertificate</a></li><li><a href="global.html#ImportKey">ImportKey</a></li><li><a href="global.html#Sign">Sign</a></li><li><a href="global.html#VerifyCertificateSignature">VerifyCertificateSignature</a></li><li><a href="global.html#VerifySign">VerifySign</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="EventTube.html">EventTube</a></li><li><a href="RestAPI.html">RestAPI</a></li><li><a href="Transaction.html">Transaction</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CalculateAddr">CalculateAddr</a></li><li><a href="global.html#CreateCertificate">CreateCertificate</a></li><li><a href="global.html#CreateKeypair">CreateKeypair</a></li><li><a href="global.html#CreateSelfSignedCertificate">CreateSelfSignedCertificate</a></li><li><a href="global.html#GetHashVal">GetHashVal</a></li><li><a href="global.html#GetKeyPEM">GetKeyPEM</a></li><li><a href="global.html#ImportCertificate">ImportCertificate</a></li><li><a href="global.html#ImportKey">ImportKey</a></li><li><a href="global.html#Sign">Sign</a></li><li><a href="global.html#VerifyCertificateSignature">VerifyCertificateSignature</a></li><li><a href="global.html#VerifySign">VerifySign</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Nov 19 2018 11:54:38 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Apr 29 2019 17:34:06 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

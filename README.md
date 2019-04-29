@@ -21,10 +21,17 @@ RepChain Client library for Node.js，本项目是采用Node.js实现的DApp与[
 #### 开发教程
 
 1. 安装node.js和yarn
-2. yarn install
+2. `yarn install`
 
 #### 使用说明
 1. 本机多节点方式启动RepChain组网
-2. 运行测试用例：yarn test
-3. 也支持VSCode下的test调试
+2. 生成与非es6标准兼容的生产代码: `yarn build`
+3. 运行测试用例：
+    - `yarn test:node` node环境下运行测试用例
+    - `yarn test:browser` browser环境下运行测试用例
+    - `yarn test` 在node与browser环境下分别运行测试用例
+>>Note: 在test/testEnvConfig.js中可修改待测试的目标代码: testEnv="dev"(表示测试位于src/下的开发代码)；testEnv="production"(表示测试位于lib/下的生产代码)
+4. 也支持VSCode下的test调试
+5. API文档参考[doc/index.html](./doc/index.html)
+
 
