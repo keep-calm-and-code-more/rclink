@@ -6,7 +6,7 @@ describe("事件订阅与数据获取", () => {
     const eventMsgType = rep.protos.Event;
     const blockMsgType = rep.protos.Block;
 
-    test("订阅RepChain区块相关事件，获得区块数据后可以主动关闭", (done) => {
+    it("订阅RepChain区块相关事件，获得区块数据后可以主动关闭", (done) => {
         const et = new EventTube("ws://localhost:8081/event", ((evt) => {
             const ed = Buffer.from(evt.data);
             const msg = eventMsgType.decode(ed);

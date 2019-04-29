@@ -12,7 +12,7 @@ import validator from "validator";
  * @private
  */
 const restGet = (url) => {
-    if (!_.isString(url) || !validator.isURL(url)) {
+    if (!_.isString(url) || !validator.isURL(url, { require_tld: false })) {
         throw new Error("The url param should be a string url");
     }
 

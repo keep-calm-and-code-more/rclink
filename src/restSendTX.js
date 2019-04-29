@@ -14,13 +14,13 @@ import { GetHashVal } from "./crypto";
  * @private
  */
 const restSendTX = (tx, address) => {
-    if (!_.isBuffer(tx) && !_.isString(tx)) {
+    if (!Buffer.isBuffer(tx) && !_.isString(tx)) {
         throw new TypeError("The tx field should be a Buffer or string");
     }
     if (!_.isString(address)) {
         throw new TypeError("The address field should be a string");
     }
-    if (_.isBuffer(tx)) {
+    if (Buffer.isBuffer(tx)) {
         // signedTrans需要为文件流数据，没找到更好的实现方法，
         // 目前是先将tx写入文件，再获取其ReadableStream
         // 这里使用在内存中模拟的文件系统

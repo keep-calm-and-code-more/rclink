@@ -9,7 +9,7 @@ import _ from "lodash";
  * @private
  */
 const restSendTX = (tx, address) => {
-    if (!_.isString(tx) && !_.isBuffer(tx)) {
+    if (!_.isString(tx) && !Buffer.isBuffer(tx)) {
         throw new TypeError("The tx filed should be a hex string or BUffer");
     }
     if (!_.isString(address)) throw new TypeError("The address should be a string");

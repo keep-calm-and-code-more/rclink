@@ -34,7 +34,7 @@ const gmCUs = new GMCryptoUtils("wss://localhost:9003");
 const GetHashVal = ({ 
     data, alg = "sha256", provider = "nodecrypto", cb, 
 }) => {
-    if (!_.isBuffer(data) && !_.isString(data)) {
+    if (!Buffer.isBuffer(data) && !_.isString(data)) {
         throw new TypeError("The data field should be a Buffer or string");
     }
     if (!_.isString(alg)) throw new TypeError("The alg field should be a string");
@@ -166,7 +166,7 @@ const GetKeyPEM = (keyObj, passWord) => {
 const Sign = ({ 
     prvKey, data, alg = "ecdsa-with-SHA1", provider = "nodecrypto", gmUserID, cb, 
 }) => {
-    if (!_.isBuffer(data) && !_.isString(data)) {
+    if (!Buffer.isBuffer(data) && !_.isString(data)) {
         throw new TypeError("The data field should be a Buffer or string");
     }
     if (!_.isString(alg)) throw new TypeError("The alg field should be a string");
@@ -225,10 +225,10 @@ const Sign = ({
 const VerifySign = ({ 
     pubKey, sigValue, data, alg = "ecdsa-with-SHA1", provider = "nodecrypto", 
 }) => {
-    if (!_.isBuffer(sigValue)) {
+    if (!Buffer.isBuffer(sigValue)) {
         throw new TypeError("The sigValue field should be a Buffer");
     }
-    if (!_.isBuffer(data) && !_.isString(data)) {
+    if (!Buffer.isBuffer(data) && !_.isString(data)) {
         throw new TypeError("The data field should be a Buffer or string");
     }
     if (!_.isString(alg)) throw new TypeError("The alg field should be a string");

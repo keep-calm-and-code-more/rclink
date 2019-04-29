@@ -103,7 +103,7 @@ class RestAPI {
      */
     block(id, blockFormat = "JSON") {
         let blockID = id;
-        if (!_.isInteger(blockID) && !_.isString(blockID) && !_.isBuffer(blockID)) {
+        if (!_.isInteger(blockID) && !_.isString(blockID) && !Buffer.isBuffer(blockID)) {
             throw new TypeError("The id param should be an integer/string/Buffer");
         }
         const blockEnumFormats = ["JSON", "STREAM"];
@@ -115,9 +115,9 @@ class RestAPI {
         if (blockFormat === "STREAM") {
             url = `${url}/stream`;
         }
-        if (_.isString(blockID) || _.isBuffer(blockID)) {
+        if (_.isString(blockID) || Buffer.isBuffer(blockID)) {
             url = `${url}/hash`;
-            if (_.isBuffer(blockID)) blockID = blockID.toString("base64");
+            if (Buffer.isBuffer(blockID)) blockID = blockID.toString("base64");
         }
         url = `${url}/${blockID}`;
 

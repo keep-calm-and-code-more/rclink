@@ -48089,10 +48089,10 @@ arguments[4][16][0].apply(exports,arguments)
      * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
      * @example
      *
-     * _.isBuffer(new Buffer(2));
+     * Buffer.isBuffer(new Buffer(2));
      * // => true
      *
-     * _.isBuffer(new Uint8Array(2));
+     * Buffer.isBuffer(new Uint8Array(2));
      * // => false
      */
     var isBuffer = nativeIsBuffer || stubFalse;
