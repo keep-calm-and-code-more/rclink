@@ -68,7 +68,7 @@ class Transaction {
                 throw new Error(`The type field should be one of ${txEnumTypes}`);
             }
             if (!_.isString(chaincodeName)) {
-                throw new TypeError("The chaincodeID field should be a string");
+                throw new TypeError("The chaincodeName field should be a string");
             }
             if (!_.isInteger(chaincodeVersion)) {
                 throw new TypeError("The chaincodeversion field should be an integer");
