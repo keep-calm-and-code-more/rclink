@@ -1,5 +1,5 @@
 import testEnv from "./testEnvConfig";
-import { rep } from "../protos/peer";
+import { rep } from "../src/protos/peer";
 
 const { EventTube } = testEnv === "production" 
     ? require("../lib")
@@ -17,7 +17,7 @@ describe("事件订阅与数据获取", () => {
             expect(msg.action).toBeGreaterThan(0);
             expect(msg.action).toBeLessThan(12);
             if (msg.blk) {
-                expect(msg.blk).toBeInstanceOf(blockMsgType);
+                expect(blockMsgType.verify(msg.blk)).toBeNull();
                 et.close("works done");
                 done();
             }

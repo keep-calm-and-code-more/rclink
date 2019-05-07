@@ -1,7 +1,7 @@
 import validator from "validator";
 import _ from "lodash";
 import testEnv from "./testEnvConfig";
-import { rep } from "../protos/peer";
+import { rep } from "../src/protos/peer";
 
 const rclink = testEnv === "production"
     ? require("../lib")

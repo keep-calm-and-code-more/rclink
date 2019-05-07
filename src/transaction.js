@@ -1,6 +1,6 @@
 import Long from "long";
 import _ from "lodash";
-import { rep } from "../protos/peer"; // use generated static js code
+import { rep } from "./protos/peer"; // use generated static js code
 import {
     GetHashVal, ImportKey, Sign, VerifySign, GetKeyPEM, 
 } from "./crypto";
@@ -48,7 +48,7 @@ class Transaction {
         txBytes, type, chaincodeName, chaincodeVersion,
         chaincodeDeployParams: { 
             timeout, codePackage, legalProse, codeLanguageType,
-        } = {},
+        } = { timeout: 1000 },
         chaincodeInvokeParams: { chaincodeFunction, chaincodeFunctionArgs } = {},
         chaincodeSetStateParams: { state } = {},
     }) {

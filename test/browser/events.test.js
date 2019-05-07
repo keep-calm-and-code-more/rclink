@@ -1,5 +1,5 @@
 import testEnv from "../testEnvConfig";
-import { rep } from "../../protos/peer";
+import { rep } from "../../src/protos/peer";
 
 const { EventTube } = testEnv === "production" 
     ? require("../../lib")
