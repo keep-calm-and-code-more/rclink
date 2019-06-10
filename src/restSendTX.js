@@ -1,6 +1,5 @@
 import rp from "request-promise";
-import fs from "fs";
-import mockFs from "mock-fs";
+import fs from "fs-extra";
 import _ from "lodash";
 import { GetHashVal } from "./crypto";
 
@@ -23,12 +22,10 @@ const restSendTX = (tx, address) => {
     if (Buffer.isBuffer(tx)) {
         // signedTrans需要为文件流数据，没找到更好的实现方法，
         // 目前是先将tx写入文件，再获取其ReadableStream
-        // 这里使用在内存中模拟的文件系统
-        const fileName = `tx-${GetHashVal({ data: tx }).toString("base64")}`;
-        const config = {};
-        config[fileName] = tx;
-        mockFs(config);
-        const txStream = fs.createReadStream(fileName);
+        const fileName = `tx-${GetHashVal({ data: tx }).toString("hex")}`;
+        const filePath = `/tmp/${fileName}`;
+        fs.writeFileSync(filePath, tx);
+        const txStream = fs.createReadStream(filePath);
         const options = {
             method: "POST",
             uri: `${address}/transaction/postTranStream`,
@@ -38,10 +35,10 @@ const restSendTX = (tx, address) => {
             json: true,
         };
         return rp(options).then((r) => {
-            mockFs.restore();
+            fs.removeSync(filePath);
             return r;
         }).catch((e) => {
-            mockFs.restore();
+            fs.removeSync(filePath);
             throw e;
         });
     } 
