@@ -21,12 +21,14 @@ const restGet = (url) => {
             method: "GET",
             uri: url,
             encoding: null,
+            timeout: 15000,
         }).then(res => Buffer.from(res));
     }
     return rp({
         method: "GET",
         uri: url,
         json: true,
+        timeout: 15000,
     }).then(res => res.result); 
 };
 
