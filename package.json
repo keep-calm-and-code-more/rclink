@@ -71,7 +71,9 @@
   "browser": {
     "./lib/restSendTX.js": "./lib/browser/restSendTX.js",
     "./lib/restGet.js": "./lib/browser/restGet.js",
+    "./lib/algorithmNames.js": "./lib/browser/algorithmNames.js",
     "./src/restSendTX.js": "./src/browser/restSendTX.js",
-    "./src/restGet.js": "./src/browser/restGet.js"
+    "./src/restGet.js": "./src/browser/restGet.js",
+    "./src/algorithmNames.js": "./src/browser/algorithmNames.js"
   }
 }

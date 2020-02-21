@@ -1,4 +1,5 @@
 import testEnv from "./testEnvConfig";
+import SHA1withECDSA from "../src/algorithmNames";
 
 const rclink = testEnv === "production"
     ? require("../lib")
@@ -49,26 +50,26 @@ describe("测试交易生成功能", () => {
     const txSignedBytes = txToDeploy.sign({
         prvKey: GetKeyPEM(kp1.prvKeyObj),
         pubKey: GetKeyPEM(kp1.pubKeyObj),
-        alg: "ecdsa-with-SHA1",
+        alg: SHA1withECDSA,
         creditCode: "121000005l35120456",
         certName: "node1",
     });
     txToInvoke.sign({
         prvKey: GetKeyPEM(kp1.prvKeyObj),
         pubKey: GetKeyPEM(kp1.pubKeyObj),
-        alg: "ecdsa-with-SHA1",
+        alg: SHA1withECDSA,
         creditCode: "121000005l35120456",
         certName: "node1",
     });
     txToSetState.sign({
         prvKey: GetKeyPEM(kp1.prvKeyObj),
         pubKey: GetKeyPEM(kp1.pubKeyObj),
-        alg: "ecdsa-with-SHA1",
+        alg: SHA1withECDSA,
         creditCode: "121000005l35120456",
         certName: "node1",
     });
 
-    const signAlg = "ecdsa-with-SHA1";
+    const signAlg = SHA1withECDSA;
 
     it("使用未加密私钥生成的签名交易信息，使用相应的公钥验证应能通过", () => {
         expect(txToDeploy.verifySignature(GetKeyPEM(kp1.pubKeyObj), signAlg)).toBeTruthy();
@@ -81,10 +82,10 @@ describe("测试交易生成功能", () => {
         expect(txToSetState.verifySignature(GetKeyPEM(kp2.pubKeyObj), signAlg)).toBeFalsy();
     });
     it("使用未加密私钥生成的签名交易信息，使用错误签名算法验证不应通过", () => {
-        const wrongSignAlg = "ecdsa-with-SHA1";
-        expect(txToDeploy.verifySignature(GetKeyPEM(kp2.pubKeyObj), wrongSignAlg)).toBeFalsy();
-        expect(txToInvoke.verifySignature(GetKeyPEM(kp2.pubKeyObj), wrongSignAlg)).toBeFalsy();
-        expect(txToSetState.verifySignature(GetKeyPEM(kp2.pubKeyObj), wrongSignAlg)).toBeFalsy();
+        const wrongSignAlg = "sha256";
+        expect(txToDeploy.verifySignature(GetKeyPEM(kp1.pubKeyObj), wrongSignAlg)).toBeFalsy();
+        expect(txToInvoke.verifySignature(GetKeyPEM(kp1.pubKeyObj), wrongSignAlg)).toBeFalsy();
+        expect(txToSetState.verifySignature(GetKeyPEM(kp1.pubKeyObj), wrongSignAlg)).toBeFalsy();
     });
     it("使用二进制交易数据构造交易对象实例，应能成功", () => {
         expect(new Transaction({ txBytes: txSignedBytes }).constructor.name).toBe("Transaction");

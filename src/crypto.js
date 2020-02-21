@@ -4,6 +4,7 @@ import moment from "moment";
 import CoinString from "coinstring";
 import _ from "lodash";
 import GMCryptoUtils from "./gmCryptoUtils";
+import SHA1withECDSA from "./algorithmNames";
 
 const gmCUs = new GMCryptoUtils("wss://localhost:9003");
 
@@ -157,14 +158,15 @@ const GetKeyPEM = (keyObj, passWord) => {
  * @param {Object | string} signParams.prvKey 私钥信息，支持使用jsrsasign提供的私钥对象，
  * 或直接使用符合PKCS#5的未加密pem格式DSA/RSA私钥，符合PKCS#8的未加密pem格式RSA/ECDSA私钥，当使用gm签名算法时该参数应为null
  * @param {string | Buffer} signParams.data 待被签名的数据
- * @param {string} [signParams.alg] 签名算法，默认使用ecdsa-with-SHA1，国密签名算法为sm2-with-SM3
+ * @param {string} [signParams.alg] 签名算法，默认使用"SHA1"(NodeJS)或"ecdsa-with-SHA1"(Browser)，
+ * 国密签名算法为sm2-with-SM3
  * @param {string} [signParams.provider] 签名算法的提供者，支持使用jsrsasign或node内建的crypto(默认使用)，以及gm国密签名算法工具
  * @param {string} [signParams.gmUserID] 国密签名算法需要的用户标识，该标识是到gm websocket server查找到其对应国密私钥的唯一标识
  * @param {gmSignCallback} [signParams.cb] 国密签名算法支持为异步实现，当使用国密签名算法时，需要使用该回调方法
  * @returns {Buffer} signature 签名结果值，当使用非国密签名时，会返回该结果
  */
 const Sign = ({ 
-    prvKey, data, alg = "ecdsa-with-SHA1", provider = "nodecrypto", gmUserID, cb, 
+    prvKey, data, alg = SHA1withECDSA, provider = "nodecrypto", gmUserID, cb, 
 }) => {
     if (!Buffer.isBuffer(data) && !_.isString(data)) {
         throw new TypeError("The data field should be a Buffer or string");
@@ -217,13 +219,13 @@ const Sign = ({
  * 或直接使用符合PKCS#8的pem格式DSA/RSA/ECDSA公钥，符合X.509的PEM格式包含公钥信息的证书
  * @param {Buffer} verifySignatureParams.sigValue 签名结果
  * @param {string | Buffer} verifySignatureParams.data 被签名的原数据
- * @param {string} [verifySignatureParams.alg] 签名算法，默认使用ecdsa-with-SHA1
+ * @param {string} [verifySignatureParams.alg] 签名算法，默认使用"SHA1"(NodeJS)或"ecdsa-with-SHA1"(Browser)
  * @param {string} [verifySignatureParams.provider] 签名算法的提供者，
  * 支持使用jsrsasign或node内建的crypto(默认使用)，待支持使用国密算法提供者
  * @returns {boolean} isValid 签名真实性鉴定结果
  */
 const VerifySign = ({ 
-    pubKey, sigValue, data, alg = "ecdsa-with-SHA1", provider = "nodecrypto", 
+    pubKey, sigValue, data, alg = SHA1withECDSA, provider = "nodecrypto", 
 }) => {
     if (!Buffer.isBuffer(sigValue)) {
         throw new TypeError("The sigValue field should be a Buffer");

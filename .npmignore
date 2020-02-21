@@ -2,8 +2,10 @@ src/
 .vscode/
 jks/
 build/
+test/
 
 .babelrc
 .eslint*
 *lock*
 *log*
+ToDo.md

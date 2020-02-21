@@ -2,6 +2,7 @@ import validator from "validator";
 import _ from "lodash";
 import testEnv from "./testEnvConfig";
 import { rep } from "../src/protos/peer";
+import SHA1withECDSA from "../src/algorithmNames";
 
 const rclink = testEnv === "production"
     ? require("../lib")
@@ -140,7 +141,7 @@ describe("Restful API验证", () => {
         const txSignedBuffer1 = tx1.sign({
             prvKey: prvKeyPEM,
             pubKey: pubKeyPEM,
-            alg: "ecdsa-with-SHA1",
+            alg: SHA1withECDSA,
             creditCode: "121000005l35120456",
             certName: "node1",
         });
@@ -150,7 +151,7 @@ describe("Restful API验证", () => {
         const txSignedBuffer2 = tx2.sign({
             prvKey: GetKeyPEM(kp.prvKeyObj),
             pubKey: GetKeyPEM(kp.prvKeyObj),
-            alg: "ecdsa-with-SHA1",
+            alg: SHA1withECDSA,
             creditCode: "121000005l35120456",
             certName: "node1",
         });
@@ -159,7 +160,7 @@ describe("Restful API验证", () => {
         const txSignedBuffer3 = tx3.sign({
             prvKey: prvKeyPEM,
             pubKey: pubKeyPEM,
-            alg: "ecdsa-with-SHA1",
+            alg: SHA1withECDSA,
             creditCode: "121000005l35120456",
             certName: "node1",
         });

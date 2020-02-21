@@ -155,7 +155,7 @@ describe("签名及签名验证测试", () => {
     const ct2bytes = Buffer.from(ct2);
     const ct3 = "hello";
     const ct3bytes = Buffer.from(ct3);
-    const alg = "ecdsa-with-SHA1";
+    const alg = "sha256";
 
     // 使用PEM格式密钥信息
     const prvk3pem = "-----BEGIN PRIVATE KEY-----\nMIGNAgEAMBAGByqGSM49AgEGBSuBBAAKBHYwdAIBAQQgOUm2PF8apyaK1bXjKH5j\njCld/I6ExpefemRGsS0C4+WgBwYFK4EEAAqhRANCAAT6VLE/eF9+sK1ROn8n6x7h\nKsBxehW42qf1IB8quBn5OrQD3x2H4yZVDwPgcEUCjH8PcFgswdtbo8JL/7f66yEC\n-----END PRIVATE KEY-----";
