@@ -277,6 +277,37 @@ const CalculateAddr = (pubKeyPEM) => {
 };
 
 /**
+ * 生成PEM格式的证书签名请求(Certificate Signing Request, CSR)信息
+ * 
+ * @param {Object} params 生成csr所需参数
+ * @param {string} params.subject 证书拥有者唯一标识名
+ * @param {string} params.subjectPubKey 证书拥有者PEM格式的公钥信息
+ * @param {string} params.signAlg 生成csr的签名算法 
+ * @param {string} params.subjectPrvKey 证书拥有者PEM格式的私钥信息(无加密)
+ * @returns {string} PEM格式的csr信息
+ */
+const CreateCSR = ({ 
+    subject, subjectPubKey, signAlg, subjectPrvKey, 
+}) => KJUR.asn1.csr.CSRUtil.newCSRPEM({
+    subject: { str: subject },
+    sbjpubkey: subjectPubKey,
+    sigalg: signAlg,
+    sbjprvkey: subjectPrvKey,
+});
+
+/**
+ * 从PEM格式的csr中获取csr信息 
+ * 
+ * @param {string} csrPEM PEM格式的csr信息
+ * @returns {Object} csrInfo 解析后的csr信息(JSON)
+ * csrInfo.pubkey.obj - 证书拥有者公钥对象(jsrsasign提供的RSAKey, KJUR.crypto.{ECDSA,DSA}) 
+ * csrInfo.pubkey.hex - 证书拥有者公钥的hex格式
+ * csrInfo.subject.name - 证书拥有者唯一标识名
+ * csrInfo.subject.hex - 证书拥有者唯一标识名的hex格式
+ */
+const GetCSRInfoFromPEM = csrPEM => KJUR.asn1.csr.CSRUtil.getInfo(csrPEM);
+
+/**
  * @callback gmCertificateCallback
  * @param {string} certPEM pem格式证书
  */
@@ -408,6 +439,8 @@ export {
     Sign,
     VerifySign,
     CalculateAddr,
+    CreateCSR,
+    GetCSRInfoFromPEM,
     CreateCertificate,
     CreateSelfSignedCertificate,
     VerifyCertificateSignature,
