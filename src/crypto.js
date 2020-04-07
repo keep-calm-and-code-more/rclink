@@ -259,7 +259,6 @@ const VerifySign = ({
     return isValid;
 };
 
-
 /**
  * 根据公钥信息计算其bitcoin地址
  * 
@@ -293,6 +292,14 @@ const CalculateAddr = (pubKeyPEM) => {
  * @param {number} certFields.notAfter 代表证书有效性终止时间的unix时间戳（秒）
  * @param {Object} certFields.subjectPubKey 证书拥有方的公钥对象，使用jsrsasign提供的pubKeyObj
  * @param {Object} certFields.issuerPrvKey 证书发行方的私钥对象，使用jsrsasign提供的prvKeyObj
+ * @param {Object} [certFields.extensions] 证书扩展，jsrsasign支持的扩展属性(https://kjur.github.io/jsrsasign/api/symbols/KJUR.asn1.x509.TBSCertificate.html#appendExtension)，
+ * 如：
+ * {
+ *     BasicConstraints: { cA: true, critical: true }, 
+ *     KeyUsage: { names: ["digitalSignature", "keyCertSign"] },
+ *     AuthorityKeyIdentifier: {kid: "1234ab..."},
+ *     SubjectAltName: {critical: true, array: [{uri: "http://aaa.com"}, {uri: "http://bbb.com"}]}
+ * } 
  * @param {string} [certFields.gmUserID] 证书拥有者的id标识, 当creator为gm时，需要该属性，并且不需要其他属性；
  * 当creator为jsrsasign时，不需要该属性
  * @param {string} [creator] 证书生成者，支持使用jsrsasign或gm(即国密)，默认使用jsrsasign
@@ -311,6 +318,11 @@ const CreateCertificate = (certFields, creator = "jsrsasign", cb) => {
             tbs.setNotBeforeByParam({ str: `${moment.unix(certFields.notBefore).utc().format("YYYYMMDDHHmmss")}Z` });
             tbs.setNotAfterByParam({ str: `${moment.unix(certFields.notAfter).utc().format("YYYYMMDDHHmmss")}Z` });
             tbs.setSubjectPublicKey(certFields.subjectPubKey);
+            for (const extField in certFields.extensions) {
+                if (Object.prototype.hasOwnProperty.call(certFields.extensions, extField)) {
+                    tbs.appendExtensionByName(extField, certFields.extensions[extField]);
+                }
+            }
             cert = new KJUR.asn1.x509.Certificate({
                 tbscertobj: tbs,
                 prvkeyobj: certFields.issuerPrvKey,
@@ -335,6 +347,7 @@ const CreateCertificate = (certFields, creator = "jsrsasign", cb) => {
  * @param {number} certFields.notBefore 代表证书有效性起始时间的unix时间戳
  * @param {number} certFields.notAfter 代表证书有效性终止时间的unix时间戳
  * @param {Object} certFields.keypair 证书拥有方的密钥对，含有jsrsasign提供的prvKeyObj和pubKeyObj对象
+ * @param {Object} [certFields.extensions] v3证书扩展属性
  * @returns {string} certPEM pem格式的自签名证书信息
  */
 const CreateSelfSignedCertificate = (certFields) => {
@@ -347,6 +360,7 @@ const CreateSelfSignedCertificate = (certFields) => {
         notAfter: certFields.notAfter,
         subjectPubKey: certFields.keypair.pubKeyObj,
         issuerPrvKey: certFields.keypair.prvKeyObj,
+        extensions: certFields.extensions,
     };
     const certPEM = CreateCertificate(certFieldsCoverted);
     return certPEM;
@@ -363,7 +377,7 @@ const ImportCertificate = (certPEM) => {
     x509.readCertPEM(certPEM);
 
     const getUnixTimestamp = (notBeforeOrNotAfterFormatTimestampStr) => {
-        const format = notBeforeOrNotAfterFormatTimestampStr.length === 15 ? "YYYYMMDDHHmmss" : "YYMMDDHHmmss";
+        const format = notBeforeOrNotAfterFormatTimestampStr.length === 15 ? "YYYYMMDDHHmmssZ" : "YYMMDDHHmmssZ";
         return moment.utc(notBeforeOrNotAfterFormatTimestampStr, format).unix();
     };
 
