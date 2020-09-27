@@ -40,7 +40,7 @@ npm i --save rclink
 "rclink": "https://gitee.com/BTAJL/RCJS.git#support/2.1.x" 
 ```
 #### API
-API文档可参考[这里](http://jaytsang.gitee.io/rcnodeapi/)
+API文档可参考[这里](https://btajl.gitee.io/rcjs)
 #### 使用示例
 可参考测试用例代码:
 - 交易构建： https://gitee.com/BTAJL/RCJS/blob/master/test/transaction.test.js
