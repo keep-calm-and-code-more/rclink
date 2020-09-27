@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: EventTube</title>
+    <title>JSDoc: Namespace: protos</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: EventTube</h1>
+    <h1 class="page-title">Namespace: protos</h1>
 
     
 
@@ -28,7 +28,8 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>EventTube<span class="signature">(address, cb, timeout)</span><span class="type-signature"></span></h2>
+        <h2>
+            <span class="ancestors"><a href="rep.html">rep</a>.</span>protos</h2>
         
     
 </header>
@@ -37,126 +38,10 @@
     <div class="container-overview">
     
         
-
-    
-
-    
-    <h4 class="name" id="EventTube"><span class="type-signature"></span>new EventTube<span class="signature">(address, cb, timeout)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    构建事件订阅对象实例
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
+            <div class="description">Namespace protos.</div>
         
 
         
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>address</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">websocket服务地址</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>cb</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="global.html#websocketCallback">websocketCallback</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">处理返回信息的回调函数</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>timeout</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">重连的时间间隔</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
 
 
 <dl class="details">
@@ -188,7 +73,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="events.js.html">events.js</a>, <a href="events.js.html#line16">line 16</a>
+        <a href="protos_peer.js.html">protos/peer.js</a>, <a href="protos_peer.js.html#line26">line 26</a>
     </li></ul></dd>
     
 
@@ -200,22 +85,7 @@
 </dl>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
     
     </div>
 
@@ -224,154 +94,107 @@
     
 
     
+        <h3 class="subsection-title">Classes</h3>
 
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
+        <dl>
+            <dt><a href="rep.protos.ActionResult.html">ActionResult</a></dt>
+            <dd></dd>
         
-            
-
-    
-
-    
-    <h4 class="name" id="close"><span class="type-signature"></span>close<span class="signature">(reason)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    主动关闭websocket连接
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
+            <dt><a href="rep.protos.Block.html">Block</a></dt>
+            <dd></dd>
         
-        <th>Name</th>
+            <dt><a href="rep.protos.BlockchainInfo.html">BlockchainInfo</a></dt>
+            <dd></dd>
         
-
-        <th>Type</th>
-
+            <dt><a href="rep.protos.CertId.html">CertId</a></dt>
+            <dd></dd>
         
-
+            <dt><a href="rep.protos.Certificate.html">Certificate</a></dt>
+            <dd></dd>
         
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>reason</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">解释主动关闭连接的原因，不超过123字节</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="events.js.html">events.js</a>, <a href="events.js.html#line66">line 66</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            <dt><a href="rep.protos.ChaincodeDeploy.html">ChaincodeDeploy</a></dt>
+            <dd></dd>
         
+            <dt><a href="rep.protos.ChaincodeId.html">ChaincodeId</a></dt>
+            <dd></dd>
+        
+            <dt><a href="rep.protos.ChaincodeInput.html">ChaincodeInput</a></dt>
+            <dd></dd>
+        
+            <dt><a href="rep.protos.Event.html">Event</a></dt>
+            <dd></dd>
+        
+            <dt><a href="rep.protos.OperLog.html">OperLog</a></dt>
+            <dd></dd>
+        
+            <dt><a href="rep.protos.Signature.html">Signature</a></dt>
+            <dd></dd>
+        
+            <dt><a href="rep.protos.Signer.html">Signer</a></dt>
+            <dd></dd>
+        
+            <dt><a href="rep.protos.Transaction.html">Transaction</a></dt>
+            <dd></dd>
+        
+            <dt><a href="rep.protos.TransactionResult.html">TransactionResult</a></dt>
+            <dd></dd>
+        </dl>
+    
+
+    
+        <h3 class="subsection-title">Interfaces</h3>
+
+        <dl>
+            <dt><a href="rep.protos.IActionResult.html">IActionResult</a></dt>
+            <dd></dd>
+        
+            <dt><a href="rep.protos.IBlock.html">IBlock</a></dt>
+            <dd></dd>
+        
+            <dt><a href="rep.protos.IBlockchainInfo.html">IBlockchainInfo</a></dt>
+            <dd></dd>
+        
+            <dt><a href="rep.protos.ICertId.html">ICertId</a></dt>
+            <dd></dd>
+        
+            <dt><a href="rep.protos.ICertificate.html">ICertificate</a></dt>
+            <dd></dd>
+        
+            <dt><a href="rep.protos.IChaincodeDeploy.html">IChaincodeDeploy</a></dt>
+            <dd></dd>
+        
+            <dt><a href="rep.protos.IChaincodeId.html">IChaincodeId</a></dt>
+            <dd></dd>
+        
+            <dt><a href="rep.protos.IChaincodeInput.html">IChaincodeInput</a></dt>
+            <dd></dd>
+        
+            <dt><a href="rep.protos.IEvent.html">IEvent</a></dt>
+            <dd></dd>
+        
+            <dt><a href="rep.protos.IOperLog.html">IOperLog</a></dt>
+            <dd></dd>
+        
+            <dt><a href="rep.protos.ISignature.html">ISignature</a></dt>
+            <dd></dd>
+        
+            <dt><a href="rep.protos.ISigner.html">ISigner</a></dt>
+            <dd></dd>
+        
+            <dt><a href="rep.protos.ITransaction.html">ITransaction</a></dt>
+            <dd></dd>
+        
+            <dt><a href="rep.protos.ITransactionResult.html">ITransactionResult</a></dt>
+            <dd></dd>
+        </dl>
+    
+
+    
+
+    
+
+    
+
     
 
     

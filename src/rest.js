@@ -129,9 +129,10 @@ class RestAPI {
      *
      * @param {string} id 交易唯一标识，即txid
      * @param {string} [txFormat="JSON"] 期望返回的交易数据的格式
+     * @param {string} [withBlockHeight=false] 返回交易数据中是否包含区块高度，当txFormat="JSON"时才有效
      * @returns {Promise<Object> | Promise<Buffer>}
      */
-    transaction(id, txFormat = "JSON") {
+    transaction(id, txFormat = "JSON", withBlockHeight = false) {
         if (!_.isString(id)) {
             throw new TypeError("The id param should be a string");
         }
@@ -142,6 +143,8 @@ class RestAPI {
         let url = `${this._address}/transaction`;
         if (txFormat === "STREAM") {
             url = `${url}/stream`;
+        } else if (withBlockHeight) {
+            url = `${url}/tranInfoAndHeight`;
         }
         url = `${url}/${id}`;
 

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: EventTube</title>
+    <title>JSDoc: Interface: ICertificate</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: EventTube</h1>
+    <h1 class="page-title">Interface: ICertificate</h1>
 
     
 
@@ -28,7 +28,8 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>EventTube<span class="signature">(address, cb, timeout)</span><span class="type-signature"></span></h2>
+        <h2>
+            <span class="ancestors"><a href="rep.html">rep</a><a href="rep.protos.html">.protos</a>.</span>ICertificate</h2>
         
     
 </header>
@@ -37,33 +38,17 @@
     <div class="container-overview">
     
         
+            <div class="description">Properties of a Certificate.</div>
+        
+
+        
+
+
+    <h5 class="subsection-title">Properties:</h5>
 
     
 
-    
-    <h4 class="name" id="EventTube"><span class="type-signature"></span>new EventTube<span class="signature">(address, cb, timeout)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    构建事件订阅对象实例
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
+<table class="props">
     <thead>
     <tr>
         
@@ -72,6 +57,8 @@
 
         <th>Type</th>
 
+        
+        <th>Attributes</th>
         
 
         
@@ -85,76 +72,175 @@
 
         <tr>
             
-                <td class="name"><code>address</code></td>
+                <td class="name"><code>certificate</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">string</span>
+|
+
+<span class="param-type">null</span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">websocket服务地址</td>
+            <td class="description last">Certificate certificate</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>cb</code></td>
+                <td class="name"><code>algType</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="global.html#websocketCallback">websocketCallback</a></span>
+<span class="param-type">string</span>
+|
+
+<span class="param-type">null</span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">处理返回信息的回调函数</td>
+            <td class="description last">Certificate algType</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>timeout</code></td>
+                <td class="name"><code>certValid</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">null</span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">重连的时间间隔</td>
+            <td class="description last">Certificate certValid</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>reg_Time</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="google.protobuf.ITimestamp.html">google.protobuf.ITimestamp</a></span>
+|
+
+<span class="param-type">null</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Certificate reg_Time</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>unreg_Time</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="google.protobuf.ITimestamp.html">google.protobuf.ITimestamp</a></span>
+|
+
+<span class="param-type">null</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Certificate unreg_Time</td>
         </tr>
 
     
     </tbody>
 </table>
-
-
 
 
 
@@ -188,7 +274,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="events.js.html">events.js</a>, <a href="events.js.html#line16">line 16</a>
+        <a href="protos_peer.js.html">protos/peer.js</a>, <a href="protos_peer.js.html#line867">line 867</a>
     </li></ul></dd>
     
 
@@ -200,22 +286,7 @@
 </dl>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
     
     </div>
 
@@ -233,145 +304,6 @@
 
     
 
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="close"><span class="type-signature"></span>close<span class="signature">(reason)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    主动关闭websocket连接
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>reason</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">解释主动关闭连接的原因，不超过123字节</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="events.js.html">events.js</a>, <a href="events.js.html#line66">line 66</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
     
 
     

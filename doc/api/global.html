@@ -205,7 +205,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line269">line 269</a>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line268">line 268</a>
     </li></ul></dd>
     
 
@@ -607,6 +607,46 @@
 
         <tr>
             
+                <td class="name"><code>extensions</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">证书扩展，jsrsasign支持的扩展属性(https://kjur.github.io/jsrsasign/api/symbols/KJUR.asn1.x509.TBSCertificate.html#appendExtension)，
+如：
+{
+    BasicConstraints: { cA: true, critical: true }, 
+    KeyUsage: { names: ["digitalSignature", "keyCertSign"] },
+    AuthorityKeyIdentifier: {kid: "1234ab..."},
+    SubjectAltName: {critical: true, array: [{uri: "http://aaa.com"}, {uri: "http://bbb.com"}]}
+}</td>
+        </tr>
+
+    
+
+        <tr>
+            
                 <td class="name"><code>gmUserID</code></td>
             
 
@@ -748,7 +788,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line302">line 302</a>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line340">line 340</a>
     </li></ul></dd>
     
 
@@ -776,6 +816,281 @@
         
 <div class="param-desc">
     certPEM pem格式的证书信息，当creator为jsrsasign时，将返回该信息
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="CreateCSR"><span class="type-signature"></span>CreateCSR<span class="signature">(params)</span><span class="type-signature"> &rarr; {string}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    生成PEM格式的证书签名请求(Certificate Signing Request, CSR)信息
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>params</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">生成csr所需参数
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>subject</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">证书拥有者唯一标识名</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>subjectPubKey</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">证书拥有者PEM格式的公钥信息</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>signAlg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">生成csr的签名算法</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>subjectPrvKey</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">证书拥有者PEM格式的私钥信息(无加密)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line289">line 289</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    PEM格式的csr信息
 </div>
 
 
@@ -1098,6 +1413,8 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -1123,6 +1440,14 @@
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
@@ -1145,6 +1470,14 @@
             
             </td>
 
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -1169,6 +1502,14 @@
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
@@ -1191,6 +1532,14 @@
             
             </td>
 
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -1215,6 +1564,14 @@
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
@@ -1238,10 +1595,51 @@
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
             <td class="description last">证书拥有方的密钥对，含有jsrsasign提供的prvKeyObj和pubKeyObj对象</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>extensions</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">v3证书扩展属性</td>
         </tr>
 
     
@@ -1289,7 +1687,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line340">line 340</a>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line384">line 384</a>
     </li></ul></dd>
     
 
@@ -1328,6 +1726,167 @@
     <dd>
         
 <span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="GetCSRInfoFromPEM"><span class="type-signature"></span>GetCSRInfoFromPEM<span class="signature">(csrPEM)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    从PEM格式的csr中获取csr信息
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>csrPEM</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">PEM格式的csr信息</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line308">line 308</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    csrInfo 解析后的csr信息(JSON)
+csrInfo.pubkey.obj - 证书拥有者公钥对象(jsrsasign提供的RSAKey, KJUR.crypto.{ECDSA,DSA}) 
+csrInfo.pubkey.hex - 证书拥有者公钥的hex格式
+csrInfo.subject.name - 证书拥有者唯一标识名
+csrInfo.subject.hex - 证书拥有者唯一标识名的hex格式
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
 
 
     </dd>
@@ -1975,7 +2534,7 @@ https://kjur.github.io/jsrsasign/api/symbols/KJUR.crypto.MessageDigest.html<a/>�
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line361">line 361</a>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line406">line 406</a>
     </li></ul></dd>
     
 
@@ -2743,7 +3302,7 @@ https://kjur.github.io/jsrsasign/api/symbols/KJUR.crypto.MessageDigest.html<a/>�
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line384">line 384</a>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line429">line 429</a>
     </li></ul></dd>
     
 
@@ -3254,7 +3813,7 @@ https://kjur.github.io/jsrsasign/api/symbols/KJUR.crypto.MessageDigest.html<a/>�
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line280">line 280</a>
+        <a href="crypto.js.html">crypto.js</a>, <a href="crypto.js.html#line310">line 310</a>
     </li></ul></dd>
     
 
@@ -3689,13 +4248,13 @@ https://kjur.github.io/jsrsasign/api/symbols/KJUR.crypto.MessageDigest.html<a/>�
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="EventTube.html">EventTube</a></li><li><a href="RestAPI.html">RestAPI</a></li><li><a href="Transaction.html">Transaction</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CalculateAddr">CalculateAddr</a></li><li><a href="global.html#CreateCertificate">CreateCertificate</a></li><li><a href="global.html#CreateKeypair">CreateKeypair</a></li><li><a href="global.html#CreateSelfSignedCertificate">CreateSelfSignedCertificate</a></li><li><a href="global.html#GetHashVal">GetHashVal</a></li><li><a href="global.html#GetKeyPEM">GetKeyPEM</a></li><li><a href="global.html#ImportCertificate">ImportCertificate</a></li><li><a href="global.html#ImportKey">ImportKey</a></li><li><a href="global.html#Sign">Sign</a></li><li><a href="global.html#VerifyCertificateSignature">VerifyCertificateSignature</a></li><li><a href="global.html#VerifySign">VerifySign</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="EventTube.html">EventTube</a></li><li><a href="google.protobuf.Timestamp.html">Timestamp</a></li><li><a href="rep.protos.ActionResult.html">ActionResult</a></li><li><a href="rep.protos.Block.html">Block</a></li><li><a href="rep.protos.BlockchainInfo.html">BlockchainInfo</a></li><li><a href="rep.protos.CertId.html">CertId</a></li><li><a href="rep.protos.Certificate.html">Certificate</a></li><li><a href="rep.protos.ChaincodeDeploy.html">ChaincodeDeploy</a></li><li><a href="rep.protos.ChaincodeId.html">ChaincodeId</a></li><li><a href="rep.protos.ChaincodeInput.html">ChaincodeInput</a></li><li><a href="rep.protos.Event.html">Event</a></li><li><a href="rep.protos.OperLog.html">OperLog</a></li><li><a href="rep.protos.Signature.html">Signature</a></li><li><a href="rep.protos.Signer.html">Signer</a></li><li><a href="rep.protos.Transaction.html">Transaction</a></li><li><a href="rep.protos.TransactionResult.html">TransactionResult</a></li><li><a href="RestAPI.html">RestAPI</a></li><li><a href="Transaction.html">Transaction</a></li></ul><h3>Namespaces</h3><ul><li><a href="google.html">google</a></li><li><a href="google.protobuf.html">protobuf</a></li><li><a href="rep.html">rep</a></li><li><a href="rep.protos.html">protos</a></li></ul><h3>Interfaces</h3><ul><li><a href="google.protobuf.ITimestamp.html">ITimestamp</a></li><li><a href="rep.protos.IActionResult.html">IActionResult</a></li><li><a href="rep.protos.IBlock.html">IBlock</a></li><li><a href="rep.protos.IBlockchainInfo.html">IBlockchainInfo</a></li><li><a href="rep.protos.ICertId.html">ICertId</a></li><li><a href="rep.protos.ICertificate.html">ICertificate</a></li><li><a href="rep.protos.IChaincodeDeploy.html">IChaincodeDeploy</a></li><li><a href="rep.protos.IChaincodeId.html">IChaincodeId</a></li><li><a href="rep.protos.IChaincodeInput.html">IChaincodeInput</a></li><li><a href="rep.protos.IEvent.html">IEvent</a></li><li><a href="rep.protos.IOperLog.html">IOperLog</a></li><li><a href="rep.protos.ISignature.html">ISignature</a></li><li><a href="rep.protos.ISigner.html">ISigner</a></li><li><a href="rep.protos.ITransaction.html">ITransaction</a></li><li><a href="rep.protos.ITransactionResult.html">ITransactionResult</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CalculateAddr">CalculateAddr</a></li><li><a href="global.html#CreateCertificate">CreateCertificate</a></li><li><a href="global.html#CreateCSR">CreateCSR</a></li><li><a href="global.html#CreateKeypair">CreateKeypair</a></li><li><a href="global.html#CreateSelfSignedCertificate">CreateSelfSignedCertificate</a></li><li><a href="global.html#GetCSRInfoFromPEM">GetCSRInfoFromPEM</a></li><li><a href="global.html#GetHashVal">GetHashVal</a></li><li><a href="global.html#GetKeyPEM">GetKeyPEM</a></li><li><a href="global.html#ImportCertificate">ImportCertificate</a></li><li><a href="global.html#ImportKey">ImportKey</a></li><li><a href="global.html#Sign">Sign</a></li><li><a href="global.html#VerifyCertificateSignature">VerifyCertificateSignature</a></li><li><a href="global.html#VerifySign">VerifySign</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Feb 21 2020 23:46:39 GMT+0800 (China Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Sep 27 2020 14:15:58 GMT+0800 (China Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
