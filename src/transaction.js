@@ -17,7 +17,7 @@ const getTimestamp = (millis) => {
     const timestampMillis = millis || Date.now();
     const timestampJsonObj = {
         // 时间戳需再加8小时，以与RepChain使用的时间戳值在同一时区
-        seconds: new Long(timestampMillis / 1000) + 8 * 3600 * 1000,
+        seconds: new Long(timestampMillis / 1000 + 8 * 3600 * 1000),
         nanos: ((timestampMillis % 1000) * 1000000),
     };
     return timestampJsonObj;
