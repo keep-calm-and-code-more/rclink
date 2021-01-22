@@ -14,7 +14,7 @@ RCJS为开发者提供了以下功能：
 - 获取RepChain交易数据：通过Restful API获取交易数据(json格式或二进制格式(protobuf序列化))
 - 构造RepChain签名交易：提供RepChain交易数据的构造及交易签名功能;
 - 提交RepChain签名交易：向RepChain区块链网络提交已构造的签名交易数据；
-- 加密工具：(基于[NodeJS Crypto]() 以及 [jsrsasign]()实现)
+- 加密工具：(基于[NodeJS Crypto](https://nodejs.org/docs/latest-v10.x/api/crypto.html) 以及 [jsrsasign](https://github.com/kjur/jsrsasign)实现)
   + 生成密码学哈希值
   + 生成非对称密钥对：支持RSA与EC算法
   + 导出/导入密钥：支持生成/解析PEM格式的公钥或私钥
