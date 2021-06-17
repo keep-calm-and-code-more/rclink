@@ -13,7 +13,7 @@ const { RestAPI, Transaction, Crypto } = rclink;
 const { CreateKeypair, GetKeyPEM } = Crypto;
 
 describe("Restful API验证", () => {
-    const ra = new RestAPI("http://localhost:8081");
+    const ra = new RestAPI("http://localhost:9081");
 
     describe("chainInfo相关方法测试", () => {
         it("使用chainInfo方法, 应能得到区块链的当前概要信息", (done) => {
@@ -115,13 +115,13 @@ describe("Restful API验证", () => {
 
     describe("transaction相关方法测试", () => {
         const prvKeyPEM = `-----BEGIN PRIVATE KEY-----
-            MIGNAgEAMBAGByqGSM49AgEGBSuBBAAKBHYwdAIBAQQgPtHT816wJBatnif8laVo
-            yW0R5NqtMiMkmECOYEAIzSWgBwYFK4EEAAqhRANCAASlh+oDBPdwHEkpQT4/g4RX
-            9ubP7jMM2QodiFtsnv+ObQ3dxfQN/S515ePssn3HjPCwfzR3S1KY4O9vFtH1Jql9
+            MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgMwOg+N/MxN5qRBo2
+            X/wLmUHqEoDZEF3/aSpTVUvvkuuhRANCAASbuz0+GbOYaqjYWvUqz+tE3nCA1WBq
+            8tL+msleZT/MORSdlLURAq6VMbqDtqX2h38cmCFwmQPMO2GmVNLOAhH3
             -----END PRIVATE KEY-----`;
         const pubKeyPEM = `-----BEGIN PUBLIC KEY-----
-            MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEpYfqAwT3cBxJKUE+P4OEV/bmz+4zDNkK
-            HYhbbJ7/jm0N3cX0Df0udeXj7LJ9x4zwsH80d0tSmODvbxbR9SapfQ==
+            MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEm7s9PhmzmGqo2Fr1Ks/rRN5wgNVg
+            avLS/prJXmU/zDkUnZS1EQKulTG6g7al9od/HJghcJkDzDthplTSzgIR9w==
             -----END PUBLIC KEY-----`;
         const txToInvokeConsArgs = {
             type: "CHAINCODE_INVOKE",
@@ -165,6 +165,14 @@ describe("Restful API验证", () => {
             certName: "node1",
         });
 
+        const tx4 = new Transaction(txToInvokeConsArgs);
+        const txSignedBuffer4 = tx4.sign({
+            prvKey: prvKeyPEM,
+            alg: SHA1withECDSA,
+            creditCode: "121000005l35120456",
+            certName: "node1",
+        });
+
         it("使用sendTransaction方法，以hex字符串形式提交正确的签名交易，应能返回成功信息", async () => {
             const result = await ra.sendTransaction(txSignedBuffer1.toString("hex"));
             expect(result.txid).toBe(tx1.getTxMsg().id);
@@ -183,6 +191,11 @@ describe("Restful API验证", () => {
         it("使用sendTransaction方法，以二进制形式提交正确的签名交易，应能返回成功信息", async () => {
             const result = await ra.sendTransaction(txSignedBuffer3);
             expect(result.txid).toBe(tx3.getTxMsg().id);
+            expect(result.err).toBeUndefined();
+        });
+        it("使用sendTransaction方法，不传入公钥，以hex字符串形式提交正确的签名交易，应能返回成功信息", async () => {
+            const result = await ra.sendTransaction(txSignedBuffer4.toString("hex"));
+            expect(result.txid).toBe(tx4.getTxMsg().id);
             expect(result.err).toBeUndefined();
         });
     });

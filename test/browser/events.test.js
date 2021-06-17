@@ -9,7 +9,7 @@ describe("事件订阅与数据获取", () => {
     const eventMsgType = rep.protos.Event;
 
     it("订阅RepChain区块相关事件，获得区块数据后可以主动关闭", (done) => {
-        const et = new EventTube("ws://localhost:8081/event", ((evt) => {
+        const et = new EventTube("ws://localhost:9081/event", ((evt) => {
             // convert blob to Buffer
             const fileReader = new FileReader();
             fileReader.onload = () => {

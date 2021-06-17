@@ -1,8 +1,9 @@
 import Long from "long";
 import _ from "lodash";
+import sshpk from "sshpk";
 import { rep } from "./protos/peer"; // use generated static js code
 import {
-    GetHashVal, ImportKey, Sign, VerifySign, GetKeyPEM, 
+    GetHashVal, ImportKey, Sign, VerifySign, GetKeyPEM,
 } from "./crypto";
 
 const txEnumTypes = ["CHAINCODE_DEPLOY", "CHAINCODE_INVOKE", "CHAINCODE_SET_STATE"];
@@ -47,7 +48,7 @@ class Transaction {
      */
     constructor({
         txBytes, type, chaincodeName, chaincodeVersion,
-        chaincodeDeployParams: { 
+        chaincodeDeployParams: {
             timeout, codePackage, legalProse, codeLanguageType,
         } = { timeout: 1000 },
         chaincodeInvokeParams: { chaincodeFunction, chaincodeFunctionArgs } = {},
@@ -63,8 +64,8 @@ class Transaction {
                 }
             } else {
                 throw new TypeError("The txBytes field should be a Buffer or Uint8array");
-            } 
-        } else { 
+            }
+        } else {
             if (_.indexOf(txEnumTypes, type) === -1) {
                 throw new Error(`The type field should be one of ${txEnumTypes}`);
             }
@@ -143,7 +144,7 @@ class Transaction {
                 default:
                     throw new Error("Wrong Transaction type");
             }
-            
+
             const err = txMsgType.verify(txJsonObj);
             if (err) throw err;
 
@@ -153,12 +154,12 @@ class Transaction {
             // 为了屏蔽其与Buffer经browserify或webpack转译后的Uint8Array的差异，这里需转为Buffer
             const txBuffer = Buffer.from(txMsgType.encode(msg).finish());
             const timeStampBuffer = Buffer.from(new Date().toISOString());
-            const dataBuffer = Buffer.concat([txBuffer, timeStampBuffer], 
+            const dataBuffer = Buffer.concat([txBuffer, timeStampBuffer],
                 txBuffer.length + timeStampBuffer.length);
             msg.id = GetHashVal({ data: dataBuffer, alg: "sha256" }).toString("hex");
 
             txMsgCollection.set(this, msg);
-        } 
+        }
     }
 
     getTxMsg() {
@@ -177,15 +178,15 @@ class Transaction {
      * @returns {Buffer} - 已签名交易数据
      */
     sign({
-        prvKey, pubKey, alg, pass, creditCode, certName, 
+        prvKey, pubKey, alg, pass, creditCode, certName,
     }) {
         if (!_.isString(prvKey)) throw new Error("The prvKey field should be a string");
-        if (!_.isString(pubKey)) throw new Error("The pubKey field should be a string");
+        if (pubKey && !_.isString(pubKey)) throw new Error("The pubKey field should be a string");
         if (!_.isString(alg)) throw new Error("The alg field should be a string");
         if (pass && !_.isString(pass)) throw new Error("The pass field should be a string");
         if (!_.isString(creditCode)) throw new Error("The creditCode field should be a string");
         if (!_.isString(certName)) throw new Error("The certName field should be a string");
-
+        const finalPubKey = pubKey || sshpk.parsePrivateKey(prvKey, "pem").toPublic().toString("pem");
         const msg = txMsgCollection.get(this);
         if (msg.signature && msg.signature.signature) { 
             throw new Error("The transaction has been signed already"); 
@@ -197,7 +198,7 @@ class Transaction {
         if (prvKeyObj.pubKeyHex === undefined) {
             // 当使用ImportKey方法从pem格式转object格式时，若其pubKeyHex为undefined则需在该object中补充pubKeyHex
             // 否则签名将出错
-            prvKeyObj.pubKeyHex = ImportKey(pubKey).pubKeyHex;
+            prvKeyObj.pubKeyHex = ImportKey(finalPubKey).pubKeyHex;
         }
         const prvkeyPEM = GetKeyPEM(prvKeyObj);
         const signature = Sign({ prvKey: prvkeyPEM, data: txBuffer, alg });

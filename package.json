@@ -54,6 +54,7 @@
     "protobufjs": "^6.8.8",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
+    "sshpk": "^1.16.1",
     "validator": "^10.11.0",
     "websocket": "^1.0.28"
   },
